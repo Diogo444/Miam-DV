@@ -1,0 +1,35 @@
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Mot de passe</th>
+                <th>Rôle</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of users">
+                <td data-label="Nom">{{ user.name }}</td>
+                <td data-label="Mot de passe">
+                    <div class="pwd-container">
+                        <input type="password" [ngModel]="passwords[user.id]"
+                            (ngModelChange)="passwords[user.id] = $event" (keydown.enter)="updatePassword(user)"
+                            placeholder="••••••••">
+                        <button *ngIf="passwords[user.id] && passwords[user.id].length > 0" class="update-btn"
+                            (click)="updatePassword(user)">
+                            Mettre à jour
+                        </button>
+                    </div>
+                </td>
+
+                <td data-label="Rôle">
+                    <select [(ngModel)]="user.role" (ngModelChange)="updateRoleUser(user)">
+                        <option value="admin">Administrateur</option>
+                        <option value="user">Utilisateur</option>
+                    </select>
+                </td>
+                <button (click)="deleteUser(user.id)" class="delete-btn">🗑️ Supprimer</button>
+            </tr>
+        </tbody>
+    </table>
+</div>

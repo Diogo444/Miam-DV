@@ -1,0 +1,33 @@
+<div class="container">
+    <div class="navbar" [ngSwitch]="currentNavbar">
+        <app-navbar *ngSwitchCase="'guest'"></app-navbar>
+        <app-navbar-u *ngSwitchCase="'user'"></app-navbar-u>
+        <app-navbar-a *ngSwitchCase="'admin'"></app-navbar-a>
+    </div>
+
+    <div class="public">
+        <app-menu *ngIf="page == 'menu'"></app-menu>
+        <app-notif *ngIf="page == 'notifs'"></app-notif>
+        <app-searchbar *ngIf="page == 'recipes-list' || page == 'all-proverbs'"
+            (search)="handleSearch($event)"></app-searchbar>
+        <app-list *ngIf="page == 'recipes-list'" [searchTerm]="searchTerm" (selectRecipe)="displayRecipe($event)">
+        </app-list>
+
+        <app-plat *ngIf="page == 'recipe'" [slug]="selectedRecipeSlug"></app-plat>
+    </div>
+    <div class="user">
+        <app-all-proverbe *ngIf="page == 'all-proverbs'" [searchTerm]="searchTerm"></app-all-proverbe>
+        <app-palette *ngIf="page == 'palette'"></app-palette>
+        <app-password *ngIf="page == 'change-password'"></app-password>
+        <app-username *ngIf="page == 'change-username'"></app-username>
+    </div>
+    <div class="admin">
+        <app-miammi *ngIf="page == 'miammi'"></app-miammi>
+        <app-miammiajout *ngIf="page == 'miammiajout'"></app-miammiajout>
+        <app-menuajout *ngIf="page == 'menuajout'"></app-menuajout>
+        <app-add-design *ngIf="page == 'add-design'"></app-add-design>
+        <app-addrecipe *ngIf="page == 'addrecipe'"></app-addrecipe>
+        <app-proverbeajout *ngIf="page == 'proverbeajout'"></app-proverbeajout>
+        <app-users-settings *ngIf="page == 'users-settings'"></app-users-settings>
+    </div>
+</div>

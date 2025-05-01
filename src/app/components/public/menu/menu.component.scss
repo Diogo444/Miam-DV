@@ -1,0 +1,134 @@
+$bg-container: #333;
+$bg-menu: #333;
+$color-text: #f1f1f1;
+$color-text-type: #bc8623;
+$color-button-text: #f1f1f1;
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: $bg-container;
+  border-radius: 8px;
+  h1 {
+    margin: 20px 0;
+    font-size: 24px;
+    color: $color-text;
+    text-align: center;
+    font-weight: 400;
+  }
+
+  .proverbe {
+    margin-top: 0;
+    padding-bottom: 20px;
+    text-align: center;
+  }
+  .loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+  }
+}
+
+.day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+
+  button {
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+  }
+
+  p {
+    margin: 0;
+    font-size: 1.2em;
+    text-align: center;
+  }
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: $color-text;
+  text-shadow: 0 0 1px $color-text;
+  background: $bg-menu;
+
+  .menu-card {
+    border-radius: 8px;
+    padding: 20px;
+    flex: 1;
+    min-width: 80%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+
+    &.midi-card {
+      margin-bottom: 20px;
+    }
+  }
+
+  .periode {
+    border-bottom: 1px solid #444;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+
+    .periode-text {
+      font-size: 20px;
+    }
+  }
+}
+
+.menu-content {
+  .menu-item {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .typetext {
+    p {
+      display: block;
+      color: $color-text-type;
+    }
+
+    span {
+      display: block;
+      color: $color-text;
+    }
+  }
+}
+
+.menu-rien {
+  min-width: 80%;
+}
+
+@media (max-width: 600px) {
+  .menu-card {
+    min-width: 100%;
+  }
+
+  header {
+    font-weight: bold;
+  }
+}

@@ -1,0 +1,8 @@
+<div class="proverbe">
+    <form class="form" [formGroup]="proverbe" (submit)="PSubmit()">
+        <label for="proverbe">Proverbe : </label>
+        <input type="text" name="proverbe" id="proverbe" formControlName="proverbe">
+        <button type="submit">Ajouter</button>
+    </form>
+    <p>{{ message }}</p>
+</div>

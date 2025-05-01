@@ -1,0 +1,42 @@
+<article class="miammi-recipe">
+    <img [src]="'https://miamdv.hopto.org/' + plat[0].image" alt="image de {{ plat[0].nom }}">
+
+    <h1>{{ plat[0].nom }}</h1>
+    <p class="intro">{{ plat[0].intro }}</p>
+
+    <h2>Ingrédients</h2>
+    <ul>
+        <ng-container *ngFor="let ingredient of sanitizedIngredients">
+            <li *ngIf="ingredient; else lineBreak" [innerHTML]="ingredient"></li>
+            <ng-template #lineBreak><br></ng-template>
+        </ng-container>
+    </ul>
+
+    <h2>Ustensiles</h2>
+    <ul>
+        <ng-container *ngFor="let ustensile of sanitizedUstensiles">
+            <li *ngIf="ustensile; else lineBreak" [innerHTML]="ustensile"></li>
+            <ng-template #lineBreak><br></ng-template>
+        </ng-container>
+    </ul>
+
+    <h2>Préparation</h2>
+    <ol>
+        <ng-container *ngFor="let step of sanitizedPreparation">
+            <li *ngIf="step; else lineBreak" [innerHTML]="step"></li>
+            <ng-template #lineBreak><br></ng-template>
+        </ng-container>
+    </ol>
+
+    <aside class="miammi-tips" *ngIf="plat[0].conseil">
+        <p><strong>Conseil de Miammi :</strong> {{ plat[0].conseil }}</p>
+    </aside>
+
+    <div class="miammi-signoff">
+        <p><strong>Présentation finale : </strong> {{ plat[0].presentation }}</p>
+    </div>
+
+    <footer class="miammi-signoff">
+        <p>Bon appétit et à bientôt pour une nouvelle recette gourmande avec Miammi !</p>
+    </footer>
+</article>
