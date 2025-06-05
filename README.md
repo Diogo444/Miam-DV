@@ -1,136 +1,163 @@
- (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
-diff --git a/README.md b/README.md
-index bfe4086eba6b8440fa9013ddb7b1e245f55790fc..2f31c7f00f27432bf1d937a0e2ca836ef2993534 100644
---- a/README.md
-+++ b/README.md
-@@ -1,60 +1,79 @@
- # MiamDV
- 
--This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.6.
-+## Présentation
- 
--## Development server
-+Cette application combine un front‑end Angular et un serveur Express connecté à MySQL. Le code du serveur se trouve dans `src/server` et expose plusieurs API pour gérer menus, recettes, messages et utilisateurs.
- 
--To start a local development server, run:
-+## Prérequis
- 
--```bash
--ng serve
--```
--
--Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
--
--## Code scaffolding
--
--Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
--
--```bash
--ng generate component component-name
--```
--
--For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
--
--```bash
--ng generate --help
--```
-+- Node.js **22.12.0** (voir le `Dockerfile`).
-+- npm (fourni avec Node).
-+- Une base de données **MySQL** disponible.
- 
--## Building
-+## Installation
- 
--To build the project run:
-+1. Cloner ce dépôt.
-+2. Lancer `npm install` à la racine.
-+3. Créer un fichier `.env` avec au minimum :
- 
--```bash
--ng build
- ```
--
--This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
--
--## Running unit tests
--
--To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
--
--```bash
--ng test
-+JWT_SECRET=your_jwt_secret
-+DB_HOST=localhost
-+DB_USER=miamdv
-+DB_PASSWORD=yourpassword
-+DB_DATABASE=miam_dv
- ```
- 
--## Running end-to-end tests
--
--For end-to-end (e2e) testing, run:
--
--```bash
--ng e2e
--```
--
--Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
--
--## Additional Resources
-+## Lancement en développement
-+
-+- Front‑end : `ng serve`.
-+- Serveur Express : `npm run serve:ssr` ou `docker-compose up`.
-+
-+## Initialisation de la base de données
-+
-+Importer le fichier `backup_miam_dv.sql` dans votre instance MySQL pour créer les tables et les données de départ.
-+
-+## Tests et build
-+
-+- Exécuter les tests : `ng test`.
-+- Construire l’application : `ng build`.
-+- Démarrer via Docker : `docker-compose up --build`.
-+
-+## Principales routes API
-+
-+### /api
-+
-+- `GET /menu` – récupérer le menu.
-+- `POST /menuajout` – créer ou modifier le menu.
-+- `DELETE /menufinal` – supprimer le menu.
-+- `GET /proverbe` – obtenir le proverbe courant.
-+- `POST /proverbeajout` – mettre à jour le proverbe.
-+- `GET /allProverbe` – liste des proverbes.
-+- `GET /miammi` – lire les messages.
-+- `POST /miammiajout` – ajouter un message.
-+- `DELETE /deletemsg/:id` – supprimer un message.
-+- `DELETE /deletemiammi` – vider tous les messages.
-+- `GET /recipes` – lister les recettes.
-+- `GET /recipe/:slug` – détail d’une recette.
-+- `POST /recipeajout` – ajouter une recette.
-+- `GET /allPreferences` – lister toutes les préférences.
-+- `POST /getPreferences` – récupérer les préférences.
-+- `POST /updatePreferences` – mettre à jour les préférences.
-+- `POST /addDesign` – créer une configuration.
-+
-+### /auth
-+
-+- `POST /register` – inscription.
-+- `POST /login` – connexion.
-+- `POST /change-password` – changer le mot de passe.
-+- `POST /change-username` – changer le nom d’utilisateur.
-+- `DELETE /delete-account/:token` – supprimer son compte.
-+- `GET /all-users` – liste des utilisateurs (admin).
-+- `GET /check` – vérifier l’authentification.
-+- `GET /role` – rôle de l’utilisateur courant.
-+- `GET /user` – informations de l’utilisateur courant.
-+- `POST /logout` – déconnexion.
-+- `DELETE /delete-user/:id` – supprimer un utilisateur (admin).
-+- `PATCH /update-user-passwd/:id` – modifier le mot de passe d’un utilisateur (admin).
-+- `PATCH /update-user-role/:id` – modifier le rôle d’un utilisateur (admin).
- 
--For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
--# Miam-DV
- 
-EOF
-)
+# Miam-DV
+
+## 📜 Présentation
+
+**Miam-DV** est une application web de gestion de menus, recettes et messages pour la cantine.
+Elle combine un front-end **Angular** et un back-end **Express** avec une base de données **MySQL**.
+
+* **Front-end** : interface utilisateur Angular
+* **Back-end** : serveur Express (`src/server`) avec des API REST sécurisées via JWT
+* **Base de données** : MySQL pour les utilisateurs, menus, recettes, proverbes, etc.
+
+---
+
+## ⚙️ Prérequis
+
+* **Node.js** `22.12.0`
+* **npm** (inclus avec Node.js)
+* **MySQL** (local ou distant)
+* Optionnel : **Docker** + **Docker Compose**
+
+---
+
+## 🚀 Installation
+
+1. Clone le dépôt :
+
+   ```bash
+   git clone https://github.com/ton-projet/miam-dv.git
+   cd miam-dv
+   ```
+
+2. Installe les dépendances :
+
+   ```bash
+   npm install
+   ```
+
+3. Crée un fichier `.env` à la racine :
+
+   ```env
+   JWT_SECRET=your_jwt_secret
+   DB_HOST=localhost
+   DB_USER=miamdv
+   DB_PASSWORD=yourpassword
+   DB_DATABASE=miam_dv
+   ```
+
+---
+
+## ▶️ Lancer en développement
+
+* Lancer le front-end Angular :
+
+  ```bash
+  ng serve
+  ```
+
+* Lancer le back-end Express :
+
+  ```bash
+  npm run serve:ssr
+  ```
+
+* Ou tout lancer avec Docker :
+
+  ```bash
+  docker-compose up --build
+  ```
+
+---
+
+## 📄 Base de données
+
+1. Assure-toi que MySQL est lancé.
+2. Importe le fichier SQL :
+
+   ```bash
+   mysql -u miamdv -p miam_dv < backup_miam_dv.sql
+   ```
+
+---
+
+## 🧰 Tests & Build
+
+* Lancer les tests unitaires :
+
+  ```bash
+  ng test
+  ```
+
+* Compiler le projet :
+
+  ```bash
+  ng build
+  ```
+
+---
+
+## 📡 Routes API principales
+
+### `/api`
+
+| Méthode | Route                | Description                     |
+| ------: | -------------------- | ------------------------------- |
+|     GET | `/menu`              | Récupère le menu actuel         |
+|    POST | `/menuajout`         | Crée ou modifie le menu         |
+|  DELETE | `/menufinal`         | Supprime le menu                |
+|     GET | `/proverbe`          | Récupère le proverbe du jour    |
+|    POST | `/proverbeajout`     | Ajoute ou modifie un proverbe   |
+|     GET | `/allProverbe`       | Liste des proverbes             |
+|     GET | `/miammi`            | Liste des messages utilisateurs |
+|    POST | `/miammiajout`       | Ajoute un message               |
+|  DELETE | `/deletemsg/:id`     | Supprime un message précis      |
+|  DELETE | `/deletemiammi`      | Vide tous les messages          |
+|     GET | `/recipes`           | Liste des recettes              |
+|     GET | `/recipe/:slug`      | Détail d’une recette            |
+|    POST | `/recipeajout`       | Ajoute une recette              |
+|     GET | `/allPreferences`    | Liste toutes les préférences    |
+|    POST | `/getPreferences`    | Récupère les préférences        |
+|    POST | `/updatePreferences` | Met à jour les préférences      |
+|    POST | `/addDesign`         | Ajoute un thème de style        |
+
+### `/auth`
+
+| Méthode | Route                     | Description                          |
+| ------: | ------------------------- | ------------------------------------ |
+|    POST | `/register`               | Inscription                          |
+|    POST | `/login`                  | Connexion                            |
+|    POST | `/change-password`        | Modifier le mot de passe             |
+|    POST | `/change-username`        | Modifier le nom d'utilisateur        |
+|  DELETE | `/delete-account/:token`  | Supprimer son compte                 |
+|     GET | `/check`                  | Vérifie l’authentification           |
+|     GET | `/user`                   | Infos utilisateur connecté           |
+|     GET | `/role`                   | Rôle de l’utilisateur                |
+|    POST | `/logout`                 | Déconnexion                          |
+|     GET | `/all-users`              | Liste des utilisateurs (admin)       |
+|  DELETE | `/delete-user/:id`        | Supprime un utilisateur (admin)      |
+|   PATCH | `/update-user-passwd/:id` | Change mot de passe d’un utilisateur |
+|   PATCH | `/update-user-role/:id`   | Change rôle d’un utilisateur (admin) |
+
+---
+
+## 📁 Structure du projet
+
+```
+miam-dv/
+│
+├── src/
+│   ├── app/            → Code Angular
+│   └── server/         → API Express
+├── docker-compose.yml → Déploiement simplifié
+├── .env               → Variables d'environnement
+├── backup_miam_dv.sql → Dump SQL de la base
+└── README.md          → Ce fichier
+```
+
+---
+
+## 📌 Infos utiles
+
+* Angular CLI : [angular.dev/tools/cli](https://angular.dev/tools/cli)
+* Express.js : [expressjs.com/fr](https://expressjs.com/fr/)
+* MySQL : [dev.mysql.com/doc](https://dev.mysql.com/doc)
