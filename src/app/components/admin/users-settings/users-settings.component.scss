@@ -1,0 +1,167 @@
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+    color: #fff;
+    background: #1e1e1e;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: left;
+    overflow: hidden;
+
+    thead {
+      background: #333;
+      text-transform: uppercase;
+
+      th {
+        padding: 12px 16px;
+        font-weight: bold;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+        &:nth-child(even) {
+          background: #292929;
+        }
+
+        &:hover {
+          background: #3a3a3a;
+        }
+      }
+
+      td {
+        padding: 12px 16px;
+      }
+    }
+
+    select,
+    input {
+      background: #222;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      min-width: 130px;
+      max-width: 200px;
+    }
+
+    .delete-btn {
+      margin-left: 10px;
+      background: #ff4d4d;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: bold;
+
+      &:hover {
+        background: #d93838;
+      }
+    }
+  }
+}
+
+.update-btn {
+  margin-left: 10px;
+  background: #1aa052;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+
+  &:hover {
+    background: #168e48;
+  }
+}
+
+.pwd-container {
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    table {
+      font-size: 0.85rem;
+
+      thead {
+        display: none;
+      }
+
+      tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        tr {
+          background: #292929;
+          border-radius: 8px;
+          padding: 15px;
+          margin-bottom: 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        td {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.95rem;
+
+          &::before {
+            content: attr(data-label);
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #bbb;
+            margin-right: 10px;
+          }
+        }
+
+        select,
+        input {
+          flex: 1;
+          width: auto;
+          max-width: 100%;
+        }
+      }
+
+      .delete-btn {
+        width: 100%;
+        margin-top: 10px;
+        text-align: center;
+      }
+    }
+  }
+
+  .update-btn {
+    width: 100%;
+    margin-top: 10px;
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .pwd-container {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .update-btn {
+      margin-left: 0;
+      margin-top: 10px;
+      width: 100%;
+    }
+  }
+}

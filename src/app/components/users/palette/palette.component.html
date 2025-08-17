@@ -1,0 +1,16 @@
+<div class="carousel-container">
+    <div class="carousel">
+        <div class="carousel-card" *ngFor="let design of designs; let i = index"
+            [style.background]="design.bg_container" [class.selected]="i === selectedIndex" (click)="selectDesign(i)">
+            <div class="content">
+                <h2 [style.color]="design.color_text_type">Design {{ design.id }}</h2>
+                <p [style.color]="design.color_text">Un joli design avec des couleurs magnifiques !</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bouton Valider -->
+<div class="validate-container">
+    <button (click)="validateSelection()">Valider</button>
+</div>

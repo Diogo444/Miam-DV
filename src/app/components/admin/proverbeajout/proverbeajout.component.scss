@@ -1,0 +1,67 @@
+.proverbe {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  width: 100%; /* Permet au conteneur de prendre toute la largeur disponible */
+  max-width: 500px; /* Limite la largeur maximale du conteneur */
+  margin: 0 auto; /* Centre le conteneur */
+  box-sizing: border-box; /* Inclut le padding dans la largeur totale */
+}
+
+form {
+  display: flex;
+  align-items: center;
+
+  label {
+    color: #fff;
+    margin-right: 10px;
+  }
+
+  input[type="text"] {
+    flex: 1; /* Occupe toute la largeur */
+    background-color: #444;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 8px;
+    border-radius: 5px;
+  }
+
+  button {
+    background-color: #555;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #666; /* Change la couleur au survol */
+    }
+  }
+}
+
+/* Media Queries pour la réactivité */
+@media (max-width: 600px) {
+  .proverbe {
+    padding: 10px; /* Réduit le padding sur les petits écrans */
+  }
+
+  form {
+    flex-direction: column; /* Change l'orientation pour les petits écrans */
+    align-items: stretch; /* Aligne les éléments pour occuper toute la largeur */
+  }
+
+  label {
+    margin-bottom: 5px; /* Ajoute un espace entre le label et l'input */
+  }
+
+  input[type="text"] {
+    margin-bottom: 10px; /* Ajoute un espace sous l'input */
+  }
+
+  button {
+    margin-left: 0; /* Réinitialise le margin pour le bouton */
+  }
+}
