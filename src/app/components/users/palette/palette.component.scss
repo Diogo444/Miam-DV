@@ -1,0 +1,89 @@
+.carousel-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  overflow: hidden; /* Cache les parties hors du cadre */
+}
+
+.carousel {
+  display: flex;
+  overflow-x: auto; /* Barre de défilement horizontale */
+  scroll-snap-type: x mandatory; /* Comportement fluide au scroll */
+  gap: 1rem; /* Espacement entre les cartes */
+  padding: 0.5rem;
+}
+
+.carousel-card {
+  scroll-snap-align: center; /* Centre chaque carte dans le cadre */
+  flex: 0 0 70%; /* Chaque carte occupe 70% de la largeur visible */
+  height: 300px; /* Hauteur des cartes */
+  background-color: #f1f1f1;
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.carousel-card h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.carousel-card p {
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Cache la barre de défilement pour un design propre */
+}
+.carousel-card {
+  cursor: pointer; /* Montre que c'est cliquable */
+  transition: transform 0.3s ease, border 0.3s ease;
+}
+
+.carousel-card.selected {
+  transform: scale(1.05); /* Agrandit légèrement la carte sélectionnée */
+  border: 2px solid #00bcd4; /* Ajoute une bordure pour indiquer la sélection */
+}
+
+.validate-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+
+  button {
+    background-color: #4caf50; /* Vert agréable */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+
+    &:hover {
+      background-color: #45a049; /* Vert légèrement plus foncé au survol */
+    }
+
+    &:active {
+      transform: scale(0.95); /* Légère réduction à l'appui */
+    }
+
+    &:focus {
+      outline: 2px solid #2a9d8f; /* Indicateur de focus pour l'accessibilité */
+      outline-offset: 4px;
+    }
+
+    &:disabled {
+      background-color: #c8c8c8; /* Gris pour état désactivé */
+      cursor: not-allowed;
+    }
+  }
+}

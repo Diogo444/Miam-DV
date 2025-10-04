@@ -1,0 +1,7 @@
+<div class="recettes-card">
+    <div (click)="showrecipe(recipe.slug)" class="recettes-card-container" *ngFor="let recipe of filteredRecipes">
+        <img class="recettes-img" [src]="'https://miamdv.hopto.org/' + recipe.image" alt="{{ recipe.nom }}">
+        <p class="recettes-title">{{ recipe.nom }}</p>
+    </div>
+    <div *ngIf="filteredRecipes.length === 0" class="not-found">Aucune recette trouvée</div>
+</div>

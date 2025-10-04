@@ -1,0 +1,57 @@
+<h2>Ajout de recettes</h2>
+<form id="add-recipe-form" [formGroup]="recipeForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+    <div>
+        <label for="nom">Nom de la recette :</label>
+        <input type="text" id="nom" formControlName="name" required placeholder="Ex : Gâteau de Noël moelleux" />
+    </div>
+
+    <div>
+        <label for="slug">Slug (URL friendly) :</label>
+        <input type="text" id="slug" formControlName="slug" required placeholder="Ex : gateau-de-noel-moelleux" />
+    </div>
+
+    <div>
+        <label for="intro">Introduction gourmande :</label>
+        <textarea id="intro" formControlName="intro" rows="3" required
+            placeholder="Une courte introduction de la recette..."></textarea>
+    </div>
+
+    <div>
+        <label for="ingredients">Ingrédients (un par ligne) :</label>
+        <textarea id="ingredients" formControlName="ingredients" rows="5" required
+            placeholder="Ex : 100 g de farine&#10;2 œufs&#10;50 g de sucre"></textarea>
+    </div>
+
+    <div>
+        <label for="ustensiles">Ustensiles (un par ligne) :</label>
+        <textarea id="ustensiles" formControlName="ustensiles" rows="3"
+            placeholder="Ex : Fouet&#10;Saladier&#10;Poêle"></textarea>
+    </div>
+
+    <div>
+        <label for="preparation">Préparation (une étape par ligne) :</label>
+        <textarea id="preparation" formControlName="preparation" rows="8" required
+            placeholder="Ex : Préchauffez le four à 180°C.&#10;Mélangez les œufs et le sucre..."></textarea>
+    </div>
+
+    <div>
+        <label for="conseil">Conseil de Miammi :</label>
+        <input type="text" id="conseil" formControlName="conseil"
+            placeholder="Un conseil optionnel pour les gourmands..." />
+    </div>
+
+    <div>
+        <label for="presentation">Présentation finale :</label>
+        <textarea id="presentation" formControlName="presentation" rows="3"
+            placeholder="Comment présenter ou déguster la recette..."></textarea>
+    </div>
+
+    <div>
+        <label for="image">Image de la recette :</label>
+        <input type="file" (change)="onFileChange($event)" id="image" formControlName="image" accept="image/*" />
+    </div>
+
+    <div>
+        <button type="submit">Ajouter la recette</button>
+    </div>
+</form>

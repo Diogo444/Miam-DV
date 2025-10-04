@@ -1,0 +1,15 @@
+<div class="notification-container">
+    <div *ngFor="let message of message" class="message">
+        <img src="public/avatar/Miammi.png" alt="Photo de profil de Miammi" class="avatar">
+        <div class="message-container">
+            <p class="message-author">Miammi</p>
+            <p class="message-date">{{ message.jour }}/{{ message.mois }}/{{ message.annee }} {{ message.heure }}:{{
+                message.minute }}</p>
+            <p class="message-text" [innerHTML]="message.message"></p>
+        </div>
+        <button class="delete-message-btn" (click)="deleteMessage(message.id)"><img src="public/svg/message sup.svg"
+                alt="Supprimer le message"></button>
+    </div>
+    <button (click)="deleteAllMessages()" class="deleteAllMsg">Supprimer tous les messages</button>
+
+</div>

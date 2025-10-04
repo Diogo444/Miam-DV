@@ -1,0 +1,16 @@
+<div class="change-container">
+    <h1 class="form-title">Tu veux changer ton nom d'utilisateur {{ username }}, alors dis moi comment tu veux le nommer
+    </h1>
+    <form class="form" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="username">Nouveau nom d'utilisateur :</label>
+            <input type="text" name="username" id="username" class="input-field" [(ngModel)]="newUsername"
+                placeholder="Entrez votre nouveau nom d'utilisateur">
+        </div>
+
+        <button type="submit" class="submit-btn">Changer !</button>
+    </form>
+    <p class="back-link">
+        J'ai changé d'avis : <a routerLink="/user">Retourner à la page d'accueil</a>
+    </p>
+</div>
