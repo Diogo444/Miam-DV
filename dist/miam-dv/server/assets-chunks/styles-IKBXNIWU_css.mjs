@@ -1,2 +1,0 @@
-export default `body{font-family:Arial,sans-serif;background-color:#1f1f1f;color:#fff;margin:0;padding:0}html,body{margin:0;font-family:Roboto,Helvetica Neue,sans-serif;scrollbar-width:none}
-`;
