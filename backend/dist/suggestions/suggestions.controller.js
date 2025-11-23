@@ -75,7 +75,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SuggestionsController.prototype, "remove", null);
 exports.SuggestionsController = SuggestionsController = __decorate([
-    (0, common_1.Controller)('suggestions'),
+    (0, common_1.Controller)('api/suggestions'),
     __metadata("design:paramtypes", [suggestions_service_1.SuggestionsService])
 ], SuggestionsController);
 //# sourceMappingURL=suggestions.controller.js.map

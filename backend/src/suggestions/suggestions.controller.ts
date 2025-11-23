@@ -3,7 +3,7 @@ import { SuggestionsService } from './suggestions.service';
 import { CreateSuggestionDto } from './dto/create-suggestion.dto';
 import { UpdateSuggestionDto } from './dto/update-suggestion.dto';
 
-@Controller('suggestions')
+@Controller('api/suggestions')
 export class SuggestionsController {
   constructor(private readonly suggestionsService: SuggestionsService) {}
 

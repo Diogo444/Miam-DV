@@ -3,7 +3,7 @@ import { ProverbesService } from './proverbes.service';
 import { CreateProverbeDto } from './dto/create-proverbe.dto';
 import { UpdateProverbeDto } from './dto/update-proverbe.dto';
 
-@Controller('proverbes')
+@Controller('api/proverbes')
 export class ProverbesController {
   constructor(private readonly proverbesService: ProverbesService) {}
 

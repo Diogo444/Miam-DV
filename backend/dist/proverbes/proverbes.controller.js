@@ -75,7 +75,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ProverbesController.prototype, "remove", null);
 exports.ProverbesController = ProverbesController = __decorate([
-    (0, common_1.Controller)('proverbes'),
+    (0, common_1.Controller)('api/proverbes'),
     __metadata("design:paramtypes", [proverbes_service_1.ProverbesService])
 ], ProverbesController);
 //# sourceMappingURL=proverbes.controller.js.map

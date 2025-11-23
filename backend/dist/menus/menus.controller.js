@@ -75,7 +75,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], MenusController.prototype, "remove", null);
 exports.MenusController = MenusController = __decorate([
-    (0, common_1.Controller)('menus'),
+    (0, common_1.Controller)('api/menus'),
     __metadata("design:paramtypes", [menus_service_1.MenusService])
 ], MenusController);
 //# sourceMappingURL=menus.controller.js.map
