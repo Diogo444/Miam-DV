@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <header>
     <nav aria-label="Navigation principale">
         <!-- Bouton burger (visible en mobile) -->
@@ -76,4 +77,84 @@
             </ul>
         </div>
     </nav>
+=======
+<header>
+    <nav aria-label="Navigation principale">
+        <!-- Bouton burger (visible en mobile) -->
+        <button class="burger" [ngClass]="{'open': menuOpen}" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen"
+            aria-controls="navigation-menu" aria-label="Menu principal">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="sr-only">Menu</span>
+        </button>
+
+        <!-- Menu de navigation responsive (utilisé à la fois pour mobile et desktop) -->
+        <div id="navigation-menu" class="nav-menu" [ngClass]="{'open': menuOpen}"
+            [attr.aria-hidden]="!menuOpen && isMobile">
+            <ul>
+                <li>
+                    <a (click)="navigeteTo('menu')" href="javascript:void(0)" role="button" aria-label="Accueil">
+                        <img src="public/svg/house.svg" alt="" aria-hidden="true">
+                        <span>Accueil</span>
+                    </a>
+                </li>
+                <li>
+                    <a (click)="navigeteTo('menuajout')" href="javascript:void(0)" role="button" aria-label="Menu">
+                        <img src="public/svg/menu.svg" alt="" aria-hidden="true">
+                        <span>Menu</span>
+                    </a>
+                </li>
+                <li>
+                    <a (click)="navigeteTo('miammi')" href="javascript:void(0)" role="button" aria-label="Miammi">
+                        <img src="public/svg/messages.svg" alt="" aria-hidden="true">
+                        <span>Miammi</span>
+                    </a>
+                </li>
+                <li>
+                    <a (click)="navigeteTo('miammiajout')" href="javascript:void(0)" role="button"
+                        aria-label="Ajouter message">
+                        <img src="public/svg/message-add.svg" alt="" aria-hidden="true">
+                        <span>Ajouter message</span>
+                    </a>
+                </li>
+                <li>
+                    <a (click)="navigeteTo('addrecipe')" href="javascript:void(0)" role="button"
+                        aria-label="Ajouter recette">
+                        <img src="public/svg/recipe.svg" alt="" aria-hidden="true">
+                        <span>Ajouter recette</span>
+                    </a>
+                </li>
+                <li>
+                    <a (click)="navigeteTo('add-design')" href="javascript:void(0)" role="button"
+                        aria-label="Ajouter design">
+                        <img src="public/svg/palette.svg" alt="" aria-hidden="true">
+                        <span>Ajouter design</span>
+                    </a>
+                </li>
+                <li>
+                    <a (click)="navigeteTo('recipes-list')" href="javascript:void(0)" role="button"
+                        aria-label="Recettes">
+                        <img src="public/svg/book.svg" alt="" aria-hidden="true">
+                        <span>Recettes</span>
+                    </a>
+                </li>
+                <li>
+                    <a (click)="navigeteTo('all-proverbs')" href="javascript:void(0)" role="button"
+                        aria-label="Proverbes">
+                        <img src="public/svg/text-quote.svg" alt="" aria-hidden="true">
+                        <span>Proverbes</span>
+                    </a>
+                </li>
+                <li>
+                    <a (click)="navigeteTo('users-settings')" href="javascript:void(0)" role="button"
+                        aria-label="Gérer les utilisateurs">
+                        <img src="public/svg/user-round-cog.svg" alt="" aria-hidden="true">
+                        <span>Utilisateurs</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+>>>>>>> afe05af085bf6474cb15d6eaf7a64896e5a8f91a
 </header>

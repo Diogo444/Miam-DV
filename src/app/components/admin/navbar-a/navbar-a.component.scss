@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 $color-text: #ffffff;
 $color-bg: #282c34;
 $menu-bg: #333;
@@ -191,3 +192,198 @@ nav {
     }
   }
 }
+=======
+$color-text: #ffffff;
+$color-bg: #282c34;
+$menu-bg: #333;
+$shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+$focus-outline: 2px solid #4d90fe;
+$transition-speed: 0.3s;
+
+// Classe utilitaire pour masquer le contenu visuellement mais le garder accessible
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+header {
+  position: relative;
+  background-color: $color-bg;
+  padding: 20px;
+}
+
+nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Menu de navigation commun */
+.nav-menu {
+  width: 100%;
+
+  ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      margin-left: 15px;
+
+      a {
+        display: flex;
+        align-items: center;
+        color: $color-text;
+        text-decoration: none;
+
+        &:focus {
+          outline: $focus-outline;
+          outline-offset: 2px;
+        }
+
+        img {
+          width: 24px;
+          height: 24px;
+          display: block;
+        }
+
+        span {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+}
+
+/* Bouton burger */
+/* Bouton burger */
+.burger {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+  z-index: 1001;
+  width: 30px;
+  height: 20px;
+  background: none;
+  border: none;
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+  position: relative; // Assure un bon positionnement interne
+
+  &:focus {
+    outline: $focus-outline;
+    outline-offset: 2px;
+  }
+
+  .bar {
+    width: 100%;
+    height: 3px;
+    background-color: $color-text;
+    transition: transform $transition-speed ease, opacity $transition-speed ease,
+      top $transition-speed ease;
+    transform-origin: center;
+    position: absolute; // Permet de mieux gérer les déplacements
+
+    &:nth-child(1) {
+      top: 0;
+      transform: rotate(0deg);
+    }
+
+    &:nth-child(2) {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    &:nth-child(3) {
+      bottom: 0;
+      transform: rotate(0deg);
+    }
+  }
+
+  &.open .bar:nth-child(1) {
+    transform: rotate(45deg);
+    top: 50%; // Déplace la barre 1 vers le centre
+  }
+
+  &.open .bar:nth-child(2) {
+    opacity: 0;
+  }
+
+  &.open .bar:nth-child(3) {
+    transform: rotate(-45deg);
+    bottom: auto; // Permet d'éviter les conflits avec top
+    top: 50%; // Déplace la barre 3 vers le centre
+  }
+}
+
+/* Comportement en mode mobile */
+@media screen and (max-width: 768px) {
+  .burger {
+    display: flex;
+  }
+
+  .nav-menu {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background-color: $menu-bg;
+    transition: left $transition-speed ease;
+    z-index: 1000;
+    padding-top: 60px;
+    box-shadow: $shadow;
+
+    ul {
+      flex-direction: column;
+      padding: 0 20px;
+
+      li {
+        margin-left: 0;
+        margin-bottom: 20px;
+
+        a {
+          padding: 10px 0;
+
+          span {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+
+    &.open {
+      left: 0;
+    }
+  }
+}
+
+/* Comportement en mode desktop */
+@media screen and (min-width: 769px) {
+  .nav-menu {
+    ul {
+      justify-content: flex-start;
+
+      li {
+        a {
+          span {
+            display: none; // Cacher le texte en mode desktop
+          }
+        }
+      }
+    }
+  }
+}
+>>>>>>> afe05af085bf6474cb15d6eaf7a64896e5a8f91a

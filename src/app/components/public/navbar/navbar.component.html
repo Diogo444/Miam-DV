@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <header>
     <nav>
         <ul>
@@ -20,4 +21,28 @@
         <button (click)="navigateTo('register')">S'inscrire</button>
     </div>
 
+=======
+<header>
+    <nav>
+        <ul>
+            <li>
+                <img (click)="togglePage('menu')" src="public/svg/house.svg" alt="accueil">
+            </li>
+            <li>
+                <img (click)="togglePage('recipes-list')" src="public/svg/book.svg" alt="recettes">
+            </li>
+            <li>
+                <img class="notif" (click)="togglePage('notifs')" src="public/svg/bell.svg" alt="notification">
+            </li>
+            <li>
+                <img class="user-icon" (click)="toggleAccountBox()" src="public/svg/user.svg" alt="utilisateur">
+            </li>
+        </ul>
+    </nav>
+    <div class="account" *ngIf="isAccountBoxVisible">
+        <button (click)="navigateTo('login')">Se connecter</button>
+        <button (click)="navigateTo('register')">S'inscrire</button>
+    </div>
+
+>>>>>>> afe05af085bf6474cb15d6eaf7a64896e5a8f91a
 </header>

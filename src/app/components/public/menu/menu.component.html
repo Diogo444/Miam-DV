@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="container">
     <h1>Menu de la Semaine</h1>
     <div *ngIf="proverbe && proverbe.length > 0">
@@ -110,4 +111,118 @@
         </ng-template>
 
     </div>
+=======
+<div class="container">
+    <h1>Menu de la Semaine</h1>
+    <div *ngIf="proverbe && proverbe.length > 0">
+        <p *ngIf="proverbe[0].proverbe" class="proverbe">{{ proverbe[0].proverbe }}</p>
+    </div>
+
+    <div class="day">
+        <button aria-label="Jour précédent" (click)="previousDay()" (keydown.enter)="previousDay()"
+            (keydown.space)="previousDay()">
+            <img src="public/svg/left-menu.svg" alt="Jour précédent">
+        </button>
+        <p aria-live="polite">{{ jours.actuel }}</p>
+        <button aria-label="Jour suivant" (click)="nextDay()">
+            <img src="public/svg/right-menu.svg" alt="Jour suivant">
+        </button>
+    </div>
+
+    <app-loader *ngIf="loading" class="loader"></app-loader>
+    <div *ngIf="!loading" class="menu" [ngStyle]="{'background': bg}">
+
+        <!-- Card pour le midi -->
+        <ng-container
+            *ngIf="displayedMenu.midi?.entree || displayedMenu.midi?.plats || displayedMenu.midi?.accompagnement || displayedMenu.midi?.fromage || displayedMenu.midi?.dessert; else rienMidi">
+            <div class="menu-card midi-card" role="region" aria-live="polite" aria-labelledby="midi-heading">
+                <div class="periode">
+                    <div class="periode-text" id="midi-heading" [ngStyle]="{'color': color_text}">Midi</div>
+                </div>
+                <div class="menu-content">
+                    <div class="menu-item">
+                        <div class="typetext" *ngIf="displayedMenu.midi?.entree">
+                            <p class="type" [ngStyle]="{'color': color_type}">Entrée : <span
+                                    [ngStyle]="{'color': color_text}">{{ displayedMenu.midi?.entree }}</span></p>
+                        </div>
+                        <div class="typetext" *ngIf="displayedMenu.midi?.plats">
+                            <p class="type" [ngStyle]="{'color': color_type}">Plats : <span
+                                    [ngStyle]="{'color': color_text}">{{ displayedMenu.midi?.plats }}</span></p>
+                        </div>
+                        <div class="typetext" *ngIf="displayedMenu.midi?.accompagnement">
+                            <p class="type" [ngStyle]="{'color': color_type}">Accompagnement : <span
+                                    [ngStyle]="{'color': color_text}">{{ displayedMenu.midi?.accompagnement }}</span>
+                            </p>
+                        </div>
+                        <div class="typetext" *ngIf="displayedMenu.midi?.fromage">
+                            <p class="type" [ngStyle]="{'color': color_type}">Fromages : <span
+                                    [ngStyle]="{'color': color_text}">{{ displayedMenu.midi?.fromage }}</span></p>
+                        </div>
+                        <div class="typetext" *ngIf="displayedMenu.midi?.dessert">
+                            <p class="type" [ngStyle]="{'color': color_type}">Dessert : <span
+                                    [ngStyle]="{'color': color_text}">{{ displayedMenu.midi?.dessert }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-template #rienMidi>
+            <div class="menu-rien" role="region" aria-labelledby="midi-rien-heading">
+                <div class="periode">
+                    <div class="periode-text" id="midi-rien-heading" [ngStyle]="{'color': color_text}">Midi</div>
+                </div>
+                <app-rien></app-rien>
+            </div>
+        </ng-template>
+
+        <!-- Card pour le soir -->
+        <ng-container *ngIf="logJourActuel()">
+            <ng-container
+                *ngIf="displayedMenu.soir?.entree || displayedMenu.soir?.plats || displayedMenu.soir?.fromage || displayedMenu.soir?.dessert; else rienSoir">
+                <div class="menu-card soir-card" role="region" aria-labelledby="soir-heading">
+                    <div class="periode">
+                        <div class="periode-text" id="soir-heading" [ngStyle]="{'color': color_text}">Soir</div>
+                    </div>
+                    <div class="menu-content">
+                        <div class="menu-item">
+                            <div class="typetext" *ngIf="displayedMenu.soir?.entree">
+                                <p class="type" [ngStyle]="{'color': color_type}">Entrée : <span
+                                        [ngStyle]="{'color': color_text}">{{ displayedMenu.soir?.entree }}</span></p>
+                            </div>
+                            <div class="typetext" *ngIf="displayedMenu.soir?.plats">
+                                <p class="type" [ngStyle]="{'color': color_type}">Plats : <span
+                                        [ngStyle]="{'color': color_text}">{{ displayedMenu.soir?.plats }}</span></p>
+                            </div>
+                            <div class="typetext" *ngIf="displayedMenu.soir?.accompagnement">
+                                <p class="type" [ngStyle]="{'color': color_type}">Accompagnement : <span
+                                        [ngStyle]="{'color': color_text}">{{ displayedMenu.soir?.accompagnement
+                                        }}</span>
+                                </p>
+                            </div>
+                            <div class="typetext" *ngIf="displayedMenu.soir?.fromage">
+                                <p class="type" [ngStyle]="{'color': color_type}">Fromages : <span
+                                        [ngStyle]="{'color': color_text}">{{ displayedMenu.soir?.fromage }}</span></p>
+                            </div>
+                            <div class="typetext" *ngIf="displayedMenu.soir?.dessert">
+                                <p class="type" [ngStyle]="{'color': color_type}">Dessert : <span
+                                        [ngStyle]="{'color': color_text}">{{ displayedMenu.soir?.dessert }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+
+        <ng-template #rienSoir>
+            <div class="menu-rien" role="region" aria-labelledby="soir-rien-heading">
+                <div class="periode">
+                    <div class="periode-text" id="soir-rien-heading" [ngStyle]="{'color': color_text}">Soir</div>
+                </div>
+                <app-rien></app-rien>
+            </div>
+        </ng-template>
+
+    </div>
+>>>>>>> afe05af085bf6474cb15d6eaf7a64896e5a8f91a
 </div>

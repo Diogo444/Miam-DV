@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .close-button {
   background: transparent;
   border: none;
@@ -74,3 +75,81 @@ button {
   align-items: center;
   height: 100vh;
 }
+=======
+.close-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: fixed;
+  left: 10px;
+  top: 10px;
+  z-index: 10;
+}
+
+.notification-container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin-top: 25px;
+}
+
+.message {
+  display: flex;
+  align-items: flex-start;
+  margin: 5px 0;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.message-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.message-author {
+  font-weight: bold;
+  color: #fff;
+  margin: 0;
+}
+
+.message-date {
+  color: #bbb;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.message-text {
+  color: #f1f1f1;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+>>>>>>> afe05af085bf6474cb15d6eaf7a64896e5a8f91a

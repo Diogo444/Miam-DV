@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .menu {
   background-color: #333;
   padding: 20px;
@@ -53,3 +54,60 @@ button {
     grid-template-columns: 1fr; /* Une seule colonne sur les petits écrans */
   }
 }
+=======
+.menu {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%; /* Assure que le conteneur occupe toute la largeur disponible */
+  max-width: 600px; /* Limite la largeur maximale du menu */
+  margin: 0 auto; /* Centre le menu sur la page */
+  box-sizing: border-box; /* Inclut le padding dans la largeur totale */
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Une colonne pour les labels et une pour les inputs */
+  gap: 20px;
+  align-items: center;
+}
+
+label {
+  color: #fff;
+  text-align: left; /* Aligner les labels à droite */
+  padding-right: 10px;
+}
+
+input[type="text"],
+select {
+  background-color: #444;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 8px;
+  border-radius: 5px;
+  width: 100%; /* Les inputs remplissent la largeur du conteneur */
+  box-sizing: border-box; /* Inclut le padding dans la largeur */
+}
+
+button {
+  background-color: #555;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  grid-column: span 2; /* Bouton sur toute la largeur */
+  cursor: pointer;
+  margin-top: 20px;
+
+  &:hover {
+    background-color: #666;
+  }
+}
+
+/* Media Queries pour la réactivité */
+@media (max-width: 600px) {
+  form {
+    grid-template-columns: 1fr; /* Une seule colonne sur les petits écrans */
+  }
+}
+>>>>>>> afe05af085bf6474cb15d6eaf7a64896e5a8f91a

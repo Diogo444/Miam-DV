@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Styles SCSS pour la barre de recherche */
 .search-bar {
   display: flex;
@@ -44,3 +45,51 @@
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.2);
 }
+=======
+/* Styles SCSS pour la barre de recherche */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  padding: 8px 12px;
+  width: 100%;
+  max-width: 400px;
+  transition: 0.3s ease-in-out;
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 16px;
+  padding: 8px;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.search-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 5px;
+  transition: 0.3s;
+}
+
+.search-btn:hover {
+  transform: scale(1.1);
+  color: #f8b400;
+}
+
+/* Animation focus */
+.search-bar:focus-within {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+}
+>>>>>>> afe05af085bf6474cb15d6eaf7a64896e5a8f91a

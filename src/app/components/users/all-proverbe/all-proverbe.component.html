@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <app-loader class="loader" *ngIf="loading"></app-loader>
 <ng-container *ngIf="!loading">
     <div class="proverbes">
@@ -8,4 +9,16 @@
             </div>
         </div>
     </div>
+=======
+<app-loader class="loader" *ngIf="loading"></app-loader>
+<ng-container *ngIf="!loading">
+    <div class="proverbes">
+        <div *ngFor="let proverbe of filteredProverbe">
+            <div class="proverbe-container">
+                <p class="message-text">{{ proverbe.proverbe }}</p> <!-- Correction ici -->
+                <p class="message-date">{{ proverbe.created_at }}</p> <!-- Correction ici -->
+            </div>
+        </div>
+    </div>
+>>>>>>> afe05af085bf6474cb15d6eaf7a64896e5a8f91a
 </ng-container>
