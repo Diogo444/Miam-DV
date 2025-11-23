@@ -2,10 +2,10 @@ services:
   maimdv-bdd:
     image: mysql:8
     container_name: maimdv-bdd
-    restart: always
+
     environment:
       MYSQL_ROOT_PASSWORD: "Miamdv-bdd"
-      MYSQL_DATABASE: "maestruel"
+      MYSQL_DATABASE: "miamdv"
       MYSQL_USER: "miammi"
       MYSQL_PASSWORD: "BDDmiammi"
     ports:
