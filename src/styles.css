@@ -1,0 +1,39 @@
+@config "../tailwind.config.js";
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #4c9a59;
+  --color-primary-light: #e7f3e9;
+  --color-text-main: #0d1b10;
+  --color-text-muted: #4c9a59;
+  --color-background-light: #f8fcf9;
+  --color-background-dark: #102213;
+  --color-allergen: #d97706;
+  --font-display: "Be Vietnam Pro", "sans-serif";
+}
+
+:root {
+  font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
+  background-color: var(--color-background-light);
+  color: var(--color-text-main);
+}
+
+.dark {
+  background-color: var(--color-background-dark);
+  color: var(--color-background-light);
+}
+
+.light {
+  background-color: var(--color-background-light);
+  color: var(--color-text-main);
+}
+
+body {
+  min-height: 100vh;
+  background-color: inherit;
+  color: inherit;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}

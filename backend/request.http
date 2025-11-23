@@ -14,7 +14,7 @@ Content-Type: {{json}}
 
 {
   "jour": "lundi",
-  "periode": "dejeuner",
+  "periode": "diner",
   "entree": "salade verte",
   "plat": "poulet roti",
   "fromage": "brie",

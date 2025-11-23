@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './proverbe.scss',
 })
 export class Proverbe {
-
+  open = false;
 }

@@ -1,1 +1,111 @@
-<p>Proverbe fonctionne !</p>
+<div class="flex-1 flex flex-col gap-8">
+              <div class="p-4">
+                <div
+                  class="flex flex-col items-stretch justify-start rounded-xl shadow-lg bg-background-light dark:bg-background-dark/50 border border-primary-light dark:border-primary/20"
+                >
+                  <div
+                    class="flex w-full min-w-72 grow flex-col items-stretch justify-center gap-2 p-6"
+                  >
+                    <div class="flex items-center gap-3">
+                      <span class="material-symbols-outlined text-primary text-2xl"
+                        >sentiment_very_satisfied</span
+                      >
+                      <p class="text-xl font-bold leading-tight tracking-[-0.015em]">
+                        Blague de la semaine
+                      </p>
+                    </div>
+                    <div class="flex items-end gap-3 justify-between">
+                      <p
+                        class="text-text-muted dark:text-primary/90 text-lg font-normal leading-normal"
+                      >
+                        Qu'est-ce qu'un noodle qui n'est pas vrai ? Une Impasta !
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-4">
+                <div
+                  class="flex flex-col items-stretch justify-start rounded-xl shadow-lg bg-background-light dark:bg-background-dark/50 border border-primary-light dark:border-primary/20"
+                >
+                  <div class="flex w-full min-w-72 flex-col items-stretch justify-center p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                      <div class="flex flex-col">
+                        <p class="text-xl font-bold leading-tight tracking-[-0.015em]">
+                          Partagez une blague !
+                        </p>
+                        <p
+                          class="text-text-muted dark:text-primary/90 text-base font-normal leading-normal mt-1"
+                        >
+                          Votre contribution sera partagée avec les autres utilisateurs et pourrait
+                          être sélectionnée comme blague de la semaine prochaine !
+                        </p>
+                      </div>
+                      <button
+                        (click)="open = !open"
+                        class="inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 py-2 text-base font-medium leading-6 text-white shadow-sm transition-all hover:cursor-pointer hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark"
+                      >
+                        <span>{{ open ? 'Fermer' : 'Proposer' }}</span>
+                        <span
+                          class="material-symbols-outlined"
+                          >{{ open ? 'close' : 'add_circle' }}</span
+                        >
+                      </button>
+                    </div>
+                    @if (open) {
+                    <div class="mt-6">
+                      <form class="flex flex-col gap-4">
+                        <div>
+                          <label
+                            class="text-sm font-medium text-text-main dark:text-background-light"
+                            for="type"
+                            >Type</label
+                          >
+                          <select
+                            class="mt-1 block w-full rounded-md border-primary-light bg-primary-light/40 py-2 pl-3 pr-10 text-base focus:border-primary focus:outline-none focus:ring-primary dark:border-primary/20 dark:bg-background-dark dark:text-background-light dark:focus:border-primary dark:focus:ring-primary sm:text-sm"
+                            id="type"
+                            name="type"
+                          >
+                            <option>Blague</option>
+                            <option>Proverbe</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label
+                            class="text-sm font-medium text-text-main dark:text-background-light"
+                            for="submission"
+                            >Votre soumission</label
+                          >
+                          <p
+                            class="mt-1 text-sm text-text-muted dark:text-primary/80"
+                            id="submission-help"
+                          >
+                            Décrivez votre blague ou un proverbe inspirant en quelques phrases.
+                          </p>
+                          <textarea
+                            class="mt-2 block w-full rounded-md border-primary-light bg-primary-light/40 shadow-sm placeholder:text-text-muted placeholder:opacity-70 focus:border-primary focus:ring-primary dark:border-primary/20 dark:bg-background-dark dark:text-background-light dark:placeholder:text-background-light dark:placeholder:opacity-60 dark:focus:border-primary dark:focus:ring-primary sm:text-sm"
+                            id="submission"
+                            name="submission"
+                            aria-describedby="submission-help"
+                            aria-required="true"
+                            placeholder="Racontez votre blague ou votre proverbe préféré (max. 300 caractères)"
+                            rows="3"
+                            required
+                          ></textarea>
+                        </div>
+                        <div class="flex justify-end">
+                          <button
+                            class="inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 py-2 text-base font-medium leading-6 text-white shadow-sm transition-all hover:cursor-pointer hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-background-dark"
+                            type="submit"
+                          >
+                            <span>Envoyer</span>
+                            <span class="material-symbols-outlined">send</span>
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                    }
+                  </div>
+                </div>
+              </div>
+</div>
