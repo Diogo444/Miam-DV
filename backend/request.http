@@ -1,0 +1,37 @@
+@baseUrl = http://localhost:3000/api/menus
+@json = application/json
+@menuId = 1
+
+### Liste de tous les menus
+GET {{baseUrl}}
+
+### Récupération d'un menu par id
+GET {{baseUrl}}/{{menuId}}
+
+### Création d'un menu
+POST {{baseUrl}}
+Content-Type: {{json}}
+
+{
+  "jour": "lundi",
+  "periode": "dejeuner",
+  "entree": "salade verte",
+  "plat": "poulet roti",
+  "fromage": "brie",
+  "dessert": "tarte aux pommes"
+}
+
+### Mise à jour partielle d'un menu
+PATCH {{baseUrl}}/{{menuId}}
+Content-Type: {{json}}
+
+{
+  "plat": "poisson",
+  "dessert": "mousse au chocolat"
+}
+
+### Suppression d'un menu par id
+DELETE {{baseUrl}}/{{menuId}}
+
+### Suppression de tous les menus
+DELETE {{baseUrl}}
