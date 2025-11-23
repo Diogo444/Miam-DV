@@ -10,11 +10,14 @@ exports.SuggestionsModule = void 0;
 const common_1 = require("@nestjs/common");
 const suggestions_service_1 = require("./suggestions.service");
 const suggestions_controller_1 = require("./suggestions.controller");
+const typeorm_1 = require("@nestjs/typeorm");
+const suggestion_entity_1 = require("./entities/suggestion.entity");
 let SuggestionsModule = class SuggestionsModule {
 };
 exports.SuggestionsModule = SuggestionsModule;
 exports.SuggestionsModule = SuggestionsModule = __decorate([
     (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([suggestion_entity_1.Suggestion])],
         controllers: [suggestions_controller_1.SuggestionsController],
         providers: [suggestions_service_1.SuggestionsService],
     })

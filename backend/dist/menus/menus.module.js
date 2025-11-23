@@ -10,11 +10,14 @@ exports.MenusModule = void 0;
 const common_1 = require("@nestjs/common");
 const menus_service_1 = require("./menus.service");
 const menus_controller_1 = require("./menus.controller");
+const typeorm_1 = require("@nestjs/typeorm");
+const menu_entity_1 = require("./entities/menu.entity");
 let MenusModule = class MenusModule {
 };
 exports.MenusModule = MenusModule;
 exports.MenusModule = MenusModule = __decorate([
     (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([menu_entity_1.Menu])],
         controllers: [menus_controller_1.MenusController],
         providers: [menus_service_1.MenusService],
     })

@@ -1,1 +1,1 @@
-{"version":3,"file":"proverbe.entity.js","sourceRoot":"","sources":["../../../src/proverbes/entities/proverbe.entity.ts"],"names":[],"mappings":";;;AAAA,MAAa,QAAQ;CAAG;AAAxB,4BAAwB"}
+{"version":3,"file":"proverbe.entity.js","sourceRoot":"","sources":["../../../src/proverbes/entities/proverbe.entity.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qCAAyD;AAGlD,IAAM,QAAQ,GAAd,MAAM,QAAQ;IAEnB,EAAE,CAAS;IACX,QAAQ,CAAS;CAClB,CAAA;AAJY,4BAAQ;AAEnB;IADC,IAAA,gCAAsB,GAAE;;oCACd;mBAFA,QAAQ;IADpB,IAAA,gBAAM,EAAC,WAAW,CAAC;GACP,QAAQ,CAIpB"}
