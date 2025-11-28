@@ -1,4 +1,5 @@
 export declare class Proverbe {
     id: number;
-    proverbe: string;
+    type: 'blague' | 'proverbe';
+    content: string;
 }

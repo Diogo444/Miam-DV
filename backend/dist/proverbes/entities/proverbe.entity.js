@@ -13,13 +13,22 @@ exports.Proverbe = void 0;
 const typeorm_1 = require("typeorm");
 let Proverbe = class Proverbe {
     id;
-    proverbe;
+    type;
+    content;
 };
 exports.Proverbe = Proverbe;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], Proverbe.prototype, "id", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'enum', enum: ['blague', 'proverbe'] }),
+    __metadata("design:type", String)
+], Proverbe.prototype, "type", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ unique: true }),
+    __metadata("design:type", String)
+], Proverbe.prototype, "content", void 0);
 exports.Proverbe = Proverbe = __decorate([
     (0, typeorm_1.Entity)('proverbes')
 ], Proverbe);

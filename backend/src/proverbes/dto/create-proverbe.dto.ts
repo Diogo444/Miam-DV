@@ -1,1 +1,5 @@
-export class CreateProverbeDto {}
+export class CreateProverbeDto {
+  id: number;
+  type: 'blague' | 'proverbe';
+  content: string;
+}

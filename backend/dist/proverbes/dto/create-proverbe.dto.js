@@ -2,6 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateProverbeDto = void 0;
 class CreateProverbeDto {
+    id;
+    type;
+    content;
 }
 exports.CreateProverbeDto = CreateProverbeDto;
 //# sourceMappingURL=create-proverbe.dto.js.map

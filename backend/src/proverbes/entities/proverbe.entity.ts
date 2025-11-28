@@ -1,8 +1,14 @@
-import { Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('proverbes')
 export class Proverbe {
   @PrimaryGeneratedColumn()
   id: number;
-  proverbe: string;
+
+
+  @Column({ type: 'enum', enum: ['blague', 'proverbe'] })
+  type: 'blague' | 'proverbe';
+
+  @Column({ unique: true })
+  content: string;
 }
