@@ -1,35 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProverbeDto } from './dto/create-proverbe.dto';
-import { UpdateProverbeDto } from './dto/update-proverbe.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Proverbe } from './entities/proverbe.entity';
-import { InjectRepository } from '@nestjs/typeorm';
+import { CreateProverbeDto } from './dto/create-proverbe.dto';
+import { UpdateProverbeDto } from './dto/update-proverbe.dto';
 
 @Injectable()
 export class ProverbesService {
   constructor(
     @InjectRepository(Proverbe)
-    private readonly proverbesRepository: Repository<Proverbe>,
+    private readonly repo: Repository<Proverbe>,
   ) {}
 
-  create(createProverbeDto: CreateProverbeDto) {
-    const data = this.proverbesRepository.create(createProverbeDto);
-    return this.proverbesRepository.save(data);
+  async createOrReplace(dto: CreateProverbeDto) {
+    const existing = await this.repo.findOne({ where: { id: 1 } });
+
+    if (existing) {
+      // UPDATE
+      await this.repo.update(1, dto);
+      return this.repo.findOneBy({ id: 1 });
+    }
+
+    // CREATE
+    const data = this.repo.create({ ...dto, id: 1 });
+    return this.repo.save(data);
   }
 
-  findAll() {
-    return this.proverbesRepository.find();
+  findOne() {
+    return this.repo.findOneBy({ id: 1 });
   }
 
-  findOne(id: number) {
-    return this.proverbesRepository.findOneBy({ id });
+  async update(dto: UpdateProverbeDto) {
+    await this.repo.update(1, dto);
+    return this.repo.findOneBy({ id: 1 });
   }
 
-  update(id: number, updateProverbeDto: UpdateProverbeDto) {
-    return this.proverbesRepository.update(id, updateProverbeDto);
-  }
-
-  remove(id: number) {
-    return this.proverbesRepository.delete(id);
+  async remove() {
+    const proverbe = await this.repo.findOneBy({ id: 1 });
+    if (!proverbe) {
+      return null;
+    }
+    await this.repo.remove(proverbe);
+    return proverbe;
   }
 }

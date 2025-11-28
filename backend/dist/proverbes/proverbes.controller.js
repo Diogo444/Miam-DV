@@ -22,20 +22,17 @@ let ProverbesController = class ProverbesController {
     constructor(proverbesService) {
         this.proverbesService = proverbesService;
     }
-    create(createProverbeDto) {
-        return this.proverbesService.create(createProverbeDto);
+    createOrReplace(dto) {
+        return this.proverbesService.createOrReplace(dto);
     }
-    findAll() {
-        return this.proverbesService.findAll();
+    update(dto) {
+        return this.proverbesService.update(dto);
     }
-    findOne(id) {
-        return this.proverbesService.findOne(+id);
+    findOne() {
+        return this.proverbesService.findOne();
     }
-    update(id, updateProverbeDto) {
-        return this.proverbesService.update(+id, updateProverbeDto);
-    }
-    remove(id) {
-        return this.proverbesService.remove(+id);
+    remove() {
+        return this.proverbesService.remove();
     }
 };
 exports.ProverbesController = ProverbesController;
@@ -45,33 +42,24 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_proverbe_dto_1.CreateProverbeDto]),
     __metadata("design:returntype", void 0)
-], ProverbesController.prototype, "create", null);
+], ProverbesController.prototype, "createOrReplace", null);
+__decorate([
+    (0, common_1.Patch)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_proverbe_dto_1.UpdateProverbeDto]),
+    __metadata("design:returntype", void 0)
+], ProverbesController.prototype, "update", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], ProverbesController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
 ], ProverbesController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Delete)(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_proverbe_dto_1.UpdateProverbeDto]),
-    __metadata("design:returntype", void 0)
-], ProverbesController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ProverbesController.prototype, "remove", null);
 exports.ProverbesController = ProverbesController = __decorate([

@@ -1,4 +1,5 @@
 @baseUrl = http://localhost:3000/api/menus
+@proverbesUrl = http://localhost:3000/api/proverbes
 @json = application/json
 @menuId = 1
 
@@ -35,3 +36,35 @@ DELETE {{baseUrl}}/{{menuId}}
 
 ### Suppression de tous les menus
 DELETE {{baseUrl}}
+
+### Récupération du proverbe/blague unique (id fixe 1)
+GET {{proverbesUrl}}
+
+### Création ou remplacement du proverbe/blague unique
+POST {{proverbesUrl}}
+Content-Type: {{json}}
+
+{
+  "type": "proverbe",
+  "content": "Qui va au marché"
+}
+
+### Création d'une blague
+POST {{proverbesUrl}}
+Content-Type: {{json}}
+
+{
+  "type": "blague",
+  "content": "Pourquoi les développeurs confondent Halloween et Noël ? Parce que OCT 31 == DEC 25."
+}
+
+### Mise à jour partielle du proverbe/blague unique
+PATCH {{proverbesUrl}}
+Content-Type: {{json}}
+
+{
+  "content": "Nouvelle version du proverbe ou blague"
+}
+
+### Suppression du proverbe/blague unique
+DELETE {{proverbesUrl}}

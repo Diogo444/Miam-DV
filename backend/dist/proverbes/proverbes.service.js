@@ -14,35 +14,43 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProverbesService = void 0;
 const common_1 = require("@nestjs/common");
-const typeorm_1 = require("typeorm");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
 const proverbe_entity_1 = require("./entities/proverbe.entity");
-const typeorm_2 = require("@nestjs/typeorm");
 let ProverbesService = class ProverbesService {
-    proverbesRepository;
-    constructor(proverbesRepository) {
-        this.proverbesRepository = proverbesRepository;
+    repo;
+    constructor(repo) {
+        this.repo = repo;
     }
-    create(createProverbeDto) {
-        const data = this.proverbesRepository.create(createProverbeDto);
-        return this.proverbesRepository.save(data);
+    async createOrReplace(dto) {
+        const existing = await this.repo.findOne({ where: { id: 1 } });
+        if (existing) {
+            await this.repo.update(1, dto);
+            return this.repo.findOneBy({ id: 1 });
+        }
+        const data = this.repo.create({ ...dto, id: 1 });
+        return this.repo.save(data);
     }
-    findAll() {
-        return this.proverbesRepository.find();
+    findOne() {
+        return this.repo.findOneBy({ id: 1 });
     }
-    findOne(id) {
-        return this.proverbesRepository.findOneBy({ id });
+    async update(dto) {
+        await this.repo.update(1, dto);
+        return this.repo.findOneBy({ id: 1 });
     }
-    update(id, updateProverbeDto) {
-        return this.proverbesRepository.update(id, updateProverbeDto);
-    }
-    remove(id) {
-        return this.proverbesRepository.delete(id);
+    async remove() {
+        const proverbe = await this.repo.findOneBy({ id: 1 });
+        if (!proverbe) {
+            return null;
+        }
+        await this.repo.remove(proverbe);
+        return proverbe;
     }
 };
 exports.ProverbesService = ProverbesService;
 exports.ProverbesService = ProverbesService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_2.InjectRepository)(proverbe_entity_1.Proverbe)),
-    __metadata("design:paramtypes", [typeorm_1.Repository])
+    __param(0, (0, typeorm_1.InjectRepository)(proverbe_entity_1.Proverbe)),
+    __metadata("design:paramtypes", [typeorm_2.Repository])
 ], ProverbesService);
 //# sourceMappingURL=proverbes.service.js.map

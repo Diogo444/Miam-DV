@@ -1,13 +1,12 @@
-import { CreateProverbeDto } from './dto/create-proverbe.dto';
-import { UpdateProverbeDto } from './dto/update-proverbe.dto';
 import { Repository } from 'typeorm';
 import { Proverbe } from './entities/proverbe.entity';
+import { CreateProverbeDto } from './dto/create-proverbe.dto';
+import { UpdateProverbeDto } from './dto/update-proverbe.dto';
 export declare class ProverbesService {
-    private readonly proverbesRepository;
-    constructor(proverbesRepository: Repository<Proverbe>);
-    create(createProverbeDto: CreateProverbeDto): Promise<Proverbe>;
-    findAll(): Promise<Proverbe[]>;
-    findOne(id: number): Promise<Proverbe | null>;
-    update(id: number, updateProverbeDto: UpdateProverbeDto): Promise<import("typeorm").UpdateResult>;
-    remove(id: number): Promise<import("typeorm").DeleteResult>;
+    private readonly repo;
+    constructor(repo: Repository<Proverbe>);
+    createOrReplace(dto: CreateProverbeDto): Promise<Proverbe | null>;
+    findOne(): Promise<Proverbe | null>;
+    update(dto: UpdateProverbeDto): Promise<Proverbe | null>;
+    remove(): Promise<Proverbe | null>;
 }

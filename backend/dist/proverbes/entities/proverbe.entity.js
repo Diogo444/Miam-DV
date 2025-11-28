@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Proverbe = void 0;
 const typeorm_1 = require("typeorm");
 let Proverbe = class Proverbe {
-    id;
+    id = 1;
     type;
     content;
 };
