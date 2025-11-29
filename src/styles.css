@@ -13,6 +13,7 @@
 }
 
 :root {
+  --nav-height: 4rem;
   font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
   background-color: var(--color-background-light);
   color: var(--color-text-main);
