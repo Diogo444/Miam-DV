@@ -1,6 +1,6 @@
 @host = http://localhost:3000
 @json = application/json
-@authToken = {{access_token}}
+@authToken = {{accesstoken}}
 
 @menusUrl = {{host}}/api/menus
 @proverbesUrl = {{host}}/api/proverbes
@@ -12,7 +12,7 @@
 ###
 
 ### Inscription (rôle admin par défaut)
-POST {{host}}/auth/register
+POST {{host}}/api/auth/register
 Content-Type: {{json}}
 
 {
@@ -21,7 +21,7 @@ Content-Type: {{json}}
 }
 
 ### Connexion (récupère access_token)
-POST {{host}}/auth/login
+POST {{host}}/api/auth/login
 Content-Type: {{json}}
 
 {
@@ -30,7 +30,7 @@ Content-Type: {{json}}
 }
 
 ### Profil courant (protégé JWT + rôle admin)
-GET {{host}}/auth/me
+GET {{host}}/api/auth/me
 Authorization: Bearer {{authToken}}
 
 ###

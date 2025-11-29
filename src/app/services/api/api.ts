@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { menus } from '../../models/menu.model';
 import { Proverbe } from '../../models/proverbes.model';
+import { LoginResponse } from '../../models/auth.model';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +25,14 @@ export class Api {
 
   createOrUpdateProverbe(proverbe: Proverbe){
     return this.http.put<Proverbe[]>(`${this.baseUrl}/proverbes/${(proverbe as any).id}`, proverbe);
+  }
+
+  login(username: string, password: string){
+    const payload = {
+      username: username.trim(),
+      password: password.trim(),
+    };
+    return this.http.post<LoginResponse>(`${this.baseUrl}/auth/login`, payload);
   }
 
 }
