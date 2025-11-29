@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,25 +9,31 @@ import { MenusModule } from './menus/menus.module';
 import { ProverbesModule } from './proverbes/proverbes.module';
 import { AdminModule } from './admin/admin.module';
 import { SuggestionsModule } from './suggestions/suggestions.module';
-import { LoginModule } from './login/login.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+
+    ConfigModule.forRoot({
+      isGlobal: true, // accessible partout sans réimport
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'miammi',
-      password: 'BDDmiammi',
-      database: 'miamdv',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: true, // ok en dev uniquement
+      synchronize: true,
     }),
     MenusModule,
     ProverbesModule,
     AdminModule,
     SuggestionsModule,
-    LoginModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

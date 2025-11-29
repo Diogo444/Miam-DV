@@ -1,16 +1,52 @@
-@baseUrl = http://localhost:3000/api/menus
-@proverbesUrl = http://localhost:3000/api/proverbes
+@host = http://localhost:3000
 @json = application/json
+@authToken = {{access_token}}
+
+@menusUrl = {{host}}/api/menus
+@proverbesUrl = {{host}}/api/proverbes
+@suggestionsUrl = {{host}}/api/suggestions
+@adminUrl = {{host}}/admin
+
+###
+### Auth
+###
+
+### Inscription (rôle admin par défaut)
+POST {{host}}/auth/register
+Content-Type: {{json}}
+
+{
+  "username": "admin",
+  "password": "password"
+}
+
+### Connexion (récupère access_token)
+POST {{host}}/auth/login
+Content-Type: {{json}}
+
+{
+  "username": "admin",
+  "password": "password"
+}
+
+### Profil courant (protégé JWT + rôle admin)
+GET {{host}}/auth/me
+Authorization: Bearer {{authToken}}
+
+###
+### Menus
+###
+
 @menuId = 1
 
 ### Liste de tous les menus
-GET {{baseUrl}}
+GET {{menusUrl}}
 
 ### Récupération d'un menu par id
-GET {{baseUrl}}/{{menuId}}
+GET {{menusUrl}}/{{menuId}}
 
 ### Création d'un menu
-POST {{baseUrl}}
+POST {{menusUrl}}
 Content-Type: {{json}}
 
 {
@@ -23,7 +59,7 @@ Content-Type: {{json}}
 }
 
 ### Mise à jour partielle d'un menu
-PATCH {{baseUrl}}/{{menuId}}
+PATCH {{menusUrl}}/{{menuId}}
 Content-Type: {{json}}
 
 {
@@ -32,10 +68,14 @@ Content-Type: {{json}}
 }
 
 ### Suppression d'un menu par id
-DELETE {{baseUrl}}/{{menuId}}
+DELETE {{menusUrl}}/{{menuId}}
 
 ### Suppression de tous les menus
-DELETE {{baseUrl}}
+DELETE {{menusUrl}}
+
+###
+### Proverbes / blagues (ressource unique)
+###
 
 ### Récupération du proverbe/blague unique (id fixe 1)
 GET {{proverbesUrl}}
@@ -68,3 +108,66 @@ Content-Type: {{json}}
 
 ### Suppression du proverbe/blague unique
 DELETE {{proverbesUrl}}
+
+###
+### Suggestions
+###
+
+@suggestionId = 1
+
+### Création d'une suggestion
+POST {{suggestionsUrl}}
+Content-Type: {{json}}
+
+{
+  "titre": "Une nouvelle idée",
+  "description": "Détail de la suggestion"
+}
+
+### Liste de toutes les suggestions
+GET {{suggestionsUrl}}
+
+### Récupération d'une suggestion par id
+GET {{suggestionsUrl}}/{{suggestionId}}
+
+### Mise à jour partielle d'une suggestion
+PATCH {{suggestionsUrl}}/{{suggestionId}}
+Content-Type: {{json}}
+
+{
+  "description": "Mise à jour de la suggestion"
+}
+
+### Suppression d'une suggestion par id
+DELETE {{suggestionsUrl}}/{{suggestionId}}
+
+###
+### Admin (non protégé pour l'instant)
+###
+
+@adminId = 1
+
+### Création admin
+POST {{adminUrl}}
+Content-Type: {{json}}
+
+{
+  "name": "Admin user"
+}
+
+### Liste admin
+GET {{adminUrl}}
+
+### Admin par id
+GET {{adminUrl}}/{{adminId}}
+
+### Mise à jour admin
+PATCH {{adminUrl}}/{{adminId}}
+Content-Type: {{json}}
+
+{
+  "name": "Admin mis à jour"
+}
+
+### Suppression admin
+DELETE {{adminUrl}}/{{adminId}}
