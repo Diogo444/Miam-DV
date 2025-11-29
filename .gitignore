@@ -11,6 +11,20 @@ node_modules
 npm-debug.log
 yarn-error.log
 
+# Environment & secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+.envrc
+*.pem
+*.key
+*.p12
+*.pfx
+*.cer
+*.crt
+*.csr
+
 # IDEs and editors
 .idea/
 .project
