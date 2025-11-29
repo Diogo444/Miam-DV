@@ -11,7 +11,16 @@
       <app-proverbe></app-proverbe>
     </div>
 
-    <!-- Mobile: swipeable cards -->
+    @if (!groupedMenus.length) {
+      <div class="p-4 lg:p-0">
+        <div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-primary/30 bg-primary-light/20 dark:bg-primary/10 py-12 px-6 text-center text-text-muted dark:text-primary/90">
+          <span class="material-symbols-outlined text-5xl">restaurant_menu</span>
+          <p class="text-lg font-medium">Menu non disponible</p>
+          <p class="text-sm">Le menu de cette semaine n'a pas encore été publié. Veuillez revenir plus tard.</p>
+        </div>
+      </div>
+    } @else {
+      <!-- Mobile: swipeable cards -->
     <div class="-mx-4 sm:hidden">
       <div
         class="flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto px-4 [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -122,5 +131,8 @@
       </article>
       }
     </div>
+    }
+
+
   </div>
 </section>
