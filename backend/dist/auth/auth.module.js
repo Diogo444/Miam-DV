@@ -28,12 +28,20 @@ exports.AuthModule = AuthModule = __decorate([
             jwt_1.JwtModule.register({
                 secret: process.env.JWT_SECRET || 'changeme',
                 signOptions: {
-                    expiresIn: process.env.JWT_EXPIRES_IN ?? '1d',
+                    expiresIn: process.env.JWT_EXPIRES_IN ??
+                        '1d',
                 },
             }),
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy, auth_guard_1.LocalAuthGuard, auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard],
+        providers: [
+            auth_service_1.AuthService,
+            local_strategy_1.LocalStrategy,
+            jwt_strategy_1.JwtStrategy,
+            auth_guard_1.LocalAuthGuard,
+            auth_guard_1.JwtAuthGuard,
+            roles_guard_1.RolesGuard,
+        ],
         exports: [auth_service_1.AuthService, auth_guard_1.LocalAuthGuard, auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard],
     })
 ], AuthModule);
