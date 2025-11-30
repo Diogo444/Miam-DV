@@ -4,6 +4,7 @@ import { UpdateMenuDto } from './dto/update-menu.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Menu } from './entities/menu.entity';
 import { Repository } from 'typeorm';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class MenusService {
@@ -49,6 +50,9 @@ export class MenusService {
     return this.menuRepository.delete(id);
   }
 
+  @Cron('0 16 * * 5', {
+  timeZone: 'Europe/Paris',
+})
   removeAll() {
     return this.menuRepository.clear();
   }

@@ -11,9 +11,11 @@ import { AdminModule } from './admin/admin.module';
 import { SuggestionsModule } from './suggestions/suggestions.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
 
     ConfigModule.forRoot({
       isGlobal: true, // accessible partout sans réimport

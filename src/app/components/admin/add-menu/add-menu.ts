@@ -64,4 +64,15 @@ export class AddMenu {
 
   }
 
+  removeAllMenus(){
+    this.api.removeAllMenus().subscribe({
+      next: () => {
+        console.log("Tous les menus ont été supprimés avec succès.");
+      },
+      error: (error) => {
+        console.error("Erreur lors de la suppression des menus :", error);
+      }
+    });
+  }
+
 }

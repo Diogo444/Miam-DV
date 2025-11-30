@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const menu_entity_1 = require("./entities/menu.entity");
 const typeorm_2 = require("typeorm");
+const schedule_1 = require("@nestjs/schedule");
 let MenusService = class MenusService {
     menuRepository;
     constructor(menuRepository) {
@@ -58,6 +59,14 @@ let MenusService = class MenusService {
     }
 };
 exports.MenusService = MenusService;
+__decorate([
+    (0, schedule_1.Cron)('0 16 * * 5', {
+        timeZone: 'Europe/Paris',
+    }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], MenusService.prototype, "removeAll", null);
 exports.MenusService = MenusService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(menu_entity_1.Menu)),

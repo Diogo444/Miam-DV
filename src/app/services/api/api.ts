@@ -19,6 +19,10 @@ export class Api {
     return this.http.post<menus>(`${this.baseUrl}/menus`, menu);
   }
 
+  removeAllMenus(){
+    return this.http.delete(`${this.baseUrl}/menus`);
+  }
+
   getProverbe(){
     return this.http.get<Proverbe | Proverbe[]>(`${this.baseUrl}/proverbes`);
   }
