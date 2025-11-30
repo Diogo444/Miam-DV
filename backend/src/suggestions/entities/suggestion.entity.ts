@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('suggestions')
 export class Suggestion {
@@ -8,6 +8,6 @@ export class Suggestion {
   @Column()
   type: string;
 
-  @Column({'unique': true})
+  @Column({ unique: true })
   suggestion: string;
 }

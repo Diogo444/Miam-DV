@@ -6,11 +6,10 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ){}
+  ) {}
 
   async create(username: string, password: string, role: string = 'admin') {
     const hash = await bcrypt.hash(password, 10);
@@ -29,5 +28,4 @@ export class UsersService {
   async findById(id: number) {
     return this.usersRepository.findOne({ where: { id } });
   }
-
 }

@@ -5,7 +5,6 @@ export class Proverbe {
   @PrimaryGeneratedColumn()
   id: number = 1;
 
-
   @Column({ type: 'enum', enum: ['blague', 'proverbe'] })
   type: 'blague' | 'proverbe';
 

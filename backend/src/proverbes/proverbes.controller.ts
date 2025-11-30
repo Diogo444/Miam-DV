@@ -7,7 +7,7 @@ import { UpdateProverbeDto } from './dto/update-proverbe.dto';
 export class ProverbesController {
   constructor(private readonly proverbesService: ProverbesService) {}
 
-   @Post()
+  @Post()
   createOrReplace(@Body() dto: CreateProverbeDto) {
     return this.proverbesService.createOrReplace(dto);
   }

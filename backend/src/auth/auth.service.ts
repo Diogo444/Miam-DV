@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -7,7 +11,10 @@ import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(private users: UsersService, private jwt: JwtService) {}
+  constructor(
+    private users: UsersService,
+    private jwt: JwtService,
+  ) {}
 
   async validateUser(username: string, password: string) {
     const user = await this.users.findByUsername(username);
@@ -25,7 +32,11 @@ export class AuthService {
     }
 
     const role = payload.role || 'admin';
-    const user = await this.users.create(payload.username, payload.password, role);
+    const user = await this.users.create(
+      payload.username,
+      payload.password,
+      role,
+    );
 
     return this.buildAuthResponse(user);
   }
