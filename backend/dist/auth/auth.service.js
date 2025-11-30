@@ -41,15 +41,17 @@ var __importStar = (this && this.__importStar) || (function () {
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var AuthService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("../users/users.service");
 const jwt_1 = require("@nestjs/jwt");
 const bcrypt = __importStar(require("bcrypt"));
-let AuthService = class AuthService {
+let AuthService = AuthService_1 = class AuthService {
     users;
     jwt;
+    logger = new common_1.Logger(AuthService_1.name);
     constructor(users, jwt) {
         this.users = users;
         this.jwt = jwt;
@@ -82,8 +84,15 @@ let AuthService = class AuthService {
     }
     buildAuthResponse(user) {
         const payload = { sub: user.id, role: user.role };
+        const token = this.jwt.sign(payload);
+        const maskedToken = token.length > 14 ? `${token.slice(0, 6)}...${token.slice(-4)}` : token;
+        const secret = process.env.JWT_SECRET;
+        const maskedSecret = secret && secret.length > 8
+            ? `${secret.slice(0, 4)}...${secret.slice(-4)}`
+            : secret ?? 'undefined';
+        this.logger.debug(`AuthService.buildAuthResponse -> token length=${token.length}, masked=${maskedToken}, payload sub=${payload.sub}, role=${payload.role}, secret length=${secret?.length ?? 0}, masked=${maskedSecret}`);
         return {
-            access_token: this.jwt.sign(payload),
+            access_token: token,
             user: this.toSafeUser(user),
         };
     }
@@ -93,7 +102,7 @@ let AuthService = class AuthService {
     }
 };
 exports.AuthService = AuthService;
-exports.AuthService = AuthService = __decorate([
+exports.AuthService = AuthService = AuthService_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [users_service_1.UsersService, jwt_1.JwtService])
 ], AuthService);

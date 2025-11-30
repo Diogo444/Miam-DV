@@ -11,7 +11,16 @@ export class MenusService {
     @InjectRepository(Menu)
     private menuRepository: Repository<Menu>,
   ) {}
-  create(createMenuDto: CreateMenuDto) {
+  async create(createMenuDto: CreateMenuDto) {
+    const existingMenu = await this.menuRepository.findOneBy({
+      jour: createMenuDto.jour,
+      periode: createMenuDto.periode,
+    });
+
+    if (existingMenu) {
+      return;
+    }
+
     const menu = this.menuRepository.create(createMenuDto);
     return this.menuRepository.save(menu);
   }

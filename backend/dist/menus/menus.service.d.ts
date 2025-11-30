@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 export declare class MenusService {
     private menuRepository;
     constructor(menuRepository: Repository<Menu>);
-    create(createMenuDto: CreateMenuDto): Promise<Menu>;
+    create(createMenuDto: CreateMenuDto): Promise<Menu | undefined>;
     findAll(): Promise<Menu[]>;
     findOne(id: number): Promise<Menu>;
     update(id: number, updateMenuDto: UpdateMenuDto): Promise<Menu>;

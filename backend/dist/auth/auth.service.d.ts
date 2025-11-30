@@ -4,6 +4,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 export declare class AuthService {
     private users;
     private jwt;
+    private readonly logger;
     constructor(users: UsersService, jwt: JwtService);
     validateUser(username: string, password: string): Promise<{
         id: number;

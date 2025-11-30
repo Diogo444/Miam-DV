@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { NavAdmin } from '../nav-admin/nav-admin';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  standalone: true,
+  imports: [NavAdmin, RouterOutlet],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

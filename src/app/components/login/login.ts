@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [NavPublic, FormsModule, CommonModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
@@ -23,23 +24,25 @@ export class Login {
   username: string = '';
   password: string = '';
   response: LoginResponse | null = null;
+  errorMessage: string | null = null;
   constructor(protected api: Api, protected authService: Auth, protected router: Router) {}
 
   onSubmit() {
+    this.errorMessage = null;
     this.api.login(this.username, this.password).subscribe({
       next: (response) => {
-        console.log('Login response:', response);
         this.response = response;
-        // You can store the token and redirect the user as needed
-        console.log('JWT Token:', response.access_token);
         const decoded: any = jwtDecode(response.access_token);
-        console.log('Decoded JWT:', decoded);
         this.authService.saveTokenAndRole(response.access_token, decoded.role);
         this.router.navigate(['/admin']);
 
       },
       error: (error) => {
         console.error('Login failed:', error);
+        this.errorMessage =
+          error?.status === 401
+            ? "Nom d'utilisateur ou mot de passe incorrect."
+            : 'Une erreur est survenue. Merci de réessayer.';
       }
     });
   }

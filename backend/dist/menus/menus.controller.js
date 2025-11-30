@@ -17,12 +17,15 @@ const common_1 = require("@nestjs/common");
 const menus_service_1 = require("./menus.service");
 const create_menu_dto_1 = require("./dto/create-menu.dto");
 const update_menu_dto_1 = require("./dto/update-menu.dto");
+const auth_guard_1 = require("../common/guards/auth/auth.guard");
+const roles_guard_1 = require("../common/guards/auth/roles.guard");
+const roles_decorator_1 = require("../common/decorators/roles.decorator");
 let MenusController = class MenusController {
     menusService;
     constructor(menusService) {
         this.menusService = menusService;
     }
-    create(createMenuDto) {
+    create(createMenuDto, req) {
         return this.menusService.create(createMenuDto);
     }
     findAll() {
@@ -43,10 +46,13 @@ let MenusController = class MenusController {
 };
 exports.MenusController = MenusController;
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('admin'),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_menu_dto_1.CreateMenuDto]),
+    __metadata("design:paramtypes", [create_menu_dto_1.CreateMenuDto, Object]),
     __metadata("design:returntype", void 0)
 ], MenusController.prototype, "create", null);
 __decorate([
@@ -78,6 +84,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], MenusController.prototype, "remove", null);
 __decorate([
+    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('admin'),
     (0, common_1.Delete)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),

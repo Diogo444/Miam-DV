@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { menus } from '../../models/menu.model';
+import { menus, createMenuPayload } from '../../models/menu.model';
 import { Proverbe } from '../../models/proverbes.model';
 import { LoginResponse } from '../../models/auth.model';
 
@@ -13,6 +13,10 @@ export class Api {
 
   getMenu(){
     return this.http.get<menus[]>(`${this.baseUrl}/menus`);
+  }
+
+  addMenu(menu: createMenuPayload){
+    return this.http.post<menus>(`${this.baseUrl}/menus`, menu);
   }
 
   getProverbe(){

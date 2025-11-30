@@ -1,1 +1,132 @@
-<p>Ajouter un menu fonctionne !</p>
+<div class="flex flex-1 flex-col w-full">
+  <main class="flex-1 p-6">
+    <div
+      class="flex flex-col items-stretch justify-start rounded-xl border border-primary-light bg-background-light shadow-lg dark:border-primary/20 dark:bg-background-dark/50"
+    >
+      <div class="flex w-full flex-col items-stretch justify-center p-6">
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold leading-tight tracking-[-0.015em]">Ajouter un menu</h2>
+          <p class="mt-1 text-base font-normal leading-normal text-text-muted dark:text-primary/90">
+            Remplissez les champs ci-dessous pour ajouter un nouveau menu pour la semaine.
+          </p>
+        </div>
+        <form class="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2" (ngSubmit)="onSubmit()">
+          <div>
+            <label class="block text-sm font-medium text-text-main dark:text-background-light" for="type">Type</label>
+            <select
+              class="mt-1 block w-full rounded-md border border-primary/30 bg-background-light/70 py-2 pl-3 pr-10 text-base text-text-main shadow-sm transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-background-light dark:border-primary/25 dark:bg-background-dark/60 dark:text-background-light dark:focus:border-primary dark:focus:ring-primary/70 dark:focus:ring-offset-background-dark sm:text-sm"
+              id="type"
+              name="type"
+              [(ngModel)]="selectedType"
+
+            >
+            @for (type of type; track type) {
+              <option [value]="type">{{ type }}</option>
+            }
+
+            </select>
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-text-main dark:text-background-light" for="proverb">
+              Entrez {{ selectedType === 'Blague' ? 'la blague' : 'le proverbe' }} de la semaine
+
+            </label>
+            <input
+              class="mt-1 block w-full rounded-md border border-primary/30 bg-background-light/70 px-3 py-2 text-text-main shadow-sm transition focus:border-primary focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-background-light placeholder:text-text-muted/70 dark:border-primary/25 dark:bg-background-dark/60 dark:text-background-light dark:placeholder:text-background-light/50 dark:focus:border-primary dark:focus:ring-primary/70 dark:focus:ring-offset-background-dark sm:text-sm"
+              id="proverb"
+              name="proverb"
+              placeholder="Ex: Qu'est-ce qu'un noodle qui n'est pas vrai ? Une Impasta !"
+              type="text"
+              [(ngModel)]="proverbe"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-main dark:text-background-light" for="day">Jour</label>
+            <select
+              class="mt-1 block w-full rounded-md border border-primary/30 bg-background-light/70 py-2 pl-3 pr-10 text-base text-text-main shadow-sm transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-background-light dark:border-primary/25 dark:bg-background-dark/60 dark:text-background-light dark:focus:border-primary dark:focus:ring-primary/70 dark:focus:ring-offset-background-dark sm:text-sm"
+              id="day"
+              name="day"
+              [(ngModel)]="selectedJour"
+            >
+              @for (day of jour; track day) {
+                <option [value]="day">{{ day }}</option>
+              }
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-main dark:text-background-light" for="meal">
+              Déjeuner ou Dîner
+            </label>
+            <select
+              class="mt-1 block w-full rounded-md border border-primary/30 bg-background-light/70 py-2 pl-3 pr-10 text-base text-text-main shadow-sm transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-background-light dark:border-primary/25 dark:bg-background-dark/60 dark:text-background-light dark:focus:border-primary dark:focus:ring-primary/70 dark:focus:ring-offset-background-dark sm:text-sm"
+              id="meal"
+              name="meal"
+              [(ngModel)]="selectedPeriode"
+            >
+              @for (period of periode; track period) {
+                @if (selectedJour !== 'Vendredi' || period !== 'Dîner') {
+                  <option [value]="period">{{ period }}</option>
+                }
+              }
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-main dark:text-background-light" for="starter">Entrée</label>
+            <input
+              class="mt-1 block w-full rounded-md border border-primary/30 bg-background-light/70 px-3 py-2 text-text-main shadow-sm transition focus:border-primary focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-background-light placeholder:text-text-muted/70 dark:border-primary/25 dark:bg-background-dark/60 dark:text-background-light dark:placeholder:text-background-light/50 dark:focus:border-primary dark:focus:ring-primary/70 dark:focus:ring-offset-background-dark sm:text-sm"
+              id="starter"
+              name="starter"
+              type="text"
+              [(ngModel)]="entree"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-main dark:text-background-light" for="main-course">Plat</label>
+            <input
+              class="mt-1 block w-full rounded-md border border-primary/30 bg-background-light/70 px-3 py-2 text-text-main shadow-sm transition focus:border-primary focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-background-light placeholder:text-text-muted/70 dark:border-primary/25 dark:bg-background-dark/60 dark:text-background-light dark:placeholder:text-background-light/50 dark:focus:border-primary dark:focus:ring-primary/70 dark:focus:ring-offset-background-dark sm:text-sm"
+              id="main-course"
+              name="main-course"
+              type="text"
+              [(ngModel)]="plat"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-main dark:text-background-light" for="cheese">Fromage</label>
+            <input
+              class="mt-1 block w-full rounded-md border border-primary/30 bg-background-light/70 px-3 py-2 text-text-main shadow-sm transition focus:border-primary focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-background-light placeholder:text-text-muted/70 dark:border-primary/25 dark:bg-background-dark/60 dark:text-background-light dark:placeholder:text-background-light/50 dark:focus:border-primary dark:focus:ring-primary/70 dark:focus:ring-offset-background-dark sm:text-sm"
+              id="cheese"
+              name="cheese"
+              type="text"
+              [(ngModel)]="fromage"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-main dark:text-background-light" for="dessert">Dessert</label>
+            <input
+              class="mt-1 block w-full rounded-md border border-primary/30 bg-background-light/70 px-3 py-2 text-text-main shadow-sm transition focus:border-primary focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-background-light placeholder:text-text-muted/70 dark:border-primary/25 dark:bg-background-dark/60 dark:text-background-light dark:placeholder:text-background-light/50 dark:focus:border-primary dark:focus:ring-primary/70 dark:focus:ring-offset-background-dark sm:text-sm"
+              id="dessert"
+              name="dessert"
+              type="text"
+              [(ngModel)]="dessert"
+            />
+          </div>
+          <div class="md:col-span-2 mt-4 flex items-center justify-end gap-4 border-t border-primary-light pt-4 dark:border-primary/20">
+            <button
+              class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-base font-medium leading-6 text-text-muted shadow-sm transition-all hover:bg-primary-light/80 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background-light dark:text-primary/90 dark:hover:bg-primary/10 dark:focus:ring-offset-background-dark"
+              type="reset"
+
+            >
+              <span>Vider le menu</span>
+            </button>
+            <button
+              class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 py-2 text-base font-medium leading-6 text-white shadow-sm transition-all hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background-light dark:focus:ring-offset-background-dark"
+              type="submit"
+            >
+              <span>Ajouter</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>

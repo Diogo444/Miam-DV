@@ -8,31 +8,38 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var JwtStrategy_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtStrategy = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const passport_jwt_1 = require("passport-jwt");
 const users_service_1 = require("../../users/users.service");
-let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
+let JwtStrategy = JwtStrategy_1 = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
     usersService;
+    logger = new common_1.Logger(JwtStrategy_1.name);
     constructor(usersService) {
         const secret = process.env.JWT_SECRET;
         if (!secret) {
             throw new Error('JWT_SECRET must be defined');
         }
+        const maskedSecret = secret.length > 8 ? `${secret.slice(0, 4)}...${secret.slice(-4)}` : secret;
         super({
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
             secretOrKey: secret,
         });
         this.usersService = usersService;
+        this.logger.debug(`JwtStrategy init: using secret length=${secret.length}, masked=${maskedSecret}`);
     }
     async validate(payload) {
+        this.logger.debug(`validate() called with payload sub=${payload?.sub}, role=${payload?.role}, exp=${payload?.exp}`);
         const user = await this.usersService.findById(payload.sub);
         if (!user) {
+            this.logger.warn(`User not found for sub=${payload?.sub}`);
             throw new common_1.UnauthorizedException('User not found');
         }
+        this.logger.debug(`User resolved for sub=${payload?.sub}: username=${user.username}, role=${user.role}`);
         return {
             id: user.id,
             username: user.username,
@@ -41,7 +48,7 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
     }
 };
 exports.JwtStrategy = JwtStrategy;
-exports.JwtStrategy = JwtStrategy = __decorate([
+exports.JwtStrategy = JwtStrategy = JwtStrategy_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [users_service_1.UsersService])
 ], JwtStrategy);

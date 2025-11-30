@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -7,6 +7,8 @@ import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(private users: UsersService, private jwt: JwtService) {}
 
   async validateUser(username: string, password: string) {
@@ -46,8 +48,23 @@ export class AuthService {
 
   private buildAuthResponse(user: User) {
     const payload = { sub: user.id, role: user.role };
+    const token = this.jwt.sign(payload);
+
+    // Debug logs to trace token generation
+    const maskedToken =
+      token.length > 14 ? `${token.slice(0, 6)}...${token.slice(-4)}` : token;
+    const secret = process.env.JWT_SECRET;
+    const maskedSecret =
+      secret && secret.length > 8
+        ? `${secret.slice(0, 4)}...${secret.slice(-4)}`
+        : secret ?? 'undefined';
+
+    this.logger.debug(
+      `AuthService.buildAuthResponse -> token length=${token.length}, masked=${maskedToken}, payload sub=${payload.sub}, role=${payload.role}, secret length=${secret?.length ?? 0}, masked=${maskedSecret}`,
+    );
+
     return {
-      access_token: this.jwt.sign(payload),
+      access_token: token,
       user: this.toSafeUser(user),
     };
   }

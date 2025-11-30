@@ -10,24 +10,20 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   // Pas de token → on retourne à login
   if (!token) {
-    router.navigate(['/login']);
-    return false;
+    return router.parseUrl('/login');
   }
 
   // Token expiré → logout + retour login
   if (auth.isTokenExpired(token)) {
     auth.logout();
-    router.navigate(['/']);
-    return false;
+    return router.parseUrl('/login');
   }
 
-  // Pas admin → retour page d'accueil (ou autre)
+  // Pas admin → redirection propre vers l'accueil
   if (!auth.isAdmin()) {
-    router.navigate(['/login']);
-    return false;
+    return router.parseUrl('/');
   }
 
-  console.log('Auth Guard: accès autorisé pour admin.');
 
   // Tout est bon → accès OK
   return true;

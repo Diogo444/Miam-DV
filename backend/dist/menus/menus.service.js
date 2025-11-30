@@ -22,7 +22,14 @@ let MenusService = class MenusService {
     constructor(menuRepository) {
         this.menuRepository = menuRepository;
     }
-    create(createMenuDto) {
+    async create(createMenuDto) {
+        const existingMenu = await this.menuRepository.findOneBy({
+            jour: createMenuDto.jour,
+            periode: createMenuDto.periode,
+        });
+        if (existingMenu) {
+            return;
+        }
         const menu = this.menuRepository.create(createMenuDto);
         return this.menuRepository.save(menu);
     }
