@@ -27,9 +27,11 @@ export class Api {
     return this.http.get<Proverbe | Proverbe[]>(`${this.baseUrl}/proverbes`);
   }
 
-  addProverbe(proverbe: Proverbe){
-    return this.http.post<Proverbe>(`${this.baseUrl}/proverbes`, proverbe);
+  addProverbe(proverbe: { type: string; content: string }) {
+    return this.http.post(`${this.baseUrl}/proverbes`, proverbe);
   }
+
+
 
   createOrUpdateProverbe(proverbe: Proverbe){
     return this.http.put<Proverbe[]>(`${this.baseUrl}/proverbes/${(proverbe as any).id}`, proverbe);

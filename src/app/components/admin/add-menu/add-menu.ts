@@ -29,6 +29,18 @@ export class AddMenu {
   submitProverbe(){
     console.log(this.selectedType);
     console.log(this.proverbe);
+    const payload = {
+      type: this.selectedType,
+      content: this.proverbe
+    };
+    this.api.addProverbe(payload).subscribe({
+      next: (data) => {
+        console.log("Proverbe ajouté :", data);
+        this.selectedType = "";
+        this.proverbe = "";
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   submitMenu(){
@@ -44,6 +56,15 @@ export class AddMenu {
     this.api.addMenu(menu).subscribe({
       next: (data) => {
         console.log("Menu ajouté avec succès :", data);
+        // reset les champs
+        this.selectedJour = "";
+        this.selectedPeriode = "";
+        this.entree = "";
+        this.plat = "";
+        this.fromage = "";
+        this.dessert = "";
+        this.selectedPeriode = '';
+        this.selectedJour = '';
       },
       error: (error) => {
         console.error("Erreur lors de l'ajout du menu :", error);
@@ -57,7 +78,7 @@ export class AddMenu {
 
       this.submitProverbe();
     }
-    if(this.selectedJour && this.selectedPeriode && this.entree && this.plat && this.fromage && this.dessert){
+    if(this.selectedJour && this.selectedPeriode){
       console.log("menu");
       this.submitMenu();
     }
@@ -67,7 +88,13 @@ export class AddMenu {
   removeAllMenus(){
     this.api.removeAllMenus().subscribe({
       next: () => {
-        console.log("Tous les menus ont été supprimés avec succès.");
+        // reset les champs
+        this.selectedJour = "";
+        this.selectedPeriode = "";
+        this.entree = "";
+        this.plat = "";
+        this.fromage = "";
+        this.dessert = "";
       },
       error: (error) => {
         console.error("Erreur lors de la suppression des menus :", error);

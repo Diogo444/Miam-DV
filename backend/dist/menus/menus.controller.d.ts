@@ -10,5 +10,7 @@ export declare class MenusController {
     findOne(id: number): Promise<import("./entities/menu.entity").Menu>;
     update(id: number, updateMenuDto: UpdateMenuDto): Promise<import("./entities/menu.entity").Menu>;
     remove(id: number): Promise<import("typeorm").DeleteResult>;
-    removeAll(): Promise<void>;
+    removeAll(): Promise<{
+        message: string;
+    }>;
 }

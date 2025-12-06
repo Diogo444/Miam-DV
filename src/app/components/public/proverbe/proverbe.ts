@@ -61,12 +61,12 @@ export class Proverbe implements OnInit {
     this.submitError.set(null);
 
     const formValue = this.form.value;
-    const newProverbe: Partial<ProverbeModel> = {
+    const payload = {
       type: formValue.type || 'Blague',
       content: formValue.content || '',
     };
 
-    this.api.addProverbe(newProverbe as ProverbeModel).subscribe({
+    this.api.addProverbe(payload).subscribe({
       next: () => {
         this.getProverbes();
         this.form.reset({ type: 'Blague', content: '' });

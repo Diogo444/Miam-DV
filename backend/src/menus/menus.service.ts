@@ -4,13 +4,16 @@ import { UpdateMenuDto } from './dto/update-menu.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Menu } from './entities/menu.entity';
 import { Repository } from 'typeorm';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
+import { Proverbe } from 'src/proverbes/entities/proverbe.entity';
 
 @Injectable()
 export class MenusService {
   constructor(
     @InjectRepository(Menu)
     private menuRepository: Repository<Menu>,
+    @InjectRepository(Proverbe)
+    private proverbeRepository: Repository<Proverbe>,
   ) {}
   async create(createMenuDto: CreateMenuDto) {
     const existingMenu = await this.menuRepository.findOneBy({
@@ -51,9 +54,14 @@ export class MenusService {
   }
 
   @Cron('0 16 * * 5', {
-  timeZone: 'Europe/Paris',
-})
-  removeAll() {
-    return this.menuRepository.clear();
+    timeZone: 'Europe/Paris',
+  })
+  async removeAll() {
+    // vider les tables proprement
+    await this.menuRepository.clear();
+    await this.proverbeRepository.clear();
+
+    // bon retour pour vérifier dans les logs
+    return { message: 'All menus and proverbes have been removed.' };
   }
 }
