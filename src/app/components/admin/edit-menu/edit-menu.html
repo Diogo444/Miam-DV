@@ -10,6 +10,13 @@
             Sélectionnez un jour et une période pour mettre à jour le menu correspondant.
           </p>
         </div>
+        @if (error()) {
+        <div
+          class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/50 dark:bg-red-500/10 dark:text-red-200"
+        >
+          {{ error() }}
+        </div>
+        }
 
         <div
           class="mb-5 flex flex-col gap-3 rounded-lg border border-dashed border-primary/40 bg-primary-light/30 px-4 py-3 text-sm text-text-main shadow-inner dark:border-primary/25 dark:bg-background-dark/60"
@@ -24,21 +31,26 @@
               <span
                 class="rounded-full bg-white px-3 py-1 text-xs font-semibold text-primary shadow-sm dark:bg-background-dark/80"
               >
-                Mardi
+                {{ selectedJour() }}
               </span>
               <span
                 class="rounded-full bg-white px-3 py-1 text-xs font-semibold text-primary shadow-sm dark:bg-background-dark/80"
               >
-                Dîner
+                {{ selectedPeriode() }}
               </span>
             </div>
           </div>
           <p class="text-xs text-text-muted dark:text-primary/80">
             Choisissez le service ci-dessus puis mettez à jour les plats du jour.
           </p>
+          @if (!selectedMenu() && menus().length) {
+          <p class="text-xs font-semibold text-red-600 dark:text-red-400">
+            Aucun menu enregistré pour cette combinaison.
+          </p>
+          }
         </div>
 
-        <form class="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
+        <form class="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2" (ngSubmit)="onSubmit()">
           <div>
             <label class="block text-sm font-medium text-text-main dark:text-background-light" for="day">
               Jour
@@ -47,12 +59,13 @@
               class="mt-1 block w-full rounded-md border border-primary/30 bg-background-light/70 py-2 pl-3 pr-10 text-base text-text-main shadow-sm transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-background-light dark:border-primary/25 dark:bg-background-dark/60 dark:text-background-light dark:focus:border-primary dark:focus:ring-primary/70 dark:focus:ring-offset-background-dark sm:text-sm"
               id="day"
               name="day"
+              [ngModel]="selectedJour()"
+              (ngModelChange)="updateJour($event)"
+              [disabled]="loading() || !menus().length"
             >
-              <option>Lundi</option>
-              <option selected>Mardi</option>
-              <option>Mercredi</option>
-              <option>Jeudi</option>
-              <option>Vendredi</option>
+              @for (day of jours; track day) {
+                <option [value]="day">{{ day }}</option>
+              }
             </select>
           </div>
           <div>
@@ -63,9 +76,15 @@
               class="mt-1 block w-full rounded-md border border-primary/30 bg-background-light/70 py-2 pl-3 pr-10 text-base text-text-main shadow-sm transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-background-light dark:border-primary/25 dark:bg-background-dark/60 dark:text-background-light dark:focus:border-primary dark:focus:ring-primary/70 dark:focus:ring-offset-background-dark sm:text-sm"
               id="meal"
               name="meal"
+              [ngModel]="selectedPeriode()"
+              (ngModelChange)="updatePeriode($event)"
+              [disabled]="loading() || !menus().length"
             >
-              <option>Déjeuner</option>
-              <option selected>Dîner</option>
+              @for (period of periodes; track period) {
+                @if (selectedJour() !== 'Vendredi' || period !== 'Dîner') {
+                  <option [value]="period">{{ period }}</option>
+                }
+              }
             </select>
           </div>
 
@@ -79,7 +98,9 @@
                 id="starter"
                 name="starter"
                 type="text"
-                value="Velouté de potimarron"
+                [ngModel]="entree"
+                (ngModelChange)="entree = $event"
+                [disabled]="!selectedMenu() || loading()"
               />
             </div>
             <div>
@@ -94,7 +115,9 @@
                 id="main-course"
                 name="main-course"
                 type="text"
-                value="Quiche lorraine et salade verte"
+                [ngModel]="plat"
+                (ngModelChange)="plat = $event"
+                [disabled]="!selectedMenu() || loading()"
               />
             </div>
             <div>
@@ -106,7 +129,9 @@
                 id="cheese"
                 name="cheese"
                 type="text"
-                value="Comté"
+                [ngModel]="fromage"
+                (ngModelChange)="fromage = $event"
+                [disabled]="!selectedMenu() || loading()"
               />
             </div>
             <div>
@@ -121,7 +146,9 @@
                 id="dessert"
                 name="dessert"
                 type="text"
-                value="Mousse au chocolat"
+                [ngModel]="dessert"
+                (ngModelChange)="dessert = $event"
+                [disabled]="!selectedMenu() || loading()"
               />
             </div>
           </div>
@@ -132,14 +159,16 @@
             <button
               class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-base font-medium leading-6 text-text-muted shadow-sm transition-all hover:bg-primary-light/80 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background-light dark:text-primary/90 dark:hover:bg-primary/10 dark:focus:ring-offset-background-dark"
               type="button"
+              [disabled]="loading()"
             >
               <span>Annuler</span>
             </button>
             <button
               class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 py-2 text-base font-medium leading-6 text-white shadow-sm transition-all hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background-light dark:focus:ring-offset-background-dark"
               type="submit"
+              [disabled]="!selectedMenu() || loading()"
             >
-              <span>Modifier le menu</span>
+              <span>{{ loading() ? 'En cours...' : 'Modifier le menu' }}</span>
             </button>
           </div>
         </form>

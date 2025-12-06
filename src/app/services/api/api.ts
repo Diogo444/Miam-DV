@@ -19,6 +19,10 @@ export class Api {
     return this.http.post<menus>(`${this.baseUrl}/menus`, menu);
   }
 
+  updateMenu(id: number, menu: Partial<createMenuPayload>) {
+    return this.http.patch<menus>(`${this.baseUrl}/menus/${id}`, menu);
+  }
+
   removeAllMenus(){
     return this.http.delete(`${this.baseUrl}/menus`);
   }
