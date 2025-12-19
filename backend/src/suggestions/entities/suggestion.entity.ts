@@ -5,9 +5,9 @@ export class Suggestion {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  type: string;
+  @Column({ enum: ['Blague', 'Proverbe'] })
+  type: 'Blague' | 'Proverbe';
 
-  @Column({'unique': true})
-  suggestion: string;
+  @Column({ name: 'suggestion', unique: true })
+  content: string;
 }

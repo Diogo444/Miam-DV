@@ -1,9 +1,13 @@
 import { CreateSuggestionDto } from './dto/create-suggestion.dto';
-import { UpdateSuggestionDto } from './dto/update-suggestion.dto';
+import { Suggestion } from './entities/suggestion.entity';
+import { Repository } from 'typeorm';
+import { Proverbe } from 'src/proverbes/entities/proverbe.entity';
 export declare class SuggestionsService {
-    create(createSuggestionDto: CreateSuggestionDto): string;
-    findAll(): string;
-    findOne(id: number): string;
-    update(id: number, updateSuggestionDto: UpdateSuggestionDto): string;
-    remove(id: number): string;
+    private readonly suggestionRepository;
+    private readonly proverbeRepository;
+    constructor(suggestionRepository: Repository<Suggestion>, proverbeRepository: Repository<Proverbe>);
+    create(createSuggestionDto: CreateSuggestionDto): Promise<CreateSuggestionDto & Suggestion>;
+    findAll(): Promise<Suggestion[]>;
+    accept(id: number): Promise<Suggestion>;
+    remove(id: number): Promise<import("typeorm").DeleteResult>;
 }

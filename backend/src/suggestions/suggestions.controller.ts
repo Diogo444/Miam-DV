@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { SuggestionsService } from './suggestions.service';
 import { CreateSuggestionDto } from './dto/create-suggestion.dto';
 import { UpdateSuggestionDto } from './dto/update-suggestion.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('api/suggestions')
 export class SuggestionsController {
@@ -9,23 +11,22 @@ export class SuggestionsController {
 
   @Post()
   create(@Body() createSuggestionDto: CreateSuggestionDto) {
+    
     return this.suggestionsService.create(createSuggestionDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin')
   @Get()
   findAll() {
     return this.suggestionsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.suggestionsService.findOne(+id);
+  @Post('accept/:id')
+  accept(@Param('id') id: string) {
+    return this.suggestionsService.accept(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSuggestionDto: UpdateSuggestionDto) {
-    return this.suggestionsService.update(+id, updateSuggestionDto);
-  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

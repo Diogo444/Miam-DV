@@ -23,23 +23,26 @@ export class AddMenu {
   plat: string = "";
   fromage: string = "";
   dessert: string = "";
+  successMessages: string[] = [];
+  errorMessage: string | null = null;
 
   constructor(protected api: Api){}
 
   submitProverbe(){
-    console.log(this.selectedType);
-    console.log(this.proverbe);
     const payload = {
       type: this.selectedType,
       content: this.proverbe
     };
     this.api.addProverbe(payload).subscribe({
       next: (data) => {
-        console.log("Proverbe ajouté :", data);
+        const message = data?.message || "Proverbe ajouté avec succès.";
+        this.successMessages = [...this.successMessages, message];
         this.selectedType = "";
         this.proverbe = "";
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        this.errorMessage = err?.error?.message || "Erreur lors de l'ajout du proverbe.";
+      }
     });
   }
 
@@ -55,51 +58,66 @@ export class AddMenu {
 
     this.api.addMenu(menu).subscribe({
       next: (data) => {
-        console.log("Menu ajouté avec succès :", data);
-        // reset les champs
-        this.selectedJour = "";
-        this.selectedPeriode = "";
-        this.entree = "";
-        this.plat = "";
-        this.fromage = "";
-        this.dessert = "";
-        this.selectedPeriode = '';
-        this.selectedJour = '';
+        const message = data?.message || "Menu ajouté avec succès.";
+        this.successMessages = [...this.successMessages, message];
+
+        if (data?.created !== false) {
+          this.resetMenuFields();
+        }
       },
       error: (error) => {
-        console.error("Erreur lors de l'ajout du menu :", error);
+        this.errorMessage = error?.error?.message || "Erreur lors de l'ajout du menu.";
       }
     });
   }
 
   onSubmit(){
-    if(this.proverbe && this.selectedType){
-      console.log("proverbe");
+    this.resetMessages();
 
+    const hasProverbe = this.proverbe && this.selectedType;
+    const hasMenu = this.selectedJour && this.selectedPeriode;
+
+    if (!hasProverbe && !hasMenu) {
+      this.errorMessage = "Ajoutez au moins un proverbe ou un menu avant de valider.";
+      return;
+    }
+
+    if(this.proverbe && this.selectedType){
       this.submitProverbe();
     }
     if(this.selectedJour && this.selectedPeriode){
-      console.log("menu");
       this.submitMenu();
     }
 
   }
 
   removeAllMenus(){
+    this.resetMessages();
+
     this.api.removeAllMenus().subscribe({
       next: () => {
-        // reset les champs
-        this.selectedJour = "";
-        this.selectedPeriode = "";
-        this.entree = "";
-        this.plat = "";
-        this.fromage = "";
-        this.dessert = "";
+        this.resetMenuFields();
+        this.successMessages = [...this.successMessages, "Tous les menus ont été supprimés avec succès."];
       },
       error: (error) => {
         console.error("Erreur lors de la suppression des menus :", error);
+        this.errorMessage = "Erreur lors de la suppression des menus.";
       }
     });
+  }
+
+  private resetMessages(){
+    this.successMessages = [];
+    this.errorMessage = null;
+  }
+
+  private resetMenuFields(){
+    this.selectedJour = "";
+    this.selectedPeriode = "";
+    this.entree = "";
+    this.plat = "";
+    this.fromage = "";
+    this.dessert = "";
   }
 
 }

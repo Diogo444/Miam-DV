@@ -17,6 +17,7 @@ export class EditMenu implements OnInit {
   menus = signal<menus[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+  success = signal<string | null>(null);
   selectedJour = signal<string>('Lundi');
   selectedPeriode = signal<string>('Déjeuner');
   entree = '';
@@ -78,6 +79,8 @@ export class EditMenu implements OnInit {
   }
 
   updateJour(jour: string) {
+    this.success.set(null);
+    this.error.set(null);
     this.selectedJour.set(jour);
     if (jour === 'Vendredi' && this.selectedPeriode() === 'Dîner') {
       this.selectedPeriode.set('Déjeuner');
@@ -85,6 +88,8 @@ export class EditMenu implements OnInit {
   }
 
   updatePeriode(periode: string) {
+    this.success.set(null);
+    this.error.set(null);
     if (this.selectedJour() === 'Vendredi' && periode === 'Dîner') {
       return;
     }
@@ -94,6 +99,7 @@ export class EditMenu implements OnInit {
   onSubmit(){
     const currentMenu = this.selectedMenu();
     if (!currentMenu) {
+      this.error.set("Aucun menu sélectionné pour cette combinaison.");
       return;
     }
 
@@ -107,20 +113,27 @@ export class EditMenu implements OnInit {
 
     this.loading.set(true);
     this.error.set(null);
+    this.success.set(null);
 
     this.api.updateMenu(currentMenu.id, payload).subscribe({
-      next: (updatedMenu) => {
-        this.menus.update((items) =>
-          items.map((menu) =>
-            menu.id === updatedMenu.id
-              ? { ...menu, ...payload }
-              : menu
-          ),
-        );
+      next: (res) => {
+        const updatedMenu = res?.menu;
+        const message = res?.message || 'Menu modifié avec succès.';
+        this.success.set(message);
+
+        if (updatedMenu) {
+          this.menus.update((items) =>
+            items.map((menu) =>
+              menu.id === updatedMenu.id
+                ? updatedMenu
+                : menu
+            ),
+          );
+        }
       },
       error: (err) => {
         console.error(err);
-        this.error.set("Impossible de modifier le menu.");
+        this.error.set(err?.error?.message || "Impossible de modifier le menu.");
       },
       complete: () => {
         this.loading.set(false);

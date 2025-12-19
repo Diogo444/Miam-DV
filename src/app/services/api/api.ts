@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { menus, createMenuPayload } from '../../models/menu.model';
-import { Proverbe } from '../../models/proverbes.model';
+import { menus, createMenuPayload, AddMenuResponse, MenuResponse } from '../../models/menu.model';
+import { Proverbe, ProverbeResponse } from '../../models/proverbes.model';
 import { LoginResponse } from '../../models/auth.model';
+import { Suggestion } from '../../models/suggestions.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,11 +17,11 @@ export class Api {
   }
 
   addMenu(menu: createMenuPayload){
-    return this.http.post<menus>(`${this.baseUrl}/menus`, menu);
+    return this.http.post<AddMenuResponse>(`${this.baseUrl}/menus`, menu);
   }
 
   updateMenu(id: number, menu: Partial<createMenuPayload>) {
-    return this.http.patch<menus>(`${this.baseUrl}/menus/${id}`, menu);
+    return this.http.patch<MenuResponse>(`${this.baseUrl}/menus/${id}`, menu);
   }
 
   removeAllMenus(){
@@ -32,7 +33,7 @@ export class Api {
   }
 
   addProverbe(proverbe: { type: string; content: string }) {
-    return this.http.post(`${this.baseUrl}/proverbes`, proverbe);
+    return this.http.post<ProverbeResponse>(`${this.baseUrl}/proverbes`, proverbe);
   }
 
 
@@ -46,7 +47,25 @@ export class Api {
       username: username.trim(),
       password: password.trim(),
     };
+    
     return this.http.post<LoginResponse>(`${this.baseUrl}/auth/login`, payload);
   }
+
+  getSuggestions(){
+    return this.http.get<Suggestion[]>(`${this.baseUrl}/suggestions`);
+  }
+
+  addSuggestion(suggestion: { type: string; content: string }){
+    return this.http.post<Suggestion>(`${this.baseUrl}/suggestions`, suggestion);
+  }
+
+  acceptSuggestion(id: number){
+    return this.http.post(`${this.baseUrl}/suggestions/accept/${id}`, {});
+  }
+
+  removeSuggestion(id: number){
+    return this.http.delete(`${this.baseUrl}/suggestions/${id}`);
+  }
+
 
 }

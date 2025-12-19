@@ -1,12 +1,10 @@
 import { SuggestionsService } from './suggestions.service';
 import { CreateSuggestionDto } from './dto/create-suggestion.dto';
-import { UpdateSuggestionDto } from './dto/update-suggestion.dto';
 export declare class SuggestionsController {
     private readonly suggestionsService;
     constructor(suggestionsService: SuggestionsService);
-    create(createSuggestionDto: CreateSuggestionDto): string;
-    findAll(): string;
-    findOne(id: string): string;
-    update(id: string, updateSuggestionDto: UpdateSuggestionDto): string;
-    remove(id: string): string;
+    create(createSuggestionDto: CreateSuggestionDto): Promise<CreateSuggestionDto & import("./entities/suggestion.entity").Suggestion>;
+    findAll(): Promise<import("./entities/suggestion.entity").Suggestion[]>;
+    accept(id: string): Promise<import("./entities/suggestion.entity").Suggestion>;
+    remove(id: string): Promise<import("typeorm").DeleteResult>;
 }

@@ -22,11 +22,21 @@ export class MenusService {
     });
 
     if (existingMenu) {
-      return;
+      return {
+        created: false,
+        message: `Un menu pour ${createMenuDto.jour} ${createMenuDto.periode.toLowerCase()} existe déjà.`,
+        menu: existingMenu,
+      };
     }
 
     const menu = this.menuRepository.create(createMenuDto);
-    return this.menuRepository.save(menu);
+    const savedMenu = await this.menuRepository.save(menu);
+
+    return {
+      created: true,
+      message: 'Menu ajouté avec succès.',
+      menu: savedMenu,
+    };
   }
 
   findAll() {
@@ -46,7 +56,11 @@ export class MenusService {
     if (!menu) {
       throw new NotFoundException(`Menu ${id} not found`);
     }
-    return this.menuRepository.save(menu);
+    const savedMenu = await this.menuRepository.save(menu);
+    return {
+      message: 'Menu mis à jour avec succès.',
+      menu: savedMenu,
+    };
   }
 
   remove(id: number) {

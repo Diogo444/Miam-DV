@@ -17,6 +17,13 @@
           {{ error() }}
         </div>
         }
+        @if (success()) {
+        <div
+          class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-900 dark:border-green-500/40 dark:bg-green-500/10 dark:text-green-100"
+        >
+          {{ success() }}
+        </div>
+        }
 
         <div
           class="mb-5 flex flex-col gap-3 rounded-lg border border-dashed border-primary/40 bg-primary-light/30 px-4 py-3 text-sm text-text-main shadow-inner dark:border-primary/25 dark:bg-background-dark/60"
@@ -157,14 +164,14 @@
             class="md:col-span-2 mt-4 flex items-center justify-end gap-4 border-t border-primary-light pt-4 dark:border-primary/20"
           >
             <button
-              class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-base font-medium leading-6 text-text-muted shadow-sm transition-all hover:bg-primary-light/80 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background-light dark:text-primary/90 dark:hover:bg-primary/10 dark:focus:ring-offset-background-dark"
+              class="menu-btn menu-btn--ghost inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-base font-medium leading-6 text-text-muted shadow-sm transition-all hover:bg-primary-light/80 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background-light dark:text-primary/90 dark:hover:bg-primary/10 dark:focus:ring-offset-background-dark"
               type="button"
               [disabled]="loading()"
             >
               <span>Annuler</span>
             </button>
             <button
-              class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 py-2 text-base font-medium leading-6 text-white shadow-sm transition-all hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background-light dark:focus:ring-offset-background-dark"
+              class="menu-btn menu-btn--primary inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-primary px-4 py-2 text-base font-medium leading-6 text-white shadow-sm transition-all hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background-light dark:focus:ring-offset-background-dark"
               type="submit"
               [disabled]="!selectedMenu() || loading()"
             >

@@ -16,7 +16,8 @@ exports.SuggestionsController = void 0;
 const common_1 = require("@nestjs/common");
 const suggestions_service_1 = require("./suggestions.service");
 const create_suggestion_dto_1 = require("./dto/create-suggestion.dto");
-const update_suggestion_dto_1 = require("./dto/update-suggestion.dto");
+const passport_1 = require("@nestjs/passport");
+const roles_decorator_1 = require("../common/decorators/roles.decorator");
 let SuggestionsController = class SuggestionsController {
     suggestionsService;
     constructor(suggestionsService) {
@@ -28,11 +29,8 @@ let SuggestionsController = class SuggestionsController {
     findAll() {
         return this.suggestionsService.findAll();
     }
-    findOne(id) {
-        return this.suggestionsService.findOne(+id);
-    }
-    update(id, updateSuggestionDto) {
-        return this.suggestionsService.update(+id, updateSuggestionDto);
+    accept(id) {
+        return this.suggestionsService.accept(+id);
     }
     remove(id) {
         return this.suggestionsService.remove(+id);
@@ -47,26 +45,20 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SuggestionsController.prototype, "create", null);
 __decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, roles_decorator_1.Roles)('admin'),
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], SuggestionsController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
+    (0, common_1.Post)('accept/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], SuggestionsController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_suggestion_dto_1.UpdateSuggestionDto]),
-    __metadata("design:returntype", void 0)
-], SuggestionsController.prototype, "update", null);
+], SuggestionsController.prototype, "accept", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),

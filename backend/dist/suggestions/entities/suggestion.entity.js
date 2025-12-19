@@ -14,7 +14,7 @@ const typeorm_1 = require("typeorm");
 let Suggestion = class Suggestion {
     id;
     type;
-    suggestion;
+    content;
 };
 exports.Suggestion = Suggestion;
 __decorate([
@@ -22,13 +22,13 @@ __decorate([
     __metadata("design:type", Number)
 ], Suggestion.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ enum: ['Blague', 'Proverbe'] }),
     __metadata("design:type", String)
 ], Suggestion.prototype, "type", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ 'unique': true }),
+    (0, typeorm_1.Column)({ name: 'suggestion', unique: true }),
     __metadata("design:type", String)
-], Suggestion.prototype, "suggestion", void 0);
+], Suggestion.prototype, "content", void 0);
 exports.Suggestion = Suggestion = __decorate([
     (0, typeorm_1.Entity)('suggestions')
 ], Suggestion);

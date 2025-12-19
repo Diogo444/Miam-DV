@@ -1,10 +1,11 @@
 <div class="relative text-text-main dark:text-background-light">
-  <div
-    *ngIf="sidebarOpen"
-    class="fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 md:hidden"
-    aria-hidden="true"
-    (click)="closeSidebar()"
-  ></div>
+  @if (sidebarOpen) {
+    <div
+      class="fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 md:hidden"
+      aria-hidden="true"
+      (click)="closeSidebar()"
+    ></div>
+  }
 
   <div
     class="md:hidden sticky top-0 z-30 flex h-16 items-center justify-between border-b border-primary-light bg-background-light px-4 py-3 shadow-sm dark:border-primary/20 dark:bg-background-dark"
@@ -79,25 +80,27 @@
 
     <nav class="flex-1 overflow-y-auto px-4 py-6">
       <ul class="space-y-2">
-        <li *ngFor="let link of links">
-          <a
-            [routerLink]="link.commands"
-            routerLinkActive="bg-primary-light text-primary font-semibold dark:bg-primary/30 dark:text-white"
-            [routerLinkActiveOptions]="{ exact: true }"
-            class="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-text-main transition-colors hover:bg-primary-light/80 hover:text-primary dark:text-background-light/75 dark:hover:bg-primary/20 dark:hover:text-white"
-            (click)="closeSidebar()"
-            #rla="routerLinkActive"
-          >
-            <span
-              class="material-symbols-outlined text-lg transition-colors"
-              [class.text-primary]="rla.isActive && theme === 'light'"
-              [class.text-white]="rla.isActive && theme === 'dark'"
+        @for (link of links; track link.label) {
+          <li>
+            <a
+              [routerLink]="link.commands"
+              routerLinkActive="bg-primary-light text-primary font-semibold dark:bg-primary/30 dark:text-white"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-text-main transition-colors hover:bg-primary-light/80 hover:text-primary dark:text-background-light/75 dark:hover:bg-primary/20 dark:hover:text-white"
+              (click)="closeSidebar()"
+              #rla="routerLinkActive"
             >
-              {{ link.icon }}
-            </span>
-            <span>{{ link.label }}</span>
-          </a>
-        </li>
+              <span
+                class="material-symbols-outlined text-lg transition-colors"
+                [class.text-primary]="rla.isActive && theme === 'light'"
+                [class.text-white]="rla.isActive && theme === 'dark'"
+              >
+                {{ link.icon }}
+              </span>
+              <span>{{ link.label }}</span>
+            </a>
+          </li>
+        }
       </ul>
     </nav>
 

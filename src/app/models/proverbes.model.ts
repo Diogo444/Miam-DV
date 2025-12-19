@@ -3,3 +3,8 @@ export interface Proverbe {
   type: string
   content: string
 }
+
+export interface ProverbeResponse {
+  message: string
+  proverbe: Proverbe | null
+}

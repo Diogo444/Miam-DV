@@ -26,10 +26,18 @@ let ProverbesService = class ProverbesService {
         const existing = await this.repo.findOne({ where: { id: 1 } });
         if (existing) {
             await this.repo.update(1, dto);
-            return this.repo.findOneBy({ id: 1 });
+            const proverbe = await this.repo.findOneBy({ id: 1 });
+            return {
+                message: 'Proverbe mis à jour avec succès.',
+                proverbe,
+            };
         }
         const data = this.repo.create({ ...dto, id: 1 });
-        return this.repo.save(data);
+        const proverbe = await this.repo.save(data);
+        return {
+            message: 'Proverbe ajouté avec succès.',
+            proverbe,
+        };
     }
     findOne() {
         return this.repo.findOneBy({ id: 1 });

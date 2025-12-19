@@ -16,3 +16,12 @@ export interface createMenuPayload {
   fromage: string
   dessert: string
 }
+
+export interface MenuResponse {
+  message: string
+  menu: menus | null
+}
+
+export interface AddMenuResponse extends MenuResponse {
+  created: boolean
+}

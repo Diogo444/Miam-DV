@@ -1,1 +1,146 @@
-<p>Afficher les suggestions fonctionne !</p>
+<div class="flex flex-col items-stretch justify-start">
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold leading-tight tracking-[-0.015em]">
+      Voir les proverbes ou blagues suggérées
+    </h2>
+    <p class="text-text-muted dark:text-primary/90 text-base font-normal leading-normal mt-1">
+      Validez ou rejetez les suggestions des utilisateurs.
+    </p>
+    @if (statusMessage) {
+      <p
+        class="mt-4 rounded-lg border px-4 py-3 text-sm"
+        [ngClass]="{
+          'border-green-200 bg-green-50 text-green-900 dark:border-green-500/40 dark:bg-green-500/10 dark:text-green-100':
+            statusMessage.type === 'success',
+          'border-red-200 bg-red-50 text-red-700 dark:border-red-500/50 dark:bg-red-500/10 dark:text-red-200':
+            statusMessage.type === 'error'
+        }"
+        [attr.role]="statusMessage.type === 'error' ? 'alert' : 'status'"
+        [attr.aria-live]="statusMessage.type === 'error' ? 'assertive' : 'polite'"
+      >
+        {{ statusMessage.text }}
+      </p>
+    }
+  </div>
+
+  <div class="md:hidden mb-4">
+    <div class="flex bg-primary-light dark:bg-primary/20 p-1 rounded-full">
+      <button
+        type="button"
+        class="w-1/2 py-2 px-4 rounded-full text-sm font-semibold transition-colors duration-300"
+        [ngClass]="{
+          'bg-primary text-white shadow-md': activeTab === 'jokes',
+          'text-text-muted dark:text-primary/90': activeTab !== 'jokes'
+        }"
+        (click)="setTab('jokes')"
+      >
+        Blagues
+      </button>
+      <button
+        type="button"
+        class="w-1/2 py-2 px-4 rounded-full text-sm font-semibold transition-colors duration-300"
+        [ngClass]="{
+          'bg-primary text-white shadow-md': activeTab === 'proverbs',
+          'text-text-muted dark:text-primary/90': activeTab !== 'proverbs'
+        }"
+        (click)="setTab('proverbs')"
+      >
+        Proverbes
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div
+      class="flex flex-col gap-4"
+      [ngClass]="{
+        'block': activeTab === 'jokes',
+        'hidden md:block': activeTab !== 'jokes'
+      }"
+    >
+      <h3 class="text-xl font-semibold leading-tight tracking-[-0.015em] hidden md:block">
+        Blagues suggérées
+      </h3>
+
+      @if (jokes.length > 0) {
+        @for (suggestion of jokes; track suggestion.id) {
+          <div
+            class="rounded-xl shadow-lg bg-background-light dark:bg-background-dark/50 border border-primary-light dark:border-primary/20 p-4 flex flex-col gap-4"
+          >
+            <p class="text-base text-text-main dark:text-background-light flex-1">
+              {{ suggestion.content }}
+            </p>
+            <div class="flex justify-end items-center gap-2 border-t border-primary-light dark:border-primary/20 pt-4">
+              <button
+                type="button"
+                aria-label="Rejeter"
+                class="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 transition-colors"
+                (click)="rejectSuggestion('jokes', suggestion)"
+              >
+                <span class="material-symbols-outlined text-base">close</span>
+              </button>
+              <button
+                type="button"
+                aria-label="Approuver"
+                class="p-2 rounded-full hover:bg-primary-light dark:hover:bg-primary/10 text-primary dark:text-green-400 transition-colors"
+                (click)="approveSuggestion('jokes', suggestion)"
+              >
+                <span class="material-symbols-outlined text-base">done</span>
+              </button>
+            </div>
+          </div>
+        }
+      } @else {
+        <div class="rounded-xl border border-primary-light dark:border-primary/20 p-4 text-sm text-text-muted dark:text-primary/90">
+          Aucune blague en attente.
+        </div>
+      }
+    </div>
+
+    <div
+      class="flex flex-col gap-4"
+      [ngClass]="{
+        'block': activeTab === 'proverbs',
+        'hidden md:block': activeTab !== 'proverbs'
+      }"
+    >
+      <h3 class="text-xl font-semibold leading-tight tracking-[-0.015em] hidden md:block">
+        Proverbes suggérés
+      </h3>
+
+      @if (proverbs.length > 0) {
+        @for (suggestion of proverbs; track suggestion.id) {
+          <div
+            class="rounded-xl shadow-lg bg-background-light dark:bg-background-dark/50 border border-primary-light dark:border-primary/20 p-4 flex flex-col gap-4"
+          >
+            <p class="text-base text-text-main dark:text-background-light flex-1">
+              {{ suggestion.content }}
+            </p>
+            <div class="flex justify-end items-center gap-2 border-t border-primary-light dark:border-primary/20 pt-4">
+              <button
+                type="button"
+                aria-label="Rejeter"
+                class="p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 transition-colors"
+                (click)="rejectSuggestion('proverbs', suggestion)"
+              >
+                <span class="material-symbols-outlined text-base">close</span>
+              </button>
+              <button
+                type="button"
+                aria-label="Approuver"
+                class="p-2 rounded-full hover:bg-primary-light dark:hover:bg-primary/10 text-primary dark:text-green-400 transition-colors"
+                (click)="approveSuggestion('proverbs', suggestion)"
+              >
+                <span class="material-symbols-outlined text-base">done</span>
+              </button>
+            </div>
+          </div>
+        }
+      } @else {
+        <div class="rounded-xl border border-primary-light dark:border-primary/20 p-4 text-sm text-text-muted dark:text-primary/90">
+          Aucun proverbe en attente.
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 export declare class Suggestion {
     id: number;
-    type: string;
-    suggestion: string;
+    type: 'Blague' | 'Proverbe';
+    content: string;
 }

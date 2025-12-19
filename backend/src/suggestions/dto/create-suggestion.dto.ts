@@ -1,1 +1,4 @@
-export class CreateSuggestionDto {}
+export class CreateSuggestionDto {
+    content: string;
+    type: 'Blague' | 'Proverbe';
+}
