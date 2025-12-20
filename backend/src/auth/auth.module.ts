@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { Logger, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UsersModule } from '../users/users.module';
+import { AdminModule } from '../admin/admin.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import type { StringValue } from 'ms';
@@ -14,7 +14,7 @@ import { RolesGuard } from '../common/guards/auth/roles.guard';
 
 @Module({
   imports: [
-    UsersModule,
+    AdminModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     (() => {
       const secret = process.env.JWT_SECRET;

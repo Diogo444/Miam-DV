@@ -1,43 +1,44 @@
 import { ConflictException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { AdminService } from '../admin/admin.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 import { User } from '../users/entities/user.entity';
+
+export type AuthUser = Omit<User, 'password'> & { password?: string };
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
-  constructor(private users: UsersService, private jwt: JwtService) {}
+  constructor(private admins: AdminService, private jwt: JwtService) {}
 
   async validateUser(username: string, password: string) {
-    const user = await this.users.findByUsername(username);
+    const user = await this.admins.findByUsername(username);
     if (!user) return null;
 
     const match = await bcrypt.compare(password, user.password);
     return match ? this.toSafeUser(user) : null;
   }
 
-  async register(payload: CreateUserDto) {
-    const existing = await this.users.findByUsername(payload.username);
+  async register(payload: CreateAdminDto) {
+    const existing = await this.admins.findByUsername(payload.username);
 
     if (existing) {
       throw new ConflictException('Username already exists');
     }
 
-    const role = payload.role || 'admin';
-    const user = await this.users.create(payload.username, payload.password, role);
+    const user = await this.admins.create(payload);
 
     return this.buildAuthResponse(user);
   }
 
-  async login(user: any) {
+  async login(user: AuthUser) {
     return this.buildAuthResponse(user);
   }
 
   async me(user: { id: number }) {
-    const freshUser = await this.users.findById(user.id);
+    const freshUser = await this.admins.findById(user.id);
 
     if (!freshUser) {
       throw new UnauthorizedException('User not found');
@@ -46,7 +47,7 @@ export class AuthService {
     return { user: this.toSafeUser(freshUser) };
   }
 
-  private buildAuthResponse(user: User) {
+  private buildAuthResponse(user: AuthUser) {
     const payload = { sub: user.id, role: user.role };
     const token = this.jwt.sign(payload);
 
@@ -69,7 +70,7 @@ export class AuthService {
     };
   }
 
-  private toSafeUser(user: User) {
+  private toSafeUser(user: AuthUser) {
     const { password, ...safeUser } = user;
     return safeUser;
   }

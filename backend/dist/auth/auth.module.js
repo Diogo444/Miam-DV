@@ -11,7 +11,7 @@ require("dotenv/config");
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
-const users_module_1 = require("../users/users.module");
+const admin_module_1 = require("../admin/admin.module");
 const passport_1 = require("@nestjs/passport");
 const jwt_1 = require("@nestjs/jwt");
 const local_strategy_1 = require("./strategies/local.strategy");
@@ -24,7 +24,7 @@ exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            users_module_1.UsersModule,
+            admin_module_1.AdminModule,
             passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
             (() => {
                 const secret = process.env.JWT_SECRET;

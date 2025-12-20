@@ -4,11 +4,18 @@ import { AdminService } from './admin.service';
 
 describe('AdminController', () => {
   let controller: AdminController;
+  const adminServiceMock = {
+    create: jest.fn(),
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AdminController],
-      providers: [AdminService],
+      providers: [{ provide: AdminService, useValue: adminServiceMock }],
     }).compile();
 
     controller = module.get<AdminController>(AdminController);

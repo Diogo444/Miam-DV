@@ -1,13 +1,13 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UsersService } from '../../users/users.service';
+import { AdminService } from '../../admin/admin.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   private readonly logger = new Logger(JwtStrategy.name);
 
-  constructor(private usersService: UsersService) {
+  constructor(private adminService: AdminService) {
     const secret = process.env.JWT_SECRET;
 
     if (!secret) {
@@ -31,7 +31,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     this.logger.debug(
       `validate() called with payload sub=${payload?.sub}, role=${payload?.role}, exp=${payload?.exp}`,
     );
-    const user = await this.usersService.findById(payload.sub);
+    const user = await this.adminService.findById(payload.sub);
 
     if (!user) {
       this.logger.warn(`User not found for sub=${payload?.sub}`);

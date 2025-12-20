@@ -18,7 +18,7 @@ const auth_service_1 = require("./auth.service");
 const auth_guard_1 = require("../common/guards/auth/auth.guard");
 const roles_guard_1 = require("../common/guards/auth/roles.guard");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
-const create_user_dto_1 = require("../users/dto/create-user.dto");
+const create_admin_dto_1 = require("../admin/dto/create-admin.dto");
 const login_dto_1 = require("./dto/login.dto");
 let AuthController = class AuthController {
     authService;
@@ -29,7 +29,11 @@ let AuthController = class AuthController {
         return this.authService.register(payload);
     }
     async login(_payload, req) {
-        return this.authService.login(req.user);
+        const user = req.user;
+        if (!user) {
+            throw new common_1.UnauthorizedException('Invalid credentials');
+        }
+        return this.authService.login(user);
     }
     async me(req) {
         return this.authService.me(req.user);
@@ -40,7 +44,7 @@ __decorate([
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
+    __metadata("design:paramtypes", [create_admin_dto_1.CreateAdminDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 __decorate([

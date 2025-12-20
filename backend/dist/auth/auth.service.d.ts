@@ -1,29 +1,33 @@
-import { UsersService } from '../users/users.service';
+import { AdminService } from '../admin/admin.service';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+import { CreateAdminDto } from '../admin/dto/create-admin.dto';
+import { User } from '../users/entities/user.entity';
+export type AuthUser = Omit<User, 'password'> & {
+    password?: string;
+};
 export declare class AuthService {
-    private users;
+    private admins;
     private jwt;
     private readonly logger;
-    constructor(users: UsersService, jwt: JwtService);
+    constructor(admins: AdminService, jwt: JwtService);
     validateUser(username: string, password: string): Promise<{
-        id: number;
         username: string;
+        id: number;
         role: string;
     } | null>;
-    register(payload: CreateUserDto): Promise<{
+    register(payload: CreateAdminDto): Promise<{
         access_token: string;
         user: {
-            id: number;
             username: string;
+            id: number;
             role: string;
         };
     }>;
-    login(user: any): Promise<{
+    login(user: AuthUser): Promise<{
         access_token: string;
         user: {
-            id: number;
             username: string;
+            id: number;
             role: string;
         };
     }>;
@@ -31,8 +35,8 @@ export declare class AuthService {
         id: number;
     }): Promise<{
         user: {
-            id: number;
             username: string;
+            id: number;
             role: string;
         };
     }>;

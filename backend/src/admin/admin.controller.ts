@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
-@Controller('admin')
+@Controller('api/admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
@@ -12,21 +14,29 @@ export class AdminController {
     return this.adminService.create(createAdminDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin')
   @Get()
   findAll() {
     return this.adminService.findAll();
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.adminService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin')
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
     return this.adminService.update(+id, updateAdminDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.adminService.remove(+id);

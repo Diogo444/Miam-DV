@@ -14,11 +14,11 @@ exports.JwtStrategy = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const passport_jwt_1 = require("passport-jwt");
-const users_service_1 = require("../../users/users.service");
+const admin_service_1 = require("../../admin/admin.service");
 let JwtStrategy = JwtStrategy_1 = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
-    usersService;
+    adminService;
     logger = new common_1.Logger(JwtStrategy_1.name);
-    constructor(usersService) {
+    constructor(adminService) {
         const secret = process.env.JWT_SECRET;
         if (!secret) {
             throw new Error('JWT_SECRET must be defined');
@@ -29,12 +29,12 @@ let JwtStrategy = JwtStrategy_1 = class JwtStrategy extends (0, passport_1.Passp
             ignoreExpiration: false,
             secretOrKey: secret,
         });
-        this.usersService = usersService;
+        this.adminService = adminService;
         this.logger.debug(`JwtStrategy init: using secret length=${secret.length}, masked=${maskedSecret}`);
     }
     async validate(payload) {
         this.logger.debug(`validate() called with payload sub=${payload?.sub}, role=${payload?.role}, exp=${payload?.exp}`);
-        const user = await this.usersService.findById(payload.sub);
+        const user = await this.adminService.findById(payload.sub);
         if (!user) {
             this.logger.warn(`User not found for sub=${payload?.sub}`);
             throw new common_1.UnauthorizedException('User not found');
@@ -50,6 +50,6 @@ let JwtStrategy = JwtStrategy_1 = class JwtStrategy extends (0, passport_1.Passp
 exports.JwtStrategy = JwtStrategy;
 exports.JwtStrategy = JwtStrategy = JwtStrategy_1 = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [users_service_1.UsersService])
+    __metadata("design:paramtypes", [admin_service_1.AdminService])
 ], JwtStrategy);
 //# sourceMappingURL=jwt.strategy.js.map

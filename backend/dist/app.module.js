@@ -16,7 +16,6 @@ const menus_module_1 = require("./menus/menus.module");
 const proverbes_module_1 = require("./proverbes/proverbes.module");
 const admin_module_1 = require("./admin/admin.module");
 const suggestions_module_1 = require("./suggestions/suggestions.module");
-const users_module_1 = require("./users/users.module");
 const auth_module_1 = require("./auth/auth.module");
 const schedule_1 = require("@nestjs/schedule");
 let AppModule = class AppModule {
@@ -43,7 +42,6 @@ exports.AppModule = AppModule = __decorate([
             proverbes_module_1.ProverbesModule,
             admin_module_1.AdminModule,
             suggestions_module_1.SuggestionsModule,
-            users_module_1.UsersModule,
             auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],

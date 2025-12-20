@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
+import { AdminService } from '../admin/admin.service';
 import { JwtService } from '@nestjs/jwt';
 
 describe('AuthService', () => {
   let service: AuthService;
 
-  const usersServiceMock = {
+  const adminServiceMock = {
     findByUsername: jest.fn(),
     findById: jest.fn(),
     create: jest.fn(),
@@ -20,7 +20,7 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        { provide: UsersService, useValue: usersServiceMock },
+        { provide: AdminService, useValue: adminServiceMock },
         { provide: JwtService, useValue: jwtServiceMock },
       ],
     }).compile();

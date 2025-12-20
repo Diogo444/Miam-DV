@@ -1,12 +1,12 @@
 import { Strategy } from 'passport-jwt';
-import { UsersService } from '../../users/users.service';
+import { AdminService } from '../../admin/admin.service';
 declare const JwtStrategy_base: new (...args: [opt: import("passport-jwt").StrategyOptionsWithRequest] | [opt: import("passport-jwt").StrategyOptionsWithoutRequest]) => Strategy & {
     validate(...args: any[]): unknown;
 };
 export declare class JwtStrategy extends JwtStrategy_base {
-    private usersService;
+    private adminService;
     private readonly logger;
-    constructor(usersService: UsersService);
+    constructor(adminService: AdminService);
     validate(payload: any): Promise<{
         id: number;
         username: string;

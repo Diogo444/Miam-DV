@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
+import { AdminService } from '../admin/admin.service';
 import { JwtService } from '@nestjs/jwt';
 
 describe('AuthController', () => {
   let controller: AuthController;
 
-  const usersServiceMock = {
+  const adminServiceMock = {
     findByUsername: jest.fn(),
     findById: jest.fn(),
     create: jest.fn(),
@@ -22,7 +22,7 @@ describe('AuthController', () => {
       controllers: [AuthController],
       providers: [
         AuthService,
-        { provide: UsersService, useValue: usersServiceMock },
+        { provide: AdminService, useValue: adminServiceMock },
         { provide: JwtService, useValue: jwtServiceMock },
       ],
     }).compile();

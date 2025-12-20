@@ -1,1 +1,232 @@
-<p>Gérer les administrateurs fonctionne !</p>
+<div class="flex-1 p-6">
+  <div class="flex flex-col gap-6">
+    <header class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h2 class="text-2xl font-bold leading-tight tracking-[-0.015em]">Gérer les administrateurs</h2>
+        <p class="text-text-muted dark:text-primary/90 text-base font-normal leading-normal mt-1">
+          Ajoutez, modifiez ou supprimez des administrateurs.
+        </p>
+      </div>
+      <button
+        class="flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-base font-bold text-white shadow-lg transition-colors hover:bg-primary/90 dark:text-background-light"
+        type="button"
+        (click)="openCreateModal()"
+      >
+        <span class="material-symbols-outlined">add</span>
+        <span>Créer un administrateur</span>
+      </button>
+    </header>
+
+    @if (admins.length > 0) {
+      <div class="w-full overflow-hidden rounded-xl border border-primary-light dark:border-primary/20 shadow-lg bg-background-light dark:bg-background-dark/50">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="border-b border-primary-light dark:border-primary/20">
+                <th class="p-4 text-sm font-semibold text-text-muted dark:text-primary/90">Nom d'utilisateur</th>
+                <th class="p-4 text-sm font-semibold text-text-muted dark:text-primary/90 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (admin of admins; track admin.id) {
+                <tr class="group border-b border-primary-light dark:border-primary/20 last:border-b-0 hover:bg-primary-light/50 dark:hover:bg-primary/10 transition-colors">
+                  <td class="p-4 font-medium text-text-main dark:text-background-light">{{ admin.username }}</td>
+                  <td class="p-4">
+                    <div class="flex items-center justify-end gap-2">
+                      <button
+                        class="flex items-center gap-2 rounded-md bg-primary-light/80 dark:bg-primary/20 px-3 py-1.5 text-sm font-semibold text-primary dark:text-primary-light transition-colors hover:bg-primary-light dark:hover:bg-primary/30"
+                        type="button"
+                        (click)="openEditModal(admin)"
+                      >
+                        <span class="material-symbols-outlined text-base">edit</span>
+                        <span class="hidden sm:inline">Modifier</span>
+                      </button>
+                      <button
+                        class="flex items-center gap-2 rounded-md bg-red-100/80 dark:bg-red-900/20 px-3 py-1.5 text-sm font-semibold text-red-600 dark:text-red-400 transition-colors hover:bg-red-100 dark:hover:bg-red-900/40"
+                        type="button"
+                        (click)="openDeleteModal(admin)"
+                      >
+                        <span class="material-symbols-outlined text-base">delete</span>
+                        <span class="hidden sm:inline">Supprimer</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    } @else {
+      <div class="rounded-xl border border-dashed border-primary-light/70 dark:border-primary/30 bg-background-light dark:bg-background-dark/40 p-6 text-center shadow-sm">
+        <p class="text-sm text-text-muted dark:text-primary/90">Aucun administrateur pour le moment.</p>
+        <button
+          class="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md transition-colors hover:bg-primary/90 dark:text-background-light"
+          type="button"
+          (click)="openCreateModal()"
+        >
+          <span class="material-symbols-outlined text-base">person_add</span>
+          <span>Créer le premier administrateur</span>
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (activeModal !== null) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+      <div class="fixed inset-0 bg-black/50 transition-opacity" (click)="closeModal()"></div>
+
+      @if (isFormModalOpen) {
+        <div
+          class="relative w-full max-w-md transform overflow-hidden rounded-xl bg-background-light dark:bg-background-dark shadow-2xl transition-all"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="admin-form-title"
+          (click)="$event.stopPropagation()"
+        >
+          <form (submit)="saveAdmin($event)">
+            <div class="p-6">
+              <div class="sm:flex sm:items-start">
+                <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary-light/70 dark:bg-primary/20 sm:mx-0 sm:h-10 sm:w-10">
+                  @if (activeModal === 'create') {
+                    <span class="material-symbols-outlined text-primary dark:text-primary-light">person_add</span>
+                  } @else {
+                    <span class="material-symbols-outlined text-primary dark:text-primary-light">edit</span>
+                  }
+                </div>
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                  <h3 class="text-lg font-semibold leading-6 text-text-main dark:text-background-light" id="admin-form-title">
+                    @if (activeModal === 'create') { Créer un administrateur } @else { Modifier l'administrateur }
+                  </h3>
+                  <p class="mt-2 text-sm text-text-muted dark:text-primary/90">
+                    @if (activeModal === 'create') {
+                      Renseignez le nom d'utilisateur pour créer un nouvel administrateur.
+                    } @else {
+                      Mettez à jour le nom d'utilisateur sélectionné.
+                    }
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-5">
+                <label class="block text-sm font-medium text-text-main dark:text-background-light" for="admin-username">
+                  Nom d'utilisateur
+                </label>
+                <input
+                  #usernameInput
+                  id="admin-username"
+                  class="mt-2 w-full rounded-lg border border-primary-light/80 bg-transparent px-3 py-2 text-sm text-text-main placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 dark:border-primary/30 dark:text-background-light"
+                  [value]="draft.username"
+                  (input)="draft.username = usernameInput.value"
+                  placeholder="ex: jeanne.doe"
+                  autocomplete="off"
+                />
+                @if (!draftValid) {
+                  <p class="mt-2 text-xs font-medium text-red-600 dark:text-red-400">Le nom d'utilisateur est requis.</p>
+                }
+              </div>
+
+            <div class="mt-4">
+              <label class="block text-sm font-medium text-text-main dark:text-background-light" for="admin-password">
+                @if (activeModal === 'edit') { Nouveau mot de passe } @else { Mot de passe }
+              </label>
+              <input
+                #passwordInput
+                id="admin-password"
+                type="password"
+                class="mt-2 w-full rounded-lg border border-primary-light/80 bg-transparent px-3 py-2 text-sm text-text-main placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 dark:border-primary/30 dark:text-background-light"
+                [value]="draft.password"
+                (input)="draft.password = passwordInput.value"
+                placeholder="Minimum 1 caractère"
+                autocomplete="new-password"
+              />
+            </div>
+
+            <div class="mt-4">
+              <label class="block text-sm font-medium text-text-main dark:text-background-light" for="admin-confirm-password">
+                Confirmer le mot de passe
+              </label>
+              <input
+                #confirmPasswordInput
+                id="admin-confirm-password"
+                type="password"
+                class="mt-2 w-full rounded-lg border border-primary-light/80 bg-transparent px-3 py-2 text-sm text-text-main placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 dark:border-primary/30 dark:text-background-light"
+                [value]="draft.confirmPassword"
+                (input)="draft.confirmPassword = confirmPasswordInput.value"
+                placeholder="Retapez le mot de passe"
+                autocomplete="new-password"
+              />
+              @if (hasPasswordInput && !passwordValid) {
+                <p class="mt-2 text-xs font-medium text-red-600 dark:text-red-400">
+                  Les mots de passe ne correspondent pas.
+                </p>
+              }
+            </div>
+            </div>
+
+            <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 bg-primary-light/30 dark:bg-primary/10 px-6 py-4">
+              <button
+                class="w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-primary/30 shadow-sm px-4 py-2 bg-background-light dark:bg-background-dark/80 text-base font-medium text-text-main dark:text-background-light hover:bg-gray-50 dark:hover:bg-background-dark transition-colors sm:w-auto sm:text-sm"
+                type="button"
+                (click)="closeModal()"
+              >
+                Annuler
+              </button>
+              <button
+                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:bg-gray-400 sm:w-auto sm:text-sm"
+              [disabled]="!canSubmit"
+              type="submit"
+            >
+              @if (activeModal === 'create') { Créer } @else { Mettre à jour }
+            </button>
+            </div>
+          </form>
+        </div>
+      } @else if (isDeleteModalOpen) {
+        <div
+          class="relative w-full max-w-md transform overflow-hidden rounded-xl bg-background-light dark:bg-background-dark shadow-2xl transition-all"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="admin-delete-title"
+          (click)="$event.stopPropagation()"
+        >
+          <div class="p-6">
+            <div class="sm:flex sm:items-start">
+              <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30 sm:mx-0 sm:h-10 sm:w-10">
+                <span class="material-symbols-outlined text-red-600 dark:text-red-400">warning</span>
+              </div>
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <h3 class="text-lg font-semibold leading-6 text-text-main dark:text-background-light" id="admin-delete-title">
+                  Supprimer l'administrateur
+                </h3>
+                <div class="mt-2">
+                  <p class="text-sm text-text-muted dark:text-primary/90">
+                    Êtes-vous sûr de vouloir supprimer l'administrateur
+                    <strong class="text-text-main dark:text-background-light">{{ selectedAdmin?.username }}</strong>
+                    ? Cette action est irréversible.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 bg-primary-light/30 dark:bg-primary/10 px-6 py-4">
+            <button
+              class="w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-primary/30 shadow-sm px-4 py-2 bg-background-light dark:bg-background-dark/80 text-base font-medium text-text-main dark:text-background-light hover:bg-gray-50 dark:hover:bg-background-dark transition-colors sm:w-auto sm:text-sm"
+              type="button"
+              (click)="closeModal()"
+            >
+              Annuler
+            </button>
+            <button
+              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 transition-colors sm:w-auto sm:text-sm"
+              type="button"
+              (click)="confirmDelete()"
+            >
+              Confirmer la suppression
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

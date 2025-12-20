@@ -45,38 +45,37 @@ var AuthService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
-const users_service_1 = require("../users/users.service");
+const admin_service_1 = require("../admin/admin.service");
 const jwt_1 = require("@nestjs/jwt");
 const bcrypt = __importStar(require("bcrypt"));
 let AuthService = AuthService_1 = class AuthService {
-    users;
+    admins;
     jwt;
     logger = new common_1.Logger(AuthService_1.name);
-    constructor(users, jwt) {
-        this.users = users;
+    constructor(admins, jwt) {
+        this.admins = admins;
         this.jwt = jwt;
     }
     async validateUser(username, password) {
-        const user = await this.users.findByUsername(username);
+        const user = await this.admins.findByUsername(username);
         if (!user)
             return null;
         const match = await bcrypt.compare(password, user.password);
         return match ? this.toSafeUser(user) : null;
     }
     async register(payload) {
-        const existing = await this.users.findByUsername(payload.username);
+        const existing = await this.admins.findByUsername(payload.username);
         if (existing) {
             throw new common_1.ConflictException('Username already exists');
         }
-        const role = payload.role || 'admin';
-        const user = await this.users.create(payload.username, payload.password, role);
+        const user = await this.admins.create(payload);
         return this.buildAuthResponse(user);
     }
     async login(user) {
         return this.buildAuthResponse(user);
     }
     async me(user) {
-        const freshUser = await this.users.findById(user.id);
+        const freshUser = await this.admins.findById(user.id);
         if (!freshUser) {
             throw new common_1.UnauthorizedException('User not found');
         }
@@ -104,6 +103,6 @@ let AuthService = AuthService_1 = class AuthService {
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = AuthService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [users_service_1.UsersService, jwt_1.JwtService])
+    __metadata("design:paramtypes", [admin_service_1.AdminService, jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

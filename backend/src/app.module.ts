@@ -9,7 +9,6 @@ import { MenusModule } from './menus/menus.module';
 import { ProverbesModule } from './proverbes/proverbes.module';
 import { AdminModule } from './admin/admin.module';
 import { SuggestionsModule } from './suggestions/suggestions.module';
-import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
@@ -34,7 +33,6 @@ import { ScheduleModule } from '@nestjs/schedule';
     ProverbesModule,
     AdminModule,
     SuggestionsModule,
-    UsersModule,
     AuthModule,
   ],
   controllers: [AppController],
