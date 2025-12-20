@@ -5,7 +5,7 @@ import { UpdateAdminDto } from './dto/update-admin.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
-@Controller('api/admin')
+@Controller('api/admins')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 

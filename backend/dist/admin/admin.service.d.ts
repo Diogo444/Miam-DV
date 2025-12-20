@@ -9,6 +9,7 @@ export declare class AdminService {
         id: number;
         username: string;
         role: string;
+        tokenVersion: number;
     }>;
     findAll(): Promise<User[]>;
     findOne(id: number): Promise<User | null>;

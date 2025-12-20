@@ -14,4 +14,7 @@ export class User {
 
   @Column({ default: 'admin' })
   role: string;
+
+  @Column({ default: 0 })
+  tokenVersion: number;
 }

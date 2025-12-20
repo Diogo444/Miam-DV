@@ -48,7 +48,8 @@ export class AuthService {
   }
 
   private buildAuthResponse(user: AuthUser) {
-    const payload = { sub: user.id, role: user.role };
+    const tokenVersion = user.tokenVersion ?? 0;
+    const payload = { sub: user.id, role: user.role, tokenVersion };
     const token = this.jwt.sign(payload);
 
     // Debug logs to trace token generation
@@ -61,7 +62,7 @@ export class AuthService {
         : secret ?? 'undefined';
 
     this.logger.debug(
-      `AuthService.buildAuthResponse -> token length=${token.length}, masked=${maskedToken}, payload sub=${payload.sub}, role=${payload.role}, secret length=${secret?.length ?? 0}, masked=${maskedSecret}`,
+      `AuthService.buildAuthResponse -> token length=${token.length}, masked=${maskedToken}, payload sub=${payload.sub}, role=${payload.role}, tokenVersion=${tokenVersion}, secret length=${secret?.length ?? 0}, masked=${maskedSecret}`,
     );
 
     return {

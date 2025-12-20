@@ -38,6 +38,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('User not found');
     }
 
+    const currentVersion = user.tokenVersion ?? 0;
+    const payloadVersion =
+      typeof payload?.tokenVersion === 'number'
+        ? payload.tokenVersion
+        : Number(payload?.tokenVersion);
+
+    if (!Number.isFinite(payloadVersion) || payloadVersion !== currentVersion) {
+      this.logger.warn(
+        `Token version mismatch for sub=${payload?.sub}: token=${payloadVersion}, db=${currentVersion}`,
+      );
+      throw new UnauthorizedException('Token revoked');
+    }
+
     this.logger.debug(
       `User resolved for sub=${payload?.sub}: username=${user.username}, role=${user.role}`,
     );

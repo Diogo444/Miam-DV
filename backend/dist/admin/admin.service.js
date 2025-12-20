@@ -82,13 +82,13 @@ let AdminService = class AdminService {
     async findByUsername(username) {
         return this.adminRepository.findOne({
             where: { username },
-            select: ['id', 'username', 'password', 'role'],
+            select: ['id', 'username', 'password', 'role', 'tokenVersion'],
         });
     }
     async findById(id) {
         return this.adminRepository.findOne({
             where: { id },
-            select: ['id', 'username', 'role'],
+            select: ['id', 'username', 'role', 'tokenVersion'],
         });
     }
     async update(id, updateAdminDto) {
@@ -106,6 +106,7 @@ let AdminService = class AdminService {
             return this.findOne(id);
         }
         await this.adminRepository.update({ id }, updatePayload);
+        await this.adminRepository.increment({ id }, 'tokenVersion', 1);
         return this.findOne(id);
     }
     async remove(id) {

@@ -4,6 +4,7 @@ import { menus, createMenuPayload, AddMenuResponse, MenuResponse } from '../../m
 import { Proverbe, ProverbeResponse } from '../../models/proverbes.model';
 import { LoginResponse } from '../../models/auth.model';
 import { Suggestion } from '../../models/suggestions.model';
+import { Admin } from '../../models/admin.models';
 
 @Injectable({
   providedIn: 'root',
@@ -65,6 +66,22 @@ export class Api {
 
   removeSuggestion(id: number){
     return this.http.delete(`${this.baseUrl}/suggestions/${id}`);
+  }
+
+  getAdminList(){
+    return this.http.get<Admin[]>(`${this.baseUrl}/admins`);
+  }
+
+  addAdmin(admin: { username: string; password: string }){
+    return this.http.post<Admin>(`${this.baseUrl}/admins`, admin);
+  }
+
+  updateAdmin(id: number, admin: Partial<{ username: string; password: string }>){
+    return this.http.patch<Admin>(`${this.baseUrl}/admins/${id}`, admin);
+  }
+
+  deleteAdmin(id: number){
+    return this.http.delete(`${this.baseUrl}/admins/${id}`); 
   }
 
 

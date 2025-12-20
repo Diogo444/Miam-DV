@@ -1,128 +1,163 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Admin, AdminDraft, ModalMode } from '../../../models/admin.models';
+import { Api } from '../../../services/api/api';
 
-type ModalMode = 'create' | 'edit' | 'delete' | null;
-
-type Admin = {
-  id: number;
-  username: string;
-  passwordUpdatedAt?: string;
-};
-
-type AdminDraft = {
-  username: string;
-  password: string;
-  confirmPassword: string;
-};
 
 @Component({
   selector: 'app-gere-admins',
   standalone: true,
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './gere-admins.html',
   styleUrl: './gere-admins.scss',
 })
-export class GereAdmins {
-  admins: Admin[] = [
-    { id: 1, username: 'jeanne.doe' },
-    { id: 2, username: 'pierre.martin' },
-    { id: 3, username: 'aline.bernard' },
-  ];
+export class GereAdmins implements OnInit {
+  readonly admins = signal<Admin[]>([]);
+  readonly activeModal = signal<ModalMode>(null);
+  readonly selectedAdmin = signal<Admin | null>(null);
+  readonly draft = signal<AdminDraft>({ username: '', password: '', confirmPassword: '' });
 
-  activeModal: ModalMode = null;
-  selectedAdmin: Admin | null = null;
-  draft: AdminDraft = { username: '', password: '', confirmPassword: '' };
+  constructor(protected api: Api){}
 
-  private nextId = 4;
+  readonly isFormModalOpen = computed(() => {
+    const modal = this.activeModal();
+    return modal === 'create' || modal === 'edit';
+  });
 
-  get isFormModalOpen(): boolean {
-    return this.activeModal === 'create' || this.activeModal === 'edit';
+  ngOnInit(): void {
+    this.getAdminList();
   }
 
-  get isDeleteModalOpen(): boolean {
-    return this.activeModal === 'delete';
+  getAdminList(): void {
+    this.api.getAdminList().subscribe((data) => {
+      this.admins.set(data);
+    });
   }
 
-  get draftValid(): boolean {
-    return this.draft.username.trim().length > 0;
-  }
+  readonly isDeleteModalOpen = computed(() => this.activeModal() === 'delete');
 
-  get passwordValid(): boolean {
-    return (
-      this.draft.password.length > 0 && this.draft.password === this.draft.confirmPassword
-    );
-  }
+  readonly draftValid = computed(() => this.draft().username.trim().length > 0);
 
-  get hasPasswordInput(): boolean {
-    return this.draft.password.length > 0 || this.draft.confirmPassword.length > 0;
-  }
+  readonly passwordValid = computed(() => {
+    const current = this.draft();
+    return current.password.length > 0 && current.password === current.confirmPassword;
+  });
 
-  get canSubmit(): boolean {
-    if (!this.draftValid) {
+  readonly hasPasswordInput = computed(() => {
+    const current = this.draft();
+    return current.password.length > 0 || current.confirmPassword.length > 0;
+  });
+
+  readonly canSubmit = computed(() => {
+    if (!this.draftValid()) {
       return false;
     }
 
-    if (this.activeModal === 'create' || this.activeModal === 'edit') {
-      return this.passwordValid;
+    const modal = this.activeModal();
+    if (modal === 'create' || modal === 'edit') {
+      return this.passwordValid();
     }
 
     return false;
-  }
+  });
 
   openCreateModal(): void {
-    this.activeModal = 'create';
-    this.selectedAdmin = null;
-    this.draft = { username: '', password: '', confirmPassword: '' };
+    this.activeModal.set('create');
+    this.selectedAdmin.set(null);
+    this.resetDraft();
   }
 
   openEditModal(admin: Admin): void {
-    this.activeModal = 'edit';
-    this.selectedAdmin = admin;
-    this.draft = { username: admin.username, password: '', confirmPassword: '' };
+    this.activeModal.set('edit');
+    this.selectedAdmin.set(admin);
+    this.draft.set({ username: admin.username, password: '', confirmPassword: '' });
   }
 
   openDeleteModal(admin: Admin): void {
-    this.activeModal = 'delete';
-    this.selectedAdmin = admin;
+    this.activeModal.set('delete');
+    this.selectedAdmin.set(admin);
   }
 
   closeModal(): void {
-    this.activeModal = null;
-    this.selectedAdmin = null;
+    this.activeModal.set(null);
+    this.selectedAdmin.set(null);
+    this.resetDraft();
+  }
+
+  updateDraft(patch: Partial<AdminDraft>): void {
+    this.draft.update((current) => ({ ...current, ...patch }));
   }
 
   saveAdmin(event?: Event): void {
     event?.preventDefault();
-    if (!this.draftValid || !this.passwordValid) {
+    if (!this.draftValid() || !this.passwordValid()) {
       return;
     }
 
-    const username = this.draft.username.trim();
-    if (this.activeModal === 'create') {
-      this.admins = [...this.admins, { id: this.nextId++, username }];
-      this.closeModal();
+    const currentDraft = this.draft();
+    const username = currentDraft.username.trim();
+    const password = currentDraft.password;
+    const modal = this.activeModal();
+
+    if (modal === 'create') {
+      this.api.addAdmin({ username, password }).subscribe({
+        next: (created) => {
+          this.admins.update((admins) => [...admins, created]);
+          this.closeModal();
+        },
+        error: (error) => {
+          console.error("Erreur lors de la création de l'administrateur :", error);
+        },
+      });
       return;
     }
 
-    if (this.activeModal === 'edit' && this.selectedAdmin) {
-      const targetId = this.selectedAdmin.id;
-      this.admins = this.admins.map((admin) =>
-        admin.id === targetId
-          ? { ...admin, username, passwordUpdatedAt: new Date().toISOString() }
-          : admin,
-      );
+    if (modal === 'edit') {
+      const target = this.selectedAdmin();
+      if (!target) {
+        this.closeModal();
+        return;
+      }
+
+      const payload: Partial<{ username: string; password: string }> = { username };
+      if (password.length > 0) {
+        payload.password = password;
+      }
+
+      this.api.updateAdmin(target.id, payload).subscribe({
+        next: (updated) => {
+          this.admins.update((admins) =>
+            admins.map((admin) => (admin.id === updated.id ? updated : admin)),
+          );
+          this.closeModal();
+        },
+        error: (error) => {
+          console.error("Erreur lors de la mise à jour de l'administrateur :", error);
+        },
+      });
     }
 
-    this.closeModal();
   }
 
   confirmDelete(): void {
-    if (!this.selectedAdmin) {
+    const target = this.selectedAdmin();
+    if (!target) {
       this.closeModal();
       return;
     }
 
-    const targetId = this.selectedAdmin.id;
-    this.admins = this.admins.filter((admin) => admin.id !== targetId);
-    this.closeModal();
+    this.api.deleteAdmin(target.id).subscribe({
+      next: () => {
+        this.admins.update((admins) => admins.filter((admin) => admin.id !== target.id));
+        this.closeModal();
+      },
+      error: (error) => {
+        console.error("Erreur lors de la suppression de l'administrateur :", error);
+      },
+    });
+  }
+
+  private resetDraft(): void {
+    this.draft.set({ username: '', password: '', confirmPassword: '' });
   }
 }

@@ -11,33 +11,37 @@ export declare class AuthService {
     private readonly logger;
     constructor(admins: AdminService, jwt: JwtService);
     validateUser(username: string, password: string): Promise<{
-        username: string;
         id: number;
+        username: string;
         role: string;
+        tokenVersion: number;
     } | null>;
     register(payload: CreateAdminDto): Promise<{
         access_token: string;
         user: {
-            username: string;
             id: number;
+            username: string;
             role: string;
+            tokenVersion: number;
         };
     }>;
     login(user: AuthUser): Promise<{
         access_token: string;
         user: {
-            username: string;
             id: number;
+            username: string;
             role: string;
+            tokenVersion: number;
         };
     }>;
     me(user: {
         id: number;
     }): Promise<{
         user: {
-            username: string;
             id: number;
+            username: string;
             role: string;
+            tokenVersion: number;
         };
     }>;
     private buildAuthResponse;

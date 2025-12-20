@@ -8,6 +8,7 @@ export declare class AdminController {
         id: number;
         username: string;
         role: string;
+        tokenVersion: number;
     }>;
     findAll(): Promise<import("../users/entities/user.entity").User[]>;
     findOne(id: string): Promise<import("../users/entities/user.entity").User | null>;

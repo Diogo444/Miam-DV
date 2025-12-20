@@ -39,6 +39,14 @@ let JwtStrategy = JwtStrategy_1 = class JwtStrategy extends (0, passport_1.Passp
             this.logger.warn(`User not found for sub=${payload?.sub}`);
             throw new common_1.UnauthorizedException('User not found');
         }
+        const currentVersion = user.tokenVersion ?? 0;
+        const payloadVersion = typeof payload?.tokenVersion === 'number'
+            ? payload.tokenVersion
+            : Number(payload?.tokenVersion);
+        if (!Number.isFinite(payloadVersion) || payloadVersion !== currentVersion) {
+            this.logger.warn(`Token version mismatch for sub=${payload?.sub}: token=${payloadVersion}, db=${currentVersion}`);
+            throw new common_1.UnauthorizedException('Token revoked');
+        }
         this.logger.debug(`User resolved for sub=${payload?.sub}: username=${user.username}, role=${user.role}`);
         return {
             id: user.id,

@@ -3,4 +3,5 @@ export declare class User {
     username: string;
     password: string;
     role: string;
+    tokenVersion: number;
 }

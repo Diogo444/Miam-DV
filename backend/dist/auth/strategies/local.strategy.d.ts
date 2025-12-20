@@ -7,9 +7,10 @@ export declare class LocalStrategy extends LocalStrategy_base {
     private authService;
     constructor(authService: AuthService);
     validate(username: string, password: string): Promise<{
-        username: string;
         id: number;
+        username: string;
         role: string;
+        tokenVersion: number;
     }>;
 }
 export {};

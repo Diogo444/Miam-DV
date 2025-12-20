@@ -11,6 +11,7 @@ export declare class AuthController {
             id: number;
             username: string;
             role: string;
+            tokenVersion: number;
         };
     }>;
     login(_payload: LoginDto, req: ExpressRequest): Promise<{
@@ -19,6 +20,7 @@ export declare class AuthController {
             id: number;
             username: string;
             role: string;
+            tokenVersion: number;
         };
     }>;
     me(req: ExpressRequest): Promise<{
@@ -26,6 +28,7 @@ export declare class AuthController {
             id: number;
             username: string;
             role: string;
+            tokenVersion: number;
         };
     }>;
 }
