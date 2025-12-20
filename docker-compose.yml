@@ -1,14 +1,50 @@
 services:
-  maimdv-bdd:
+  db:
     image: mysql:8
-    container_name: maimdv-bdd
-
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: "Miamdv-bdd"
-      MYSQL_DATABASE: "miamdv"
-      MYSQL_USER: "miammi"
-      MYSQL_PASSWORD: "BDDmiammi"
-    ports:
-      - "3306:3306"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Miamdv-bdd}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-miamdv}
+      MYSQL_USER: ${MYSQL_USER:-miammi}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-BDDmiammi}
     volumes:
-      - ./data:/var/lib/mysql
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER:-miammi}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-BDDmiammi}
+      DB_NAME: ${MYSQL_DATABASE:-miamdv}
+      DB_SYNC: ${DB_SYNC:-false}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
+      PORT: 3000
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  db-data:

@@ -10,7 +10,7 @@ import { Admin } from '../../models/admin.models';
   providedIn: 'root',
 })
 export class Api {
-  private baseUrl = 'http://localhost:3000/api';
+  private baseUrl = '/api';
   constructor(private http: HttpClient){}
 
   getMenu(){

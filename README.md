@@ -7,20 +7,21 @@ suggestions et administrateurs.
 
 - Frontend: `src/` (Angular standalone components, services, interceptors)
 - Backend: `backend/` (NestJS + TypeORM + MySQL)
-- Base API: `http://localhost:3000/api`
+- Base API: `/api` (proxy dev + reverse-proxy Caddy en prod)
 
 ## Prerequis
 
 - Node.js
 - Un gestionnaire de paquets (pnpm, npm, yarn)
-- MySQL (ou `docker-compose` pour lancer la base)
+- MySQL (ou Docker pour lancer la base)
+- Docker (recommande pour la prod)
 
-## Lancer le projet
+## Lancer le projet (developpement local)
 
 ### Base de donnees (MySQL via Docker)
 
 ```bash
-docker-compose up -d
+docker compose up -d db
 ```
 
 Identifiants par defaut (voir `docker-compose.yml`) :
@@ -38,9 +39,11 @@ Variables d'environnement requises:
 - `DB_USER`
 - `DB_PASSWORD`
 - `DB_NAME`
+- `DB_SYNC` (true/false)
 - `JWT_SECRET`
 - `JWT_EXPIRES_IN` (optionnel, defaut `1d`)
 - `PORT` (optionnel, defaut `3000`)
+- `CORS_ORIGIN` (optionnel, ex: `http://localhost:4200`)
 
 ```bash
 cd backend
@@ -48,7 +51,7 @@ pnpm install
 pnpm start:dev
 ```
 
-Le back active `synchronize: true` pour creer/mettre a jour les tables.
+Le back utilise `DB_SYNC=true` pour creer/mettre a jour les tables en dev.
 
 ### Frontend (Angular)
 
@@ -57,7 +60,28 @@ pnpm install
 pnpm start
 ```
 
-Le front tourne sur `http://localhost:4200` et appelle l'API sur `http://localhost:3000/api`.
+Le front tourne sur `http://localhost:4200` et utilise le proxy `/api` vers le backend.
+
+## Deploiement (Docker + Caddy)
+
+1) Copier `.env.example` en `.env` et definir les variables.
+2) Lancer l'infra:
+
+```bash
+docker compose up -d --build
+```
+
+- Front + reverse-proxy: `http://localhost`
+- API: `http://localhost/api`
+
+Pour activer HTTPS avec Caddy, remplacez `:80` par votre domaine dans `Caddyfile`.
+
+## Notes production
+
+- Definir un `JWT_SECRET` fort dans `.env`.
+- Passer `DB_SYNC=false` et gerer les migrations TypeORM pour la base.
+- Fixer `CORS_ORIGIN` a votre domaine (ex: `https://votre-domaine.tld`).
+- Verifier quelles routes doivent etre protegees (certains endpoints sont publics par defaut).
 
 ## Authentification et securite
 
