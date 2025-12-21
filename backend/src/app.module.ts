@@ -28,7 +28,11 @@ import { ScheduleModule } from '@nestjs/schedule';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: process.env.DB_SYNC === 'true',
+
+      retryAttempts: 20,
+      retryDelay: 3000,
     }),
+
     MenusModule,
     ProverbesModule,
     AdminModule,
