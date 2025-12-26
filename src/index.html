@@ -13,5 +13,18 @@
 </head>
 <body>
   <app-root></app-root>
+  <script>
+(async () => {
+  if ('serviceWorker' in navigator) {
+    const regs = await navigator.serviceWorker.getRegistrations();
+    for (const reg of regs) await reg.unregister();
+  }
+  if ('caches' in window) {
+    const keys = await caches.keys();
+    for (const k of keys) await caches.delete(k);
+  }
+})();
+</script>
+
 </body>
 </html>
