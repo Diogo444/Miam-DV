@@ -84,24 +84,6 @@
           </button>
         </div>
 
-        @if (submitSuccess()) {
-        <div
-          class="flex items-center gap-2 rounded-lg border border-primary-light bg-primary-light/60 px-4 py-3 text-sm text-primary"
-        >
-          <span class="material-symbols-outlined text-primary">check_circle</span>
-          <span>Merci ! Votre proposition a été envoyée.</span>
-        </div>
-        }
-
-        @if (submitError()) {
-        <div
-          class="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-        >
-          <span class="material-symbols-outlined">error</span>
-          <span>{{ submitError() }}</span>
-        </div>
-        }
-
         @if (open()) {
         <div class="mt-2">
           <form [formGroup]="form" (ngSubmit)="submitSuggestion()" class="flex flex-col gap-4">

@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Api } from '../../../services/api/api';
 import { Proverbe as ProverbeModel } from '../../../models/proverbes.model';
 import { CommonModule } from '@angular/common';
@@ -7,23 +8,19 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-proverbe',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, MatSnackBarModule],
   templateUrl: './proverbe.html',
   styleUrl: './proverbe.scss',
 })
 export class Proverbe implements OnInit {
   private api = inject(Api);
   private fb = inject(FormBuilder);
-
- 
-
+  private snackBar = inject(MatSnackBar);
 
   // State
   open = signal(false);
   proverbes = signal<ProverbeModel[]>([]);
   submitting = signal(false);
-  submitSuccess = signal(false);
-  submitError = signal<string | null>(null);
   blagueDeLaSemaine = computed(() =>
     this.proverbes().find((p) => p.type?.toLowerCase() === 'blague'),
   );
@@ -50,8 +47,6 @@ export class Proverbe implements OnInit {
   }
 
   toggleOpen() {
-    this.submitSuccess.set(false);
-    this.submitError.set(null);
     this.open.update((v) => !v);
   }
 
@@ -62,7 +57,6 @@ export class Proverbe implements OnInit {
     }
 
     this.submitting.set(true);
-    this.submitError.set(null);
 
     const formValue = this.form.value;
     const payload = {
@@ -75,13 +69,18 @@ export class Proverbe implements OnInit {
       next: () => {
         this.getProverbes();
         this.form.reset({ type: 'Blague', content: '' });
-        this.submitSuccess.set(true);
         this.open.set(false);
+        this.snackBar.open('Merci ! Votre proposition a été envoyée.', 'Fermer', {
+          duration: 5000,
+        });
         console.log("Suggestion envoyée avec succès.");
       },
       error: (err) => {
         console.error(err);
-        this.submitError.set("Impossible d'envoyer la proposition, réessayez.");
+        this.submitting.set(false);
+        this.snackBar.open("Impossible d'envoyer la proposition, réessayez.", 'Fermer', {
+          duration: 5000,
+        });
       },
       complete: () => {
         this.submitting.set(false);
