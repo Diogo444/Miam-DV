@@ -1,12 +1,12 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-nav-public',
-  standalone: true,
   imports: [],
   templateUrl: './nav-public.html',
   styleUrl: './nav-public.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavPublic implements OnInit, OnDestroy {
   private readonly document = inject(DOCUMENT);

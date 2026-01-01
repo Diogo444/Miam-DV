@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Suggestion } from '../../../models/suggestions.model';
 import { Api } from '../../../services/api/api';
 
@@ -7,17 +7,28 @@ type SuggestionType = 'jokes' | 'proverbs';
 
 @Component({
   selector: 'app-afficher-suggestions',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './afficher-suggestions.html',
   styleUrl: './afficher-suggestions.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AfficherSuggestions implements OnInit {
   activeTab: SuggestionType = 'jokes';
 
-  suggestions: Suggestion[] = [];
+  readonly suggestionsSignal = signal<Suggestion[]>([]);
+  readonly loading = signal(true);
+  readonly loadError = signal<string | null>(null);
   statusMessage: { type: 'success' | 'error'; text: string } | null = null;
+  
   constructor(protected api: Api){}
+
+  get suggestions(): Suggestion[] {
+    return this.suggestionsSignal();
+  }
+  
+  set suggestions(value: Suggestion[]) {
+    this.suggestionsSignal.set(value);
+  }
 
   setTab(type: SuggestionType): void {
     this.activeTab = type;
@@ -25,13 +36,27 @@ export class AfficherSuggestions implements OnInit {
 
   ngOnInit(): void {
     this.getSuggestion();
-    
   }
 
-  getSuggestion(): void{
-    this.api.getSuggestions().subscribe((data) => {
-      this.suggestions = data;
+  getSuggestion(): void {
+    this.loading.set(true);
+    this.loadError.set(null);
+    
+    this.api.getSuggestions().subscribe({
+      next: (data) => {
+        this.suggestionsSignal.set(data);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('[AfficherSuggestions] Erreur:', err);
+        this.loadError.set('Impossible de charger les suggestions.');
+        this.loading.set(false);
+      }
     });
+  }
+  
+  retry(): void {
+    this.getSuggestion();
   }
 
   get jokes(): Suggestion[] {

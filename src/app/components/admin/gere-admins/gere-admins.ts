@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Admin, AdminDraft, ModalMode } from '../../../models/admin.models';
 import { Api } from '../../../services/api/api';
@@ -6,16 +6,18 @@ import { Api } from '../../../services/api/api';
 
 @Component({
   selector: 'app-gere-admins',
-  standalone: true,
   imports: [FormsModule],
   templateUrl: './gere-admins.html',
   styleUrl: './gere-admins.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GereAdmins implements OnInit {
   readonly admins = signal<Admin[]>([]);
   readonly activeModal = signal<ModalMode>(null);
   readonly selectedAdmin = signal<Admin | null>(null);
   readonly draft = signal<AdminDraft>({ username: '', password: '', confirmPassword: '' });
+  readonly loading = signal(true);
+  readonly loadError = signal<string | null>(null);
 
   constructor(protected api: Api){}
 
@@ -29,9 +31,24 @@ export class GereAdmins implements OnInit {
   }
 
   getAdminList(): void {
-    this.api.getAdminList().subscribe((data) => {
-      this.admins.set(data);
+    this.loading.set(true);
+    this.loadError.set(null);
+    
+    this.api.getAdminList().subscribe({
+      next: (data) => {
+        this.admins.set(data);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('[GereAdmins] Erreur:', err);
+        this.loadError.set('Impossible de charger la liste des administrateurs.');
+        this.loading.set(false);
+      }
     });
+  }
+  
+  retry(): void {
+    this.getAdminList();
   }
 
   readonly isDeleteModalOpen = computed(() => this.activeModal() === 'delete');

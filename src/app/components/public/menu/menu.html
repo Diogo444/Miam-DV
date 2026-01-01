@@ -11,7 +11,34 @@
       <app-proverbe></app-proverbe>
     </div>
 
-    @if (!groupedMenus.length) {
+    <!-- État de chargement -->
+    @if (loading()) {
+      <div class="p-4 lg:p-0">
+        <div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-primary/30 bg-primary-light/20 dark:bg-primary/10 py-12 px-6 text-center text-text-muted dark:text-primary/90">
+          <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+          <p class="text-lg font-medium">Chargement du menu...</p>
+        </div>
+      </div>
+    }
+
+    <!-- État d'erreur -->
+    @else if (error(); as errorMsg) {
+      <div class="p-4 lg:p-0">
+        <div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-red-300 bg-red-50 dark:border-red-700/50 dark:bg-red-900/20 py-12 px-6 text-center text-red-600 dark:text-red-300">
+          <span class="material-symbols-outlined text-5xl">error_outline</span>
+          <p class="text-lg font-medium">{{ errorMsg }}</p>
+          <button 
+            (click)="retry()" 
+            class="mt-2 px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors"
+          >
+            Réessayer
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Menu vide -->
+    @else if (!groupedMenus().length) {
       <div class="p-4 lg:p-0">
         <div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-primary/30 bg-primary-light/20 dark:bg-primary/10 py-12 px-6 text-center text-text-muted dark:text-primary/90">
           <span class="material-symbols-outlined text-5xl">restaurant_menu</span>
@@ -19,13 +46,16 @@
           <p class="text-sm">Le menu de cette semaine n'a pas encore été publié. Veuillez revenir plus tard.</p>
         </div>
       </div>
-    } @else {
+    } 
+    
+    <!-- Contenu du menu -->
+    @else {
       <!-- Mobile: swipeable cards -->
     <div class="-mx-4 sm:hidden">
       <div
         class="flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto px-4 [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        @for (day of groupedMenus; track day.day) {
+        @for (day of groupedMenus(); track day.day) {
         <article
           class="min-w-[86%] flex h-full flex-col gap-4 rounded-2xl border border-primary-light/70 bg-background-light shadow-lg snap-center dark:border-primary/25 dark:bg-background-dark/70"
         >
@@ -80,7 +110,7 @@
 
     <!-- Tablet/Desktop: grid -->
     <div class="hidden grid-cols-1 gap-4 sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8">
-      @for (day of groupedMenus; track day.day) {
+      @for (day of groupedMenus(); track day.day) {
       <article
         class="flex h-full flex-col gap-4 rounded-2xl border border-primary-light/70 bg-background-light shadow-lg dark:border-primary/25 dark:bg-background-dark/70"
       >

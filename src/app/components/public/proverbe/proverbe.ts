@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, computed } from '@angular/core';
+import { Component, OnInit, signal, inject, computed, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Api } from '../../../services/api/api';
@@ -7,10 +7,10 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-proverbe',
-  standalone: true,
   imports: [ReactiveFormsModule, CommonModule, MatSnackBarModule],
   templateUrl: './proverbe.html',
   styleUrl: './proverbe.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Proverbe implements OnInit {
   private api = inject(Api);
@@ -21,6 +21,9 @@ export class Proverbe implements OnInit {
   open = signal(false);
   proverbes = signal<ProverbeModel[]>([]);
   submitting = signal(false);
+  loading = signal(true);
+  error = signal<string | null>(null);
+  
   blagueDeLaSemaine = computed(() =>
     this.proverbes().find((p) => p.type?.toLowerCase() === 'blague'),
   );
@@ -39,10 +42,23 @@ export class Proverbe implements OnInit {
   }
 
   getProverbes() {
-    this.api.getProverbe().subscribe((data) => {
-      // API renvoie un objet unique (id=1) ; on homogénéise en tableau
-      const normalized = Array.isArray(data) ? data : data ? [data] : [];
-      this.proverbes.set(normalized);
+    this.loading.set(true);
+    this.error.set(null);
+    
+    this.api.getProverbe().subscribe({
+      next: (data) => {
+        // API renvoie un objet unique (id=1) ; on homogénéise en tableau
+        const normalized = Array.isArray(data) ? data : data ? [data] : [];
+        this.proverbes.set(normalized);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('[Proverbe] Erreur lors du chargement:', err);
+        // On ne bloque pas l'UI, juste on ne montre pas de proverbe
+        this.proverbes.set([]);
+        this.loading.set(false);
+        // Pas de message d'erreur visible car ce n'est pas critique
+      }
     });
   }
 

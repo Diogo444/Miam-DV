@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, effect, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Api } from '../../../services/api/api';
 import { menus } from '../../../models/menu.model';
 import { FormsModule } from '@angular/forms';
@@ -6,10 +6,10 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-edit-menu',
-  standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './edit-menu.html',
   styleUrl: './edit-menu.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditMenu implements OnInit {
   jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];

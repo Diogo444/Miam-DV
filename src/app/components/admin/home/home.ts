@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavAdmin } from '../nav-admin/nav-admin';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
   imports: [NavAdmin, RouterOutlet],
   templateUrl: './home.html',
   styleUrl: './home.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home {
 
