@@ -55,13 +55,29 @@ services:
       timeout: 5s
       retries: 5
 
-  caddy:
-    container_name: dv_caddy_miamdv
+  frontend:
+    container_name: dv_frontend_miamdv
     build:
       context: .
       dockerfile: Dockerfile.frontend
     restart: unless-stopped
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  caddy:
+    container_name: dv_caddy_miamdv
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy
+    restart: unless-stopped
     depends_on:
+      frontend:
+        condition: service_healthy
       backend:
         condition: service_healthy
       mcp-server:
