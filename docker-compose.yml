@@ -112,4 +112,4 @@ networks:
     internal: true
   caddy_net:
     name: ${PROXY_NETWORK:-reverse-proxy}
-    external: ${PROXY_NETWORK_EXTERNAL:-false}
+    external: true
