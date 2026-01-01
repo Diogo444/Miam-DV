@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: dev_bdd_miamdv
+    container_name: dv_bdd_miamdv
     image: mysql:8
     restart: unless-stopped
     environment:
@@ -12,7 +12,6 @@ services:
       - db-data:/var/lib/mysql
     networks:
       - internal
-      - public
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -46,8 +45,6 @@ services:
         condition: service_healthy
     networks:
       - internal
-    ports:
-      - "${BACKEND_BIND_ADDRESS:-0.0.0.0}:${BACKEND_PUBLIC_PORT:-3000}:3000"
     healthcheck:
       test:
         [
@@ -58,20 +55,23 @@ services:
       timeout: 5s
       retries: 5
 
-  frontend:
-    container_name: dv_frontend_miamdv
+  caddy:
+    container_name: dv_caddy_miamdv
     build:
       context: .
       dockerfile: Dockerfile.frontend
     restart: unless-stopped
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+      mcp-server:
+        condition: service_healthy
     networks:
       - internal
       - caddy_net
-      - public
-    ports:
-      - "${FRONTEND_BIND_ADDRESS:-0.0.0.0}:${FRONTEND_PUBLIC_PORT:-8080}:80"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
 
   mcp-server:
     container_name: dv_mcp_miamdv
@@ -88,12 +88,10 @@ services:
       MCP_ALLOWED_HOSTS: ${MCP_ALLOWED_HOSTS:-localhost,127.0.0.1}
       MCP_ALLOWED_ORIGINS: ${MCP_ALLOWED_ORIGINS:-http://localhost}
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     networks:
       - internal
-      - public
-    ports:
-      - "${MCP_BIND_ADDRESS:-127.0.0.1}:${MCP_HTTP_PORT:-4310}:4310"
     healthcheck:
       test:
         [
@@ -103,18 +101,15 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    profiles:
-      - mcp
 
 volumes:
   db-data:
+  caddy_data:
+  caddy_config:
 
 networks:
   internal:
     internal: true
-  public:
-    name: ${PUBLIC_NETWORK:-miamdv-public}
-    internal: false
   caddy_net:
     name: ${PROXY_NETWORK:-reverse-proxy}
     external: ${PROXY_NETWORK_EXTERNAL:-false}

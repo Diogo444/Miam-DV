@@ -6,6 +6,13 @@
     reverse_proxy backend:3000
   }
 
+  @mcp path /mcp* /health
+  handle @mcp {
+    reverse_proxy mcp-server:4310 {
+      header_up Host localhost
+    }
+  }
+
   handle {
     root * /srv
     try_files {path} /index.html
