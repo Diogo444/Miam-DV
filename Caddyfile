@@ -3,15 +3,15 @@
 
   @api path /api/*
   handle @api {
-    reverse_proxy backend:3000
+    reverse_proxy dv_backend_miamdv:3000
   }
 
   @mcp path /mcp* /health
   handle @mcp {
-    reverse_proxy mcp-server:4310
+    reverse_proxy dv_mcp_miamdv:4310
   }
 
   handle {
-    reverse_proxy frontend:80
+    reverse_proxy dv_frontend_miamdv:80
   }
 }

@@ -125,9 +125,6 @@ volumes:
 networks:
   internal:
     internal: true
-  networks:
-  internal:
-    internal: true
   caddy_net:
     name: caddy_net
     external: true
