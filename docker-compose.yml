@@ -126,6 +126,10 @@ volumes:
 networks:
   internal:
     internal: true
+  networks:
+  internal:
+    internal: true
   caddy_net:
-    name: ${PROXY_NETWORK:-reverse-proxy}
+    name: caddy_net
     external: true
+
