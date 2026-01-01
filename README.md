@@ -54,15 +54,12 @@ Obligatoires:
 Optionnelles:
 - `MCP_HTTP_HOST` (defaut `127.0.0.1`)
 - `MCP_HTTP_PORT` (defaut `4310`)
-- `MCP_SERVER_AUTH_TOKEN` (token requis pour les clients MCP)
 - `MCP_ALLOWED_HOSTS` (liste CSV, ex `localhost,127.0.0.1`)
 - `MCP_ALLOWED_ORIGINS` (liste CSV, ex `http://localhost`)
 
 Authentification:
 - Vers le backend: `MCP_SERVICE_JWT` -> `Authorization: Bearer ...`
   ou `MCP_API_KEY` -> `X-MCP-KEY: ...`
-- Vers le serveur MCP (optionnel): `Authorization: Bearer ...` ou `X-MCP-KEY`
-  doit correspondre a `MCP_SERVER_AUTH_TOKEN`
 
 ### Demarrage
 
@@ -85,7 +82,7 @@ npm run verify
 
 Variables utiles:
 - `MCP_SERVER_URL` (defaut `http://localhost:4310/mcp`)
-- `MCP_SERVER_AUTH_TOKEN` si la protection serveur est activee
+  (le serveur n'exige pas d'authentification)
 
 ## Prerequis
 
