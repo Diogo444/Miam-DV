@@ -33,11 +33,12 @@ export class SuggestionsService {
   const normalizedType =
     suggestion.type === 'Blague' ? 'blague' : 'proverbe';
 
+  await this.proverbeRepository.clear();
   const newProverbe = this.proverbeRepository.create({
-    content: suggestion.content, // <-- à confirmer que ça existe dans Proverbe
+    id: 1,
+    content: suggestion.content,
     type: normalizedType,
   });
-
   await this.proverbeRepository.save(newProverbe);
   await this.suggestionRepository.delete(id);
 

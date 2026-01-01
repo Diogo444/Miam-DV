@@ -12,6 +12,7 @@ services:
       - db-data:/var/lib/mysql
     networks:
       - internal
+      - public
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -36,11 +37,26 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
       PORT: 3000
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}
+      MCP_API_KEY: ${MCP_API_KEY}
+      MCP_API_KEY_SCOPES: ${MCP_API_KEY_SCOPES:-mcp:menu:write,mcp:proverb:write,mcp:week:clear}
+      MCP_RATE_LIMIT_WINDOW_MS: ${MCP_RATE_LIMIT_WINDOW_MS:-60000}
+      MCP_RATE_LIMIT_MAX: ${MCP_RATE_LIMIT_MAX:-60}
     depends_on:
       db:
         condition: service_healthy
     networks:
       - internal
+    ports:
+      - "${BACKEND_BIND_ADDRESS:-0.0.0.0}:${BACKEND_PUBLIC_PORT:-3000}:3000"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://localhost:3000/mcp/health',{headers:{'X-MCP-KEY':process.env.MCP_API_KEY}}).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     container_name: dv_frontend_miamdv
@@ -53,6 +69,42 @@ services:
     networks:
       - internal
       - caddy_net
+      - public
+    ports:
+      - "${FRONTEND_BIND_ADDRESS:-0.0.0.0}:${FRONTEND_PUBLIC_PORT:-8080}:80"
+
+  mcp-server:
+    container_name: dv_mcp_miamdv
+    build:
+      context: ./mcp-server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      API_BASE_URL: http://backend:3000
+      MCP_API_KEY: ${MCP_API_KEY}
+      MCP_HTTP_HOST: 0.0.0.0
+      MCP_HTTP_PORT: ${MCP_HTTP_PORT:-4310}
+      MCP_SERVER_AUTH_TOKEN: ${MCP_SERVER_AUTH_TOKEN}
+      MCP_ALLOWED_HOSTS: ${MCP_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      MCP_ALLOWED_ORIGINS: ${MCP_ALLOWED_ORIGINS:-http://localhost}
+    depends_on:
+      - backend
+    networks:
+      - internal
+      - public
+    ports:
+      - "${MCP_BIND_ADDRESS:-127.0.0.1}:${MCP_HTTP_PORT:-4310}:4310"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://localhost:' + (process.env.MCP_HTTP_PORT || '4310') + '/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - mcp
 
 volumes:
   db-data:
@@ -60,6 +112,9 @@ volumes:
 networks:
   internal:
     internal: true
+  public:
+    name: ${PUBLIC_NETWORK:-miamdv-public}
+    internal: false
   caddy_net:
-    external: true
     name: ${PROXY_NETWORK:-reverse-proxy}
+    external: ${PROXY_NETWORK_EXTERNAL:-false}

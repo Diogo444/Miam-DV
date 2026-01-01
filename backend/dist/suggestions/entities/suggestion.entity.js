@@ -22,7 +22,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Suggestion.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ enum: ['Blague', 'Proverbe'] }),
+    (0, typeorm_1.Column)({ type: 'enum', enum: ['Blague', 'Proverbe'] }),
     __metadata("design:type", String)
 ], Suggestion.prototype, "type", void 0);
 __decorate([

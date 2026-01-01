@@ -18,6 +18,7 @@ const admin_module_1 = require("./admin/admin.module");
 const suggestions_module_1 = require("./suggestions/suggestions.module");
 const auth_module_1 = require("./auth/auth.module");
 const schedule_1 = require("@nestjs/schedule");
+const mcp_module_1 = require("./mcp/mcp.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -36,13 +37,16 @@ exports.AppModule = AppModule = __decorate([
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_NAME,
                 autoLoadEntities: true,
-                synchronize: true,
+                synchronize: process.env.DB_SYNC === 'true',
+                retryAttempts: 20,
+                retryDelay: 3000,
             }),
             menus_module_1.MenusModule,
             proverbes_module_1.ProverbesModule,
             admin_module_1.AdminModule,
             suggestions_module_1.SuggestionsModule,
             auth_module_1.AuthModule,
+            mcp_module_1.McpModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

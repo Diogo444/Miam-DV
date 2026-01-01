@@ -11,6 +11,7 @@ import { AdminModule } from './admin/admin.module';
 import { SuggestionsModule } from './suggestions/suggestions.module';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { McpModule } from './mcp/mcp.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     AdminModule,
     SuggestionsModule,
     AuthModule,
+    McpModule,
   ],
   controllers: [AppController],
   providers: [AppService],

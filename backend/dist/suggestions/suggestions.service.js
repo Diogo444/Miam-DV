@@ -37,7 +37,9 @@ let SuggestionsService = class SuggestionsService {
             throw new common_1.NotFoundException(`Suggestion ${id} introuvable`);
         }
         const normalizedType = suggestion.type === 'Blague' ? 'blague' : 'proverbe';
+        await this.proverbeRepository.clear();
         const newProverbe = this.proverbeRepository.create({
+            id: 1,
             content: suggestion.content,
             type: normalizedType,
         });

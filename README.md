@@ -8,6 +8,84 @@ suggestions et administrateurs.
 - Frontend: `src/` (Angular standalone components, services, interceptors)
 - Backend: `backend/` (NestJS + TypeORM + MySQL)
 - Base API: `/api` (proxy dev + reverse-proxy Caddy en prod)
+- Serveur MCP: `mcp-server/` (MCP HTTP -> appels vers l'API backend)
+
+## Serveur MCP (mcp-server)
+
+Le serveur MCP expose des tools MCP via HTTP (Streamable HTTP) et relaie les
+commandes vers l'API backend (`/mcp/week-menu`, `/mcp/week-proverb`,
+`/mcp/clear-week`).
+
+### Fonctionnement
+
+- Endpoint MCP: `POST/GET/DELETE /mcp`
+- Healthcheck: `GET /health`
+- Sessions: l'initialisation cree un `sessionId`, le client doit ensuite
+  envoyer `mcp-session-id` en header sur les requetes suivantes. Les sessions
+  sont en memoire et sont supprimees a la fermeture du transport.
+
+### Tools exposes
+
+- `publish_week_menu`: publie/replace le menu d'une semaine.
+  - `weekStart`: date ISO `YYYY-MM-DD` (doit etre un lundi, le MCP accepte
+    aussi `DD/MM/YYYY`)
+  - `items[]`: `day` (monday-friday, accepte aussi lundi-vendredi),
+    `lunch`/`dinner` (listes/texte, ou objet `{ starter, main, side, cheese, dessert }`) ou `main`/`starter` (compat),
+    `dessert`/`allergens[]` (optionnels), `midi`/`soir` acceptes en alias
+  - `notes` (optionnel)
+- `publish_week_proverb`: publie/replace le proverbe d'une semaine.
+  - `weekStart`: date ISO `YYYY-MM-DD` (doit etre un lundi)
+  - `text` (obligatoire, alias: `texte`, `proverbe`, `blague`, `content`), `type` (optionnel: `blague` | `proverbe`),
+    `author`/`auteur`/`source` (optionnels)
+- `publish_week_from_text`: publie menu + proverbe/blague a partir d'un bloc texte (format FR).
+  - `text` (obligatoire)
+  - `year` (optionnel) ou `weekStart` (optionnel) si le texte n'indique pas l'annee
+  - `type` (optionnel: `blague` | `proverbe`) et `notes` (optionnel)
+- `clear_week_data`: supprime menu + proverbe d'une semaine.
+  - `weekStart` ou `scope: currentWeek` (un seul des deux)
+  - `confirm: "CLEAR_WEEK_DATA"`
+
+### Variables d'environnement
+
+Obligatoires:
+- `API_BASE_URL` (ex: `http://localhost:3000`)
+- `MCP_API_KEY` ou `MCP_SERVICE_JWT` (auth vers l'API backend)
+
+Optionnelles:
+- `MCP_HTTP_HOST` (defaut `127.0.0.1`)
+- `MCP_HTTP_PORT` (defaut `4310`)
+- `MCP_SERVER_AUTH_TOKEN` (token requis pour les clients MCP)
+- `MCP_ALLOWED_HOSTS` (liste CSV, ex `localhost,127.0.0.1`)
+- `MCP_ALLOWED_ORIGINS` (liste CSV, ex `http://localhost`)
+
+Authentification:
+- Vers le backend: `MCP_SERVICE_JWT` -> `Authorization: Bearer ...`
+  ou `MCP_API_KEY` -> `X-MCP-KEY: ...`
+- Vers le serveur MCP (optionnel): `Authorization: Bearer ...` ou `X-MCP-KEY`
+  doit correspondre a `MCP_SERVER_AUTH_TOKEN`
+
+### Demarrage
+
+```bash
+cd mcp-server
+copy .env.example .env
+npm install
+npm run build
+npm run start
+```
+
+Le serveur ecoute sur `http://<MCP_HTTP_HOST>:<MCP_HTTP_PORT>/mcp`.
+
+### Verification rapide
+
+```bash
+cd mcp-server
+npm run verify
+```
+
+Variables utiles:
+- `MCP_SERVER_URL` (defaut `http://localhost:4310/mcp`)
+- `MCP_SERVER_AUTH_TOKEN` si la protection serveur est activee
 
 ## Prerequis
 

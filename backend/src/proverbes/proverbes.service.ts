@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Proverbe } from './entities/proverbe.entity';
@@ -13,11 +13,16 @@ export class ProverbesService {
   ) {}
 
   async createOrReplace(dto: CreateProverbeDto) {
+    const normalizedType = normalizeProverbeType(dto.type);
+    if (!normalizedType) {
+      throw new BadRequestException("type must be 'blague' or 'proverbe'");
+    }
+
     const existing = await this.repo.findOne({ where: { id: 1 } });
 
     if (existing) {
       // UPDATE
-      await this.repo.update(1, dto);
+      await this.repo.update(1, { ...dto, type: normalizedType });
       const proverbe = await this.repo.findOneBy({ id: 1 });
 
       return {
@@ -27,7 +32,7 @@ export class ProverbesService {
     }
 
     // CREATE
-    const data = this.repo.create({ ...dto, id: 1 });
+    const data = this.repo.create({ ...dto, id: 1, type: normalizedType });
     const proverbe = await this.repo.save(data);
 
     return {
@@ -41,7 +46,12 @@ export class ProverbesService {
   }
 
   async update(dto: UpdateProverbeDto) {
-    await this.repo.update(1, dto);
+    const normalizedType = dto.type ? normalizeProverbeType(dto.type) : undefined;
+    if (dto.type && !normalizedType) {
+      throw new BadRequestException("type must be 'blague' or 'proverbe'");
+    }
+
+    await this.repo.update(1, { ...dto, ...(normalizedType ? { type: normalizedType } : {}) });
     return this.repo.findOneBy({ id: 1 });
   }
 
@@ -53,4 +63,22 @@ export class ProverbesService {
     await this.repo.remove(proverbe);
     return proverbe;
   }
+}
+
+function normalizeProverbeType(type: unknown): 'blague' | 'proverbe' | null {
+  if (typeof type !== 'string') {
+    return null;
+  }
+
+  const normalized = type.trim().toLowerCase();
+  if (normalized === 'blague' || normalized === 'proverbe') {
+    return normalized;
+  }
+  if (normalized === 'joke') {
+    return 'blague';
+  }
+  if (normalized === 'proverb') {
+    return 'proverbe';
+  }
+  return null;
 }
