@@ -1,5 +1,15 @@
+import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+
 export class CreateProverbeDto {
-  id: number;
+  @IsNumber()
+  @IsOptional()
+  id?: number;
+
+  @IsString()
+  @IsIn(['blague', 'proverbe'])
   type: 'blague' | 'proverbe';
+
+  @IsString()
+  @IsNotEmpty()
   content: string;
 }
