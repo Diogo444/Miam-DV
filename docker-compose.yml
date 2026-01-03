@@ -43,6 +43,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    
     networks:
       - internal
       - caddy_net
@@ -62,34 +63,15 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
     restart: unless-stopped
+    
     networks:
       - internal
       - caddy_net
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ >/dev/null 2>&1 || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4000 >/dev/null 2>&1 || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
-
-  caddy:
-    container_name: dv_caddy_miamdv
-    build:
-      context: .
-      dockerfile: Dockerfile.caddy
-    restart: unless-stopped
-    depends_on:
-      frontend:
-        condition: service_healthy
-      backend:
-        condition: service_healthy
-      mcp-server:
-        condition: service_healthy
-    networks:
-      - internal
-      - caddy_net
-    volumes:
-      - caddy_data:/data
-      - caddy_config:/config
 
   mcp-server:
     container_name: dv_mcp_miamdv
@@ -107,6 +89,7 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    
     networks:
       - internal
       - caddy_net
@@ -122,13 +105,9 @@ services:
 
 volumes:
   db-data:
-  caddy_data:
-  caddy_config:
 
 networks:
   internal:
     internal: true
   caddy_net:
-    name: caddy_net
     external: true
-
