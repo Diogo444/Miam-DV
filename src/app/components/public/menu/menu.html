@@ -25,7 +25,7 @@
     @else if (error(); as errorMsg) {
       <div class="p-4 lg:p-0">
         <div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-red-300 bg-red-50 dark:border-red-700/50 dark:bg-red-900/20 py-12 px-6 text-center text-red-600 dark:text-red-300">
-          <span class="material-symbols-outlined text-5xl">error_outline</span>
+          <span class="material-symbols-outlined text-5xl" aria-hidden="true">error_outline</span>
           <p class="text-lg font-medium">{{ errorMsg }}</p>
           <button 
             (click)="retry()" 
@@ -41,7 +41,7 @@
     @else if (!groupedMenus().length) {
       <div class="p-4 lg:p-0">
         <div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-primary/30 bg-primary-light/20 dark:bg-primary/10 py-12 px-6 text-center text-text-muted dark:text-primary/90">
-          <span class="material-symbols-outlined text-5xl">restaurant_menu</span>
+          <span class="material-symbols-outlined text-5xl" aria-hidden="true">restaurant_menu</span>
           <p class="text-lg font-medium">Menu non disponible</p>
           <p class="text-sm">Le menu de cette semaine n'a pas encore été publié. Veuillez revenir plus tard.</p>
         </div>
