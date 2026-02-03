@@ -30,7 +30,7 @@ export class AddMenu {
 
   submitProverbe(){
     const payload = {
-      type: this.selectedType,
+      type: this.selectedType.toLowerCase(),
       content: this.proverbe
     };
     this.api.addProverbe(payload).subscribe({
