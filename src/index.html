@@ -56,8 +56,8 @@
 <body>
   <app-root>
     <!-- Contenu de chargement initial visible avant Angular -->
-    <div class="app-loading" aria-label="Chargement de l'application">
-      <div class="app-loading-spinner"></div>
+    <div class="app-loading" aria-label="Chargement de l'application" role="status" aria-live="polite">
+      <div class="app-loading-spinner" aria-hidden="true"></div>
       <p class="app-loading-text">Chargement...</p>
     </div>
   </app-root>

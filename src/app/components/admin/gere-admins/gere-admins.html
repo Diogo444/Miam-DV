@@ -1,5 +1,27 @@
 <div class="flex-1 p-6">
   <div class="flex flex-col gap-6">
+    @if (statusMessage()) {
+      <div
+        class="rounded-lg border px-4 py-3 text-sm"
+        [class.border-green-200]="statusMessage()?.type === 'success'"
+        [class.bg-green-50]="statusMessage()?.type === 'success'"
+        [class.text-green-900]="statusMessage()?.type === 'success'"
+        [class.dark:border-green-500/40]="statusMessage()?.type === 'success'"
+        [class.dark:bg-green-500/10]="statusMessage()?.type === 'success'"
+        [class.dark:text-green-100]="statusMessage()?.type === 'success'"
+        [class.border-red-200]="statusMessage()?.type === 'error'"
+        [class.bg-red-50]="statusMessage()?.type === 'error'"
+        [class.text-red-700]="statusMessage()?.type === 'error'"
+        [class.dark:border-red-500/50]="statusMessage()?.type === 'error'"
+        [class.dark:bg-red-500/10]="statusMessage()?.type === 'error'"
+        [class.dark:text-red-200]="statusMessage()?.type === 'error'"
+        [attr.role]="statusMessage()?.type === 'error' ? 'alert' : 'status'"
+        [attr.aria-live]="statusMessage()?.type === 'error' ? 'assertive' : 'polite'"
+      >
+        {{ statusMessage()?.text }}
+      </div>
+    }
+
     <header class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
         <h2 class="text-2xl font-bold leading-tight tracking-[-0.015em]">Gérer les administrateurs</h2>
@@ -11,6 +33,7 @@
         class="flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-base font-bold text-white shadow-lg transition-colors hover:bg-primary/90 dark:text-background-light"
         type="button"
         (click)="openCreateModal()"
+        aria-label="Créer un nouvel administrateur"
       >
         <span class="material-symbols-outlined" aria-hidden="true">add</span>
         <span>Créer un administrateur</span>
@@ -37,6 +60,7 @@
                         class="flex items-center gap-2 rounded-md bg-primary-light/80 dark:bg-primary/20 px-3 py-1.5 text-sm font-semibold text-primary dark:text-primary-light transition-colors hover:bg-primary-light dark:hover:bg-primary/30"
                         type="button"
                         (click)="openEditModal(admin)"
+                        [attr.aria-label]="'Modifier l\'administrateur ' + admin.username"
                       >
                         <span class="material-symbols-outlined text-base" aria-hidden="true">edit</span>
                         <span class="hidden sm:inline">Modifier</span>
@@ -45,6 +69,7 @@
                         class="flex items-center gap-2 rounded-md bg-red-100/80 dark:bg-red-900/20 px-3 py-1.5 text-sm font-semibold text-red-600 dark:text-red-400 transition-colors hover:bg-red-100 dark:hover:bg-red-900/40"
                         type="button"
                         (click)="openDeleteModal(admin)"
+                        [attr.aria-label]="'Supprimer l\'administrateur ' + admin.username"
                       >
                         <span class="material-symbols-outlined text-base" aria-hidden="true">delete</span>
                         <span class="hidden sm:inline">Supprimer</span>
@@ -64,6 +89,7 @@
           class="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md transition-colors hover:bg-primary/90 dark:text-background-light"
           type="button"
           (click)="openCreateModal()"
+          aria-label="Créer le premier administrateur"
         >
           <span class="material-symbols-outlined text-base" aria-hidden="true">person_add</span>
           <span>Créer le premier administrateur</span>
@@ -120,9 +146,11 @@
                   (ngModelChange)="updateDraft({ username: $event })"
                   placeholder="ex: jeanne.doe"
                   autocomplete="off"
+                  [attr.aria-describedby]="!draftValid() ? 'admin-username-error' : null"
+                  [attr.aria-invalid]="!draftValid()"
                 />
                 @if (!draftValid()) {
-                  <p class="mt-2 text-xs font-medium text-red-600 dark:text-red-400">Le nom d'utilisateur est requis.</p>
+                  <p id="admin-username-error" class="mt-2 text-xs font-medium text-red-600 dark:text-red-400" role="alert">Le nom d'utilisateur est requis.</p>
                 }
               </div>
 
@@ -139,6 +167,8 @@
                   (ngModelChange)="updateDraft({ password: $event })"
                   placeholder="Minimum 1 caractère"
                   autocomplete="new-password"
+                  [attr.aria-describedby]="hasPasswordInput() && !passwordValid() ? 'admin-password-error' : null"
+                  [attr.aria-invalid]="hasPasswordInput() && !passwordValid()"
                 />
               </div>
 
@@ -155,9 +185,11 @@
                   (ngModelChange)="updateDraft({ confirmPassword: $event })"
                   placeholder="Retapez le mot de passe"
                   autocomplete="new-password"
+                  [attr.aria-describedby]="hasPasswordInput() && !passwordValid() ? 'admin-password-error' : null"
+                  [attr.aria-invalid]="hasPasswordInput() && !passwordValid()"
                 />
                 @if (hasPasswordInput() && !passwordValid()) {
-                  <p class="mt-2 text-xs font-medium text-red-600 dark:text-red-400">
+                  <p id="admin-password-error" class="mt-2 text-xs font-medium text-red-600 dark:text-red-400" role="alert">
                     Les mots de passe ne correspondent pas.
                   </p>
                 }
@@ -175,6 +207,7 @@
               <button
                 class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:bg-gray-400 sm:w-auto sm:text-sm"
                 [disabled]="!canSubmit()"
+                [attr.aria-disabled]="!canSubmit()"
                 type="submit"
               >
                 @if (activeModal() === 'create') { Créer } @else { Mettre à jour }
