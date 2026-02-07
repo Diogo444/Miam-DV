@@ -23,6 +23,7 @@ export class Proverbe implements OnInit {
   submitting = signal(false);
   loading = signal(true);
   error = signal<string | null>(null);
+  statusMessage = signal<{ type: 'success' | 'error', text: string } | null>(null);
   
   blagueDeLaSemaine = computed(() =>
     this.proverbes().find((p) => p.type?.toLowerCase() === 'blague'),
@@ -66,6 +67,13 @@ export class Proverbe implements OnInit {
     this.open.update((v) => !v);
   }
 
+  private showStatusMessage(type: 'success' | 'error', text: string): void {
+    this.statusMessage.set({ type, text });
+    setTimeout(() => {
+      this.statusMessage.set(null);
+    }, 5000);
+  }
+
   submitSuggestion() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -86,6 +94,8 @@ export class Proverbe implements OnInit {
         this.getProverbes();
         this.form.reset({ type: 'Blague', content: '' });
         this.open.set(false);
+        this.submitting.set(false);
+        this.showStatusMessage('success', 'Merci ! Votre proposition a été envoyée.');
         this.snackBar.open('Merci ! Votre proposition a été envoyée.', 'Fermer', {
           duration: 5000,
         });
@@ -94,6 +104,7 @@ export class Proverbe implements OnInit {
       error: (err) => {
         console.error(err);
         this.submitting.set(false);
+        this.showStatusMessage('error', "Impossible d'envoyer la proposition, réessayez.");
         this.snackBar.open("Impossible d'envoyer la proposition, réessayez.", 'Fermer', {
           duration: 5000,
         });

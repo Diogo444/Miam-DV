@@ -18,6 +18,7 @@ export class GereAdmins implements OnInit {
   readonly draft = signal<AdminDraft>({ username: '', password: '', confirmPassword: '' });
   readonly loading = signal(true);
   readonly loadError = signal<string | null>(null);
+  readonly statusMessage = signal<{ type: 'success' | 'error', text: string } | null>(null);
 
   constructor(protected api: Api){}
 
@@ -105,6 +106,13 @@ export class GereAdmins implements OnInit {
     this.draft.update((current) => ({ ...current, ...patch }));
   }
 
+  private showStatusMessage(type: 'success' | 'error', text: string): void {
+    this.statusMessage.set({ type, text });
+    setTimeout(() => {
+      this.statusMessage.set(null);
+    }, 5000);
+  }
+
   saveAdmin(event?: Event): void {
     event?.preventDefault();
     if (!this.draftValid() || !this.passwordValid()) {
@@ -120,10 +128,12 @@ export class GereAdmins implements OnInit {
       this.api.addAdmin({ username, password }).subscribe({
         next: (created) => {
           this.admins.update((admins) => [...admins, created]);
+          this.showStatusMessage('success', `Administrateur "${username}" créé avec succès.`);
           this.closeModal();
         },
         error: (error) => {
           console.error("Erreur lors de la création de l'administrateur :", error);
+          this.showStatusMessage('error', 'Erreur lors de la création de l\'administrateur.');
         },
       });
       return;
@@ -146,10 +156,12 @@ export class GereAdmins implements OnInit {
           this.admins.update((admins) =>
             admins.map((admin) => (admin.id === updated.id ? updated : admin)),
           );
+          this.showStatusMessage('success', `Administrateur "${username}" mis à jour avec succès.`);
           this.closeModal();
         },
         error: (error) => {
           console.error("Erreur lors de la mise à jour de l'administrateur :", error);
+          this.showStatusMessage('error', 'Erreur lors de la mise à jour de l\'administrateur.');
         },
       });
     }
@@ -166,10 +178,12 @@ export class GereAdmins implements OnInit {
     this.api.deleteAdmin(target.id).subscribe({
       next: () => {
         this.admins.update((admins) => admins.filter((admin) => admin.id !== target.id));
+        this.showStatusMessage('success', `Administrateur "${target.username}" supprimé avec succès.`);
         this.closeModal();
       },
       error: (error) => {
         console.error("Erreur lors de la suppression de l'administrateur :", error);
+        this.showStatusMessage('error', 'Erreur lors de la suppression de l\'administrateur.');
       },
     });
   }
