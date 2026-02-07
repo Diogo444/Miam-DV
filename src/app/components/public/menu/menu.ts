@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Proverbe } from '../proverbe/proverbe';
+import { AdBanner } from '../ad-banner/ad-banner';
 import { menus } from '../../../models/menu.model';
 import { Api } from '../../../services/api/api';
 
@@ -8,7 +9,7 @@ import { Api } from '../../../services/api/api';
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, Proverbe],
+  imports: [CommonModule, Proverbe, AdBanner],
   templateUrl: './menu.html',
   styleUrl: './menu.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
