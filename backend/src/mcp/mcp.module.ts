@@ -8,9 +8,10 @@ import { McpGuard } from './guards/mcp.guard';
 import { McpRateLimitGuard } from './guards/mcp-rate-limit.guard';
 import { Menu } from '../menus/entities/menu.entity';
 import { Proverbe } from '../proverbes/entities/proverbe.entity';
+import { ProverbeSuggered } from '../proverbes/entities/proverbe_suggered.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([WeekMenu, WeekProverb, Menu, Proverbe])],
+  imports: [TypeOrmModule.forFeature([WeekMenu, WeekProverb, Menu, Proverbe, ProverbeSuggered])],
   controllers: [McpController],
   providers: [McpService, McpGuard, McpRateLimitGuard],
 })

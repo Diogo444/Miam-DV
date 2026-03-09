@@ -17,13 +17,13 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const suggestion_entity_1 = require("./entities/suggestion.entity");
 const typeorm_2 = require("typeorm");
-const proverbe_entity_1 = require("../proverbes/entities/proverbe.entity");
+const proverbe_suggered_entity_1 = require("../proverbes/entities/proverbe_suggered.entity");
 let SuggestionsService = class SuggestionsService {
     suggestionRepository;
-    proverbeRepository;
-    constructor(suggestionRepository, proverbeRepository) {
+    proverbeSuggeredRepository;
+    constructor(suggestionRepository, proverbeSuggeredRepository) {
         this.suggestionRepository = suggestionRepository;
-        this.proverbeRepository = proverbeRepository;
+        this.proverbeSuggeredRepository = proverbeSuggeredRepository;
     }
     create(createSuggestionDto) {
         return this.suggestionRepository.save(createSuggestionDto);
@@ -36,14 +36,11 @@ let SuggestionsService = class SuggestionsService {
         if (!suggestion) {
             throw new common_1.NotFoundException(`Suggestion ${id} introuvable`);
         }
-        const normalizedType = suggestion.type === 'Blague' ? 'blague' : 'proverbe';
-        await this.proverbeRepository.clear();
-        const newProverbe = this.proverbeRepository.create({
-            id: 1,
+        await this.proverbeSuggeredRepository.clear();
+        await this.proverbeSuggeredRepository.save(this.proverbeSuggeredRepository.create({
             content: suggestion.content,
-            type: normalizedType,
-        });
-        await this.proverbeRepository.save(newProverbe);
+            type: normalizeSuggestionType(suggestion.type),
+        }));
         await this.suggestionRepository.delete(id);
         return suggestion;
     }
@@ -55,8 +52,11 @@ exports.SuggestionsService = SuggestionsService;
 exports.SuggestionsService = SuggestionsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(suggestion_entity_1.Suggestion)),
-    __param(1, (0, typeorm_1.InjectRepository)(proverbe_entity_1.Proverbe)),
+    __param(1, (0, typeorm_1.InjectRepository)(proverbe_suggered_entity_1.ProverbeSuggered)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository])
 ], SuggestionsService);
+function normalizeSuggestionType(type) {
+    return type === 'Blague' ? 'blague' : 'proverbe';
+}
 //# sourceMappingURL=suggestions.service.js.map

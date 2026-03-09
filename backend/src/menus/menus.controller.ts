@@ -13,9 +13,9 @@ import {
 import { MenusService } from './menus.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
-import { JwtAuthGuard } from 'src/common/guards/auth/auth.guard';
-import { RolesGuard } from 'src/common/guards/auth/roles.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
+import { JwtAuthGuard } from '../common/guards/auth/auth.guard';
+import { RolesGuard } from '../common/guards/auth/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 import type { Request } from 'express';
 
 @Controller('api/menus')

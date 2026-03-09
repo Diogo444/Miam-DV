@@ -1,5 +1,5 @@
 export declare class CreateProverbeDto {
-    id: number;
+    id?: number;
     type: 'blague' | 'proverbe';
     content: string;
 }

@@ -225,12 +225,15 @@ Pour activer HTTPS avec Caddy, remplacez `:80` par votre domaine dans `Caddyfile
 
 `DELETE /api/menus` (Bearer + role admin)
 - Response: `{ message }`
-- Note: un cron supprime aussi menus + proverbes tous les vendredis a 16:00 (Europe/Paris).
+- Note: un cron supprime aussi menus + proverbes + `proverbes_suggered` tous les vendredis a 16:00 (Europe/Paris).
 
 ### Proverbes
 
 `GET /api/proverbes`
 - Response: `Proverbe | null` (record id=1)
+
+`GET /api/proverbes/suggested`
+- Response: `ProverbeSuggered | null` (dernier enregistrement accepte)
 
 `POST /api/proverbes`
 - Body: `{ id?, type, content }` (type: `blague` | `proverbe`)
@@ -253,7 +256,7 @@ Pour activer HTTPS avec Caddy, remplacez `:80` par votre domaine dans `Caddyfile
 - Response: `Suggestion[]`
 
 `POST /api/suggestions/accept/:id`
-- Response: `Suggestion` (la suggestion acceptee est copiee dans `proverbes` puis supprimee)
+- Response: `Suggestion` (la suggestion acceptee est copiee dans `proverbes_suggered` puis supprimee)
 
 `DELETE /api/suggestions/:id`
 - Response: TypeORM delete result
@@ -263,4 +266,5 @@ Pour activer HTTPS avec Caddy, remplacez `:80` par votre domaine dans `Caddyfile
 - Admin: `{ id, username, role?, passwordUpdatedAt? }`
 - Menu: `{ id, jour, periode, entree, plat, fromage, dessert }`
 - Proverbe: `{ id, type, content }`
+- ProverbeSuggered: `{ id, type, content }`
 - Suggestion: `{ id, type, content }`

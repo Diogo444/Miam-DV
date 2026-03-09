@@ -22,6 +22,11 @@ export class ProverbesController {
     return this.proverbesService.findOne();
   }
 
+  @Get('suggested')
+  findSuggested() {
+    return this.proverbesService.findSuggested();
+  }
+
   @Delete()
   remove() {
     return this.proverbesService.remove();

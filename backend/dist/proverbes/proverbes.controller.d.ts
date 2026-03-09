@@ -10,5 +10,6 @@ export declare class ProverbesController {
     }>;
     update(dto: UpdateProverbeDto): Promise<import("./entities/proverbe.entity").Proverbe | null>;
     findOne(): Promise<import("./entities/proverbe.entity").Proverbe | null>;
+    findSuggested(): Promise<import("./entities/proverbe_suggered.entity").ProverbeSuggered>;
     remove(): Promise<import("./entities/proverbe.entity").Proverbe | null>;
 }

@@ -17,10 +17,13 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const proverbe_entity_1 = require("./entities/proverbe.entity");
+const proverbe_suggered_entity_1 = require("./entities/proverbe_suggered.entity");
 let ProverbesService = class ProverbesService {
     repo;
-    constructor(repo) {
+    suggeredRepo;
+    constructor(repo, suggeredRepo) {
         this.repo = repo;
+        this.suggeredRepo = suggeredRepo;
     }
     async createOrReplace(dto) {
         const normalizedType = normalizeProverbeType(dto.type);
@@ -46,12 +49,24 @@ let ProverbesService = class ProverbesService {
     findOne() {
         return this.repo.findOneBy({ id: 1 });
     }
+    async findSuggested() {
+        const [suggested] = await this.suggeredRepo.find({
+            order: { id: 'DESC' },
+            take: 1,
+        });
+        return suggested ?? null;
+    }
     async update(dto) {
-        const normalizedType = dto.type ? normalizeProverbeType(dto.type) : undefined;
+        const normalizedType = dto.type
+            ? normalizeProverbeType(dto.type)
+            : undefined;
         if (dto.type && !normalizedType) {
             throw new common_1.BadRequestException("type must be 'blague' or 'proverbe'");
         }
-        await this.repo.update(1, { ...dto, ...(normalizedType ? { type: normalizedType } : {}) });
+        await this.repo.update(1, {
+            ...dto,
+            ...(normalizedType ? { type: normalizedType } : {}),
+        });
         return this.repo.findOneBy({ id: 1 });
     }
     async remove() {
@@ -67,7 +82,9 @@ exports.ProverbesService = ProverbesService;
 exports.ProverbesService = ProverbesService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(proverbe_entity_1.Proverbe)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(1, (0, typeorm_1.InjectRepository)(proverbe_suggered_entity_1.ProverbeSuggered)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], ProverbesService);
 function normalizeProverbeType(type) {
     if (typeof type !== 'string') {

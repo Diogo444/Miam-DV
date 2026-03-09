@@ -8,7 +8,19 @@ describe('MenusController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MenusController],
-      providers: [MenusService],
+      providers: [
+        {
+          provide: MenusService,
+          useValue: {
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            remove: jest.fn(),
+            removeAll: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<MenusController>(MenusController);

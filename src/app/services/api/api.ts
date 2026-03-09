@@ -33,6 +33,10 @@ export class Api {
     return this.http.get<Proverbe | Proverbe[]>(`${this.baseUrl}/proverbes`);
   }
 
+  getSuggestedProverbe() {
+    return this.http.get<Proverbe | null>(`${this.baseUrl}/proverbes/suggested`);
+  }
+
   addProverbe(proverbe: { type: string; content: string }) {
     return this.http.post<ProverbeResponse>(`${this.baseUrl}/proverbes`, proverbe);
   }

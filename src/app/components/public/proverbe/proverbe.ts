@@ -1,116 +1,55 @@
-import { Component, OnInit, signal, inject, computed, ChangeDetectionStrategy } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Api } from '../../../services/api/api';
-import { Proverbe as ProverbeModel } from '../../../models/proverbes.model';
 import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { Proverbe as ProverbeModel } from '../../../models/proverbes.model';
+import { Api } from '../../../services/api/api';
+
 
 @Component({
   selector: 'app-proverbe',
-  imports: [ReactiveFormsModule, CommonModule, MatSnackBarModule],
+  imports: [CommonModule],
   templateUrl: './proverbe.html',
   styleUrl: './proverbe.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Proverbe implements OnInit {
-  private api = inject(Api);
-  private fb = inject(FormBuilder);
-  private snackBar = inject(MatSnackBar);
+  private readonly api = inject(Api);
 
-  // State
-  open = signal(false);
-  proverbes = signal<ProverbeModel[]>([]);
-  submitting = signal(false);
-  loading = signal(true);
-  error = signal<string | null>(null);
-  statusMessage = signal<{ type: 'success' | 'error', text: string } | null>(null);
-  
-  blagueDeLaSemaine = computed(() =>
+  readonly proverbes = signal<ProverbeModel[]>([]);
+  readonly loading = signal(true);
+  readonly error = signal<string | null>(null);
+
+  readonly blagueDeLaSemaine = computed(() =>
     this.proverbes().find((p) => p.type?.toLowerCase() === 'blague'),
   );
-  autresProverbes = computed(() =>
+  readonly autresProverbes = computed(() =>
     this.proverbes().filter((p) => p.type?.toLowerCase() !== 'blague'),
   );
 
-  // Form
-  form = this.fb.group({
-    type: ['Blague', [Validators.required]],
-    content: ['', [Validators.required, Validators.minLength(3)]],
-  });
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.getProverbes();
   }
 
-  getProverbes() {
+  getProverbes(): void {
     this.loading.set(true);
     this.error.set(null);
-    
+
     this.api.getProverbe().subscribe({
       next: (data) => {
-        // API renvoie un objet unique (id=1) ; on homogénéise en tableau
         const normalized = Array.isArray(data) ? data : data ? [data] : [];
         this.proverbes.set(normalized);
         this.loading.set(false);
       },
       error: (err) => {
         console.error('[Proverbe] Erreur lors du chargement:', err);
-        // On ne bloque pas l'UI, juste on ne montre pas de proverbe
         this.proverbes.set([]);
         this.loading.set(false);
-        // Pas de message d'erreur visible car ce n'est pas critique
-      }
-    });
-  }
-
-  toggleOpen() {
-    this.open.update((v) => !v);
-  }
-
-  private showStatusMessage(type: 'success' | 'error', text: string): void {
-    this.statusMessage.set({ type, text });
-    setTimeout(() => {
-      this.statusMessage.set(null);
-    }, 5000);
-  }
-
-  submitSuggestion() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    this.submitting.set(true);
-
-    const formValue = this.form.value;
-    const payload = {
-      type: formValue.type || 'Blague',
-      content: formValue.content || '',
-    };
-    console.log(payload);
-
-    this.api.addSuggestion(payload).subscribe({
-      next: () => {
-        this.getProverbes();
-        this.form.reset({ type: 'Blague', content: '' });
-        this.open.set(false);
-        this.submitting.set(false);
-        this.showStatusMessage('success', 'Merci ! Votre proposition a été envoyée.');
-        this.snackBar.open('Merci ! Votre proposition a été envoyée.', 'Fermer', {
-          duration: 5000,
-        });
-        console.log("Suggestion envoyée avec succès.");
-      },
-      error: (err) => {
-        console.error(err);
-        this.submitting.set(false);
-        this.showStatusMessage('error', "Impossible d'envoyer la proposition, réessayez.");
-        this.snackBar.open("Impossible d'envoyer la proposition, réessayez.", 'Fermer', {
-          duration: 5000,
-        });
-      },
-      complete: () => {
-        this.submitting.set(false);
       },
     });
   }
