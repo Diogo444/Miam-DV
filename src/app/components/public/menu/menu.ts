@@ -9,7 +9,7 @@ import { Api } from '../../../services/api/api';
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, Proverbe, AdBanner],
+  imports: [CommonModule, AdBanner],
   templateUrl: './menu.html',
   styleUrl: './menu.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

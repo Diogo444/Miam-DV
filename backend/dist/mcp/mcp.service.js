@@ -21,17 +21,20 @@ const week_proverb_entity_1 = require("./entities/week-proverb.entity");
 const menu_item_dto_1 = require("./dto/menu-item.dto");
 const menu_entity_1 = require("../menus/entities/menu.entity");
 const proverbe_entity_1 = require("../proverbes/entities/proverbe.entity");
+const proverbe_suggered_entity_1 = require("../proverbes/entities/proverbe_suggered.entity");
 let McpService = class McpService {
     weekMenuRepository;
     weekProverbRepository;
     menuRepository;
     proverbeRepository;
+    proverbeSuggeredRepository;
     logger = new common_1.Logger('McpAudit');
-    constructor(weekMenuRepository, weekProverbRepository, menuRepository, proverbeRepository) {
+    constructor(weekMenuRepository, weekProverbRepository, menuRepository, proverbeRepository, proverbeSuggeredRepository) {
         this.weekMenuRepository = weekMenuRepository;
         this.weekProverbRepository = weekProverbRepository;
         this.menuRepository = menuRepository;
         this.proverbeRepository = proverbeRepository;
+        this.proverbeSuggeredRepository = proverbeSuggeredRepository;
     }
     async publishWeekMenu(dto) {
         const weekStart = this.assertValidWeekStart(dto.weekStart);
@@ -87,6 +90,7 @@ let McpService = class McpService {
         await this.weekProverbRepository.delete({ weekStart });
         await this.menuRepository.clear();
         await this.proverbeRepository.clear();
+        await this.proverbeSuggeredRepository.clear();
         this.logAudit('clear_week_data', weekStart, true);
         return { success: true, weekStart };
     }
@@ -199,7 +203,9 @@ exports.McpService = McpService = __decorate([
     __param(1, (0, typeorm_1.InjectRepository)(week_proverb_entity_1.WeekProverb)),
     __param(2, (0, typeorm_1.InjectRepository)(menu_entity_1.Menu)),
     __param(3, (0, typeorm_1.InjectRepository)(proverbe_entity_1.Proverbe)),
+    __param(4, (0, typeorm_1.InjectRepository)(proverbe_suggered_entity_1.ProverbeSuggered)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository])

@@ -17,12 +17,13 @@ const mcp_guard_1 = require("./guards/mcp.guard");
 const mcp_rate_limit_guard_1 = require("./guards/mcp-rate-limit.guard");
 const menu_entity_1 = require("../menus/entities/menu.entity");
 const proverbe_entity_1 = require("../proverbes/entities/proverbe.entity");
+const proverbe_suggered_entity_1 = require("../proverbes/entities/proverbe_suggered.entity");
 let McpModule = class McpModule {
 };
 exports.McpModule = McpModule;
 exports.McpModule = McpModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([week_menu_entity_1.WeekMenu, week_proverb_entity_1.WeekProverb, menu_entity_1.Menu, proverbe_entity_1.Proverbe])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([week_menu_entity_1.WeekMenu, week_proverb_entity_1.WeekProverb, menu_entity_1.Menu, proverbe_entity_1.Proverbe, proverbe_suggered_entity_1.ProverbeSuggered])],
         controllers: [mcp_controller_1.McpController],
         providers: [mcp_service_1.McpService, mcp_guard_1.McpGuard, mcp_rate_limit_guard_1.McpRateLimitGuard],
     })

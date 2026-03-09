@@ -19,12 +19,15 @@ const menu_entity_1 = require("./entities/menu.entity");
 const typeorm_2 = require("typeorm");
 const schedule_1 = require("@nestjs/schedule");
 const proverbe_entity_1 = require("../proverbes/entities/proverbe.entity");
+const proverbe_suggered_entity_1 = require("../proverbes/entities/proverbe_suggered.entity");
 let MenusService = class MenusService {
     menuRepository;
     proverbeRepository;
-    constructor(menuRepository, proverbeRepository) {
+    proverbeSuggeredRepository;
+    constructor(menuRepository, proverbeRepository, proverbeSuggeredRepository) {
         this.menuRepository = menuRepository;
         this.proverbeRepository = proverbeRepository;
+        this.proverbeSuggeredRepository = proverbeSuggeredRepository;
     }
     async create(createMenuDto) {
         const existingMenu = await this.menuRepository.findOneBy({
@@ -73,7 +76,8 @@ let MenusService = class MenusService {
     async removeAll() {
         await this.menuRepository.clear();
         await this.proverbeRepository.clear();
-        return { message: 'All menus and proverbes have been removed.' };
+        await this.proverbeSuggeredRepository.clear();
+        return { message: 'All menus, proverbes and suggested proverbes have been removed.' };
     }
 };
 exports.MenusService = MenusService;
@@ -89,7 +93,9 @@ exports.MenusService = MenusService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(menu_entity_1.Menu)),
     __param(1, (0, typeorm_1.InjectRepository)(proverbe_entity_1.Proverbe)),
+    __param(2, (0, typeorm_1.InjectRepository)(proverbe_suggered_entity_1.ProverbeSuggered)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository])
 ], MenusService);
 //# sourceMappingURL=menus.service.js.map

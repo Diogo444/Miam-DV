@@ -2,11 +2,13 @@ import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { Menu } from './entities/menu.entity';
 import { Repository } from 'typeorm';
-import { Proverbe } from 'src/proverbes/entities/proverbe.entity';
+import { Proverbe } from '../proverbes/entities/proverbe.entity';
+import { ProverbeSuggered } from '../proverbes/entities/proverbe_suggered.entity';
 export declare class MenusService {
     private menuRepository;
     private proverbeRepository;
-    constructor(menuRepository: Repository<Menu>, proverbeRepository: Repository<Proverbe>);
+    private proverbeSuggeredRepository;
+    constructor(menuRepository: Repository<Menu>, proverbeRepository: Repository<Proverbe>, proverbeSuggeredRepository: Repository<ProverbeSuggered>);
     create(createMenuDto: CreateMenuDto): Promise<{
         created: boolean;
         message: string;

@@ -9,6 +9,7 @@ import { WeekProverb } from './entities/week-proverb.entity';
 import { MenuItemDto, normalizeWeekday } from './dto/menu-item.dto';
 import { Menu } from '../menus/entities/menu.entity';
 import { Proverbe } from '../proverbes/entities/proverbe.entity';
+import { ProverbeSuggered } from '../proverbes/entities/proverbe_suggered.entity';
 
 @Injectable()
 export class McpService {
@@ -23,6 +24,8 @@ export class McpService {
     private readonly menuRepository: Repository<Menu>,
     @InjectRepository(Proverbe)
     private readonly proverbeRepository: Repository<Proverbe>,
+    @InjectRepository(ProverbeSuggered)
+    private readonly proverbeSuggeredRepository: Repository<ProverbeSuggered>,
   ) {}
 
   async publishWeekMenu(dto: PublishWeekMenuDto) {
@@ -88,6 +91,7 @@ export class McpService {
     await this.weekProverbRepository.delete({ weekStart });
     await this.menuRepository.clear();
     await this.proverbeRepository.clear();
+    await this.proverbeSuggeredRepository.clear();
 
     this.logAudit('clear_week_data', weekStart, true);
     return { success: true, weekStart };

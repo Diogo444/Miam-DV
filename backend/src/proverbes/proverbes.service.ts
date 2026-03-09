@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { Proverbe } from './entities/proverbe.entity';
 import { CreateProverbeDto } from './dto/create-proverbe.dto';
 import { UpdateProverbeDto } from './dto/update-proverbe.dto';
+import { ProverbeSuggered } from './entities/proverbe_suggered.entity';
 
 @Injectable()
 export class ProverbesService {
   constructor(
     @InjectRepository(Proverbe)
     private readonly repo: Repository<Proverbe>,
+    @InjectRepository(ProverbeSuggered)
+    private readonly suggeredRepo: Repository<ProverbeSuggered>,
   ) {}
 
   async createOrReplace(dto: CreateProverbeDto) {
@@ -45,13 +48,26 @@ export class ProverbesService {
     return this.repo.findOneBy({ id: 1 });
   }
 
+  async findSuggested() {
+    const [suggested] = await this.suggeredRepo.find({
+      order: { id: 'DESC' },
+      take: 1,
+    });
+    return suggested ?? null;
+  }
+
   async update(dto: UpdateProverbeDto) {
-    const normalizedType = dto.type ? normalizeProverbeType(dto.type) : undefined;
+    const normalizedType = dto.type
+      ? normalizeProverbeType(dto.type)
+      : undefined;
     if (dto.type && !normalizedType) {
       throw new BadRequestException("type must be 'blague' or 'proverbe'");
     }
 
-    await this.repo.update(1, { ...dto, ...(normalizedType ? { type: normalizedType } : {}) });
+    await this.repo.update(1, {
+      ...dto,
+      ...(normalizedType ? { type: normalizedType } : {}),
+    });
     return this.repo.findOneBy({ id: 1 });
   }
 

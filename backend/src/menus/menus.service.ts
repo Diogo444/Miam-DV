@@ -5,7 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Menu } from './entities/menu.entity';
 import { Repository } from 'typeorm';
 import { Cron } from '@nestjs/schedule';
-import { Proverbe } from 'src/proverbes/entities/proverbe.entity';
+import { Proverbe } from '../proverbes/entities/proverbe.entity';
+import { ProverbeSuggered } from '../proverbes/entities/proverbe_suggered.entity';
 
 @Injectable()
 export class MenusService {
@@ -14,6 +15,8 @@ export class MenusService {
     private menuRepository: Repository<Menu>,
     @InjectRepository(Proverbe)
     private proverbeRepository: Repository<Proverbe>,
+    @InjectRepository(ProverbeSuggered)
+    private proverbeSuggeredRepository: Repository<ProverbeSuggered>,
   ) {}
   async create(createMenuDto: CreateMenuDto) {
     const existingMenu = await this.menuRepository.findOneBy({
@@ -74,8 +77,9 @@ export class MenusService {
     // vider les tables proprement
     await this.menuRepository.clear();
     await this.proverbeRepository.clear();
+    await this.proverbeSuggeredRepository.clear();
 
     // bon retour pour vérifier dans les logs
-    return { message: 'All menus and proverbes have been removed.' };
+    return { message: 'All menus, proverbes and suggested proverbes have been removed.' };
   }
 }

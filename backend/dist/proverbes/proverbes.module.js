@@ -12,12 +12,13 @@ const proverbes_service_1 = require("./proverbes.service");
 const proverbes_controller_1 = require("./proverbes.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const proverbe_entity_1 = require("./entities/proverbe.entity");
+const proverbe_suggered_entity_1 = require("./entities/proverbe_suggered.entity");
 let ProverbesModule = class ProverbesModule {
 };
 exports.ProverbesModule = ProverbesModule;
 exports.ProverbesModule = ProverbesModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([proverbe_entity_1.Proverbe])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([proverbe_entity_1.Proverbe, proverbe_suggered_entity_1.ProverbeSuggered])],
         controllers: [proverbes_controller_1.ProverbesController],
         providers: [proverbes_service_1.ProverbesService],
     })

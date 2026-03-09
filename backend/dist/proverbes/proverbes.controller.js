@@ -31,6 +31,9 @@ let ProverbesController = class ProverbesController {
     findOne() {
         return this.proverbesService.findOne();
     }
+    findSuggested() {
+        return this.proverbesService.findSuggested();
+    }
     remove() {
         return this.proverbesService.remove();
     }
@@ -56,6 +59,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ProverbesController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)('suggested'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], ProverbesController.prototype, "findSuggested", null);
 __decorate([
     (0, common_1.Delete)(),
     __metadata("design:type", Function),

@@ -6,13 +6,15 @@ import { WeekMenu } from './entities/week-menu.entity';
 import { WeekProverb } from './entities/week-proverb.entity';
 import { Menu } from '../menus/entities/menu.entity';
 import { Proverbe } from '../proverbes/entities/proverbe.entity';
+import { ProverbeSuggered } from '../proverbes/entities/proverbe_suggered.entity';
 export declare class McpService {
     private readonly weekMenuRepository;
     private readonly weekProverbRepository;
     private readonly menuRepository;
     private readonly proverbeRepository;
+    private readonly proverbeSuggeredRepository;
     private readonly logger;
-    constructor(weekMenuRepository: Repository<WeekMenu>, weekProverbRepository: Repository<WeekProverb>, menuRepository: Repository<Menu>, proverbeRepository: Repository<Proverbe>);
+    constructor(weekMenuRepository: Repository<WeekMenu>, weekProverbRepository: Repository<WeekProverb>, menuRepository: Repository<Menu>, proverbeRepository: Repository<Proverbe>, proverbeSuggeredRepository: Repository<ProverbeSuggered>);
     publishWeekMenu(dto: PublishWeekMenuDto): Promise<{
         success: boolean;
         weekStart: string;
