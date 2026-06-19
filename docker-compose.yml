@@ -37,7 +37,7 @@ services:
       PORT: 3000
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}
       MCP_API_KEY: ${MCP_API_KEY}
-      MCP_API_KEY_SCOPES: ${MCP_API_KEY_SCOPES:-mcp:menu:write,mcp:proverb:write,mcp:week:clear}
+      MCP_API_KEY_SCOPES: ${MCP_API_KEY_SCOPES:-mcp:menu:write,mcp:proverb:write,mcp:week:clear,mcp:week:read}
       MCP_RATE_LIMIT_WINDOW_MS: ${MCP_RATE_LIMIT_WINDOW_MS:-60000}
       MCP_RATE_LIMIT_MAX: ${MCP_RATE_LIMIT_MAX:-60}
     depends_on:

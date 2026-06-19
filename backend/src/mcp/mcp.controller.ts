@@ -22,7 +22,6 @@ import { ClearWeekDataDto } from './dto/clear-week-data.dto';
 import {
   MCP_SCOPE_MENU_WRITE,
   MCP_SCOPE_PROVERB_WRITE,
-  MCP_SCOPE_WEEK_READ,
   MCP_SCOPE_WEEK_CLEAR,
 } from './mcp.constants';
 import { McpScopes } from './mcp.decorators';
@@ -126,7 +125,6 @@ export class McpController {
   }
 
   @Get('health')
-  @McpScopes(MCP_SCOPE_WEEK_READ)
   health() {
     return { status: 'ok' };
   }
