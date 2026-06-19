@@ -28,7 +28,7 @@ export class McpService {
     private readonly proverbeSuggeredRepository: Repository<ProverbeSuggered>,
   ) {}
 
-  async publishWeekMenu(dto: PublishWeekMenuDto) {
+  async publishWeekMenu(dto: PublishWeekMenuInput) {
     const weekStart = this.assertValidWeekStart(dto.weekStart);
     const items = this.normalizeWeekMenuItems(dto.items);
     this.ensureUniqueDays(items);
@@ -97,11 +97,41 @@ export class McpService {
     return { success: true, weekStart };
   }
 
+  async getWeekData(weekStart?: string) {
+    const resolvedWeekStart = weekStart
+      ? this.assertValidWeekStart(weekStart)
+      : getCurrentWeekStart();
+
+    const [menu, proverb] = await Promise.all([
+      this.weekMenuRepository.findOne({ where: { weekStart: resolvedWeekStart } }),
+      this.weekProverbRepository.findOne({ where: { weekStart: resolvedWeekStart } }),
+    ]);
+
+    return {
+      weekStart: resolvedWeekStart,
+      menu: menu
+        ? {
+            items: menu.items,
+            notes: menu.notes ?? null,
+            updatedAt: menu.updatedAt,
+          }
+        : null,
+      proverb: proverb
+        ? {
+            text: proverb.text,
+            author: proverb.author ?? null,
+            source: proverb.source ?? null,
+            updatedAt: proverb.updatedAt,
+          }
+        : null,
+    };
+  }
+
   logAudit(tool: string, weekStart: string, success: boolean) {
     this.logger.log(`tool=${tool} weekStart=${weekStart} status=${success ? 'success' : 'failure'}`);
   }
 
-  private normalizeWeekMenuItems(items: MenuItemDto[]) {
+  private normalizeWeekMenuItems(items: MenuItemInput[]) {
     return items.map((item) => {
       const day = normalizeWeekday(item.day);
       if (!day) {
@@ -231,6 +261,17 @@ type NormalizedMenuItem = {
   lunch?: string[];
   dinner?: string[];
   allergens?: string[];
+};
+
+type PublishWeekMenuInput = Omit<PublishWeekMenuDto, 'items'> & {
+  items: MenuItemInput[];
+};
+
+type MenuItemInput = Omit<MenuItemDto, 'lunch' | 'dinner' | 'midi' | 'soir'> & {
+  lunch?: string[] | string;
+  dinner?: string[] | string;
+  midi?: string[] | string;
+  soir?: string[] | string;
 };
 
 const LEGACY_DAY_LABELS: Record<string, string> = {

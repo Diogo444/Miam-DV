@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { McpController } from './mcp.controller';
 import { McpService } from './mcp.service';
+import { McpServerFactory } from './mcp-server.factory';
 import { WeekMenu } from './entities/week-menu.entity';
 import { WeekProverb } from './entities/week-proverb.entity';
 import { McpGuard } from './guards/mcp.guard';
@@ -13,6 +14,6 @@ import { ProverbeSuggered } from '../proverbes/entities/proverbe_suggered.entity
 @Module({
   imports: [TypeOrmModule.forFeature([WeekMenu, WeekProverb, Menu, Proverbe, ProverbeSuggered])],
   controllers: [McpController],
-  providers: [McpService, McpGuard, McpRateLimitGuard],
+  providers: [McpService, McpServerFactory, McpGuard, McpRateLimitGuard],
 })
 export class McpModule {}

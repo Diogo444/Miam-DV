@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -11,6 +12,16 @@ import type { Request } from 'express';
 import { MCP_ALL_SCOPES, McpScope } from '../mcp.constants';
 
 export const MCP_SCOPES_KEY = 'mcp_scopes';
+
+export type McpAuthInfo = {
+  strategy: 'api-key' | 'jwt';
+  scopes: string[];
+  subject?: string;
+};
+
+export type McpAuthenticatedRequest = Request & {
+  mcpAuth?: McpAuthInfo;
+};
 
 @Injectable()
 export class McpGuard implements CanActivate {
@@ -29,18 +40,21 @@ export class McpGuard implements CanActivate {
         context.getHandler(),
         context.getClass(),
       ]) ?? [];
-    const request = context.switchToHttp().getRequest<Request>();
+    const request = context.switchToHttp().getRequest<McpAuthenticatedRequest>();
+
+    this.validateOrigin(request);
 
     const apiKeyHeader = request.headers['x-mcp-key'];
     if (typeof apiKeyHeader === 'string') {
-      this.validateApiKey(apiKeyHeader, requiredScopes);
+      const scopes = this.validateApiKey(apiKeyHeader, requiredScopes);
+      request.mcpAuth = { strategy: 'api-key', scopes };
       return true;
     }
 
     const authHeader = request.headers.authorization;
     if (authHeader?.startsWith('Bearer ')) {
       const token = authHeader.slice(7).trim();
-      this.validateJwt(token, requiredScopes);
+      request.mcpAuth = this.validateJwt(token, requiredScopes);
       return true;
     }
 
@@ -58,6 +72,7 @@ export class McpGuard implements CanActivate {
     const scopes =
       this.apiKeyScopes.length > 0 ? this.apiKeyScopes : MCP_ALL_SCOPES;
     this.ensureScopes(scopes, requiredScopes);
+    return scopes;
   }
 
   private validateJwt(token: string, requiredScopes: McpScope[]) {
@@ -65,12 +80,38 @@ export class McpGuard implements CanActivate {
       throw new UnauthorizedException('MCP JWT secret not configured');
     }
 
+    let payload: unknown;
     try {
-      const payload = this.jwtService.verify(token, { secret: this.jwtSecret });
-      const scopes = this.extractScopes(payload);
-      this.ensureScopes(scopes, requiredScopes);
+      payload = this.jwtService.verify(token, { secret: this.jwtSecret });
     } catch (error) {
       throw new UnauthorizedException('Invalid MCP JWT');
+    }
+
+    const scopes = this.extractScopes(payload);
+    this.ensureScopes(scopes, requiredScopes);
+    return {
+      strategy: 'jwt' as const,
+      scopes,
+      subject: extractSubject(payload),
+    };
+  }
+
+  private validateOrigin(request: Request) {
+    const origin = request.headers.origin;
+    if (typeof origin !== 'string') {
+      return;
+    }
+
+    const allowedOrigins = this.parseOrigins(process.env.MCP_ALLOWED_ORIGINS);
+    if (allowedOrigins.length > 0) {
+      if (!allowedOrigins.includes(origin)) {
+        throw new ForbiddenException('MCP origin is not allowed');
+      }
+      return;
+    }
+
+    if (!isLocalOrigin(origin)) {
+      throw new ForbiddenException('MCP origin is not allowed');
     }
   }
 
@@ -109,6 +150,16 @@ export class McpGuard implements CanActivate {
       .map((scope) => scope.trim())
       .filter(Boolean);
   }
+
+  private parseOrigins(raw?: string) {
+    if (!raw) {
+      return [];
+    }
+    return raw
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean);
+  }
 }
 
 function safeEqual(value: string, expected: string) {
@@ -122,4 +173,21 @@ function safeEqual(value: string, expected: string) {
 
 export function hashIdentifier(value: string) {
   return createHash('sha256').update(value).digest('hex');
+}
+
+function extractSubject(payload: unknown) {
+  if (!payload || typeof payload !== 'object') {
+    return undefined;
+  }
+  const subject = (payload as Record<string, unknown>).sub;
+  return typeof subject === 'string' ? subject : undefined;
+}
+
+function isLocalOrigin(origin: string) {
+  try {
+    const url = new URL(origin);
+    return ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+  } catch (error) {
+    return false;
+  }
 }
