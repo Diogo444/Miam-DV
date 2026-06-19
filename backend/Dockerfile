@@ -5,7 +5,7 @@ WORKDIR /app
 RUN apk add --no-cache python3 make g++
 
 COPY package.json pnpm-lock.yaml ./
-RUN corepack enable && pnpm install --frozen-lockfile
+RUN corepack enable && corepack prepare pnpm@10.15.0 --activate && pnpm install --frozen-lockfile
 
 COPY src ./src
 COPY nest-cli.json tsconfig.json tsconfig.build.json ./
