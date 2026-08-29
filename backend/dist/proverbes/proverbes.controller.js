@@ -14,9 +14,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProverbesController = void 0;
 const common_1 = require("@nestjs/common");
+const passport_1 = require("@nestjs/passport");
 const proverbes_service_1 = require("./proverbes.service");
 const create_proverbe_dto_1 = require("./dto/create-proverbe.dto");
 const update_proverbe_dto_1 = require("./dto/update-proverbe.dto");
+const roles_decorator_1 = require("../common/decorators/roles.decorator");
+const roles_guard_1 = require("../common/guards/auth/roles.guard");
 let ProverbesController = class ProverbesController {
     proverbesService;
     constructor(proverbesService) {
@@ -41,6 +44,8 @@ let ProverbesController = class ProverbesController {
 exports.ProverbesController = ProverbesController;
 __decorate([
     (0, common_1.Post)(),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_proverbe_dto_1.CreateProverbeDto]),
@@ -48,6 +53,8 @@ __decorate([
 ], ProverbesController.prototype, "createOrReplace", null);
 __decorate([
     (0, common_1.Patch)(),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [update_proverbe_dto_1.UpdateProverbeDto]),
@@ -67,6 +74,8 @@ __decorate([
 ], ProverbesController.prototype, "findSuggested", null);
 __decorate([
     (0, common_1.Delete)(),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('admin'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)

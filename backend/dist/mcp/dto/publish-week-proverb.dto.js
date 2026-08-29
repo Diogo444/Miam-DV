@@ -34,7 +34,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
-    (0, class_transformer_1.Transform)(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value)),
+    (0, class_transformer_1.Transform)(({ value }) => normalizeType(value)),
     (0, class_validator_1.IsIn)(['blague', 'proverbe']),
     __metadata("design:type", String)
 ], PublishWeekProverbDto.prototype, "type", void 0);
@@ -52,4 +52,7 @@ __decorate([
     (0, class_validator_1.MaxLength)(300),
     __metadata("design:type", String)
 ], PublishWeekProverbDto.prototype, "source", void 0);
+function normalizeType(value) {
+    return typeof value === 'string' ? value.trim().toLowerCase() : value;
+}
 //# sourceMappingURL=publish-week-proverb.dto.js.map

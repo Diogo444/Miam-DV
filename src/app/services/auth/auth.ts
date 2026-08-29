@@ -1,4 +1,9 @@
 import { Injectable } from '@angular/core';
+import { jwtDecode } from 'jwt-decode';
+
+type JwtPayload = {
+  exp?: number;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -11,12 +16,14 @@ export class Auth {
 
   isTokenExpired(token: string): boolean {
     try {
-      const payload: any = JSON.parse(atob(token.split('.')[1]));
-      const exp = payload.exp;
+      const { exp } = jwtDecode<JwtPayload>(token);
+      if (typeof exp !== 'number') {
+        return true;
+      }
       const now = Math.floor(Date.now() / 1000);
       return exp < now;
-    } catch (e) {
-      return true; // Si erreur de décodage, considérer le token comme expiré
+    } catch {
+      return true;
     }
   }
 
@@ -25,12 +32,6 @@ export class Auth {
     localStorage.removeItem('auth_role');
   }
   isAdmin(): boolean {
-    const role = localStorage.getItem('auth_role');
-    if (role === 'admin') {
-      return true;
-    } else {
-      return false;
-    }
-
+    return localStorage.getItem('auth_role') === 'admin';
   }
 }

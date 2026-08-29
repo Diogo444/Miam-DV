@@ -80,6 +80,9 @@ export class MenusService {
     await this.proverbeSuggeredRepository.clear();
 
     // bon retour pour vérifier dans les logs
-    return { message: 'All menus, proverbes and suggested proverbes have been removed.' };
+    return {
+      message:
+        'All menus, proverbes and suggested proverbes have been removed.',
+    };
   }
 }

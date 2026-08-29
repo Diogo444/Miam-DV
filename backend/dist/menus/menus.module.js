@@ -20,7 +20,10 @@ let MenusModule = class MenusModule {
 exports.MenusModule = MenusModule;
 exports.MenusModule = MenusModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([menu_entity_1.Menu, proverbe_entity_1.Proverbe, proverbe_suggered_entity_1.ProverbeSuggered]), auth_module_1.AuthModule],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([menu_entity_1.Menu, proverbe_entity_1.Proverbe, proverbe_suggered_entity_1.ProverbeSuggered]),
+            auth_module_1.AuthModule,
+        ],
         controllers: [menus_controller_1.MenusController],
         providers: [menus_service_1.MenusService],
     })

@@ -71,7 +71,7 @@ export class MenuItemDto {
   @IsString()
   @Transform(({ value }) => normalizeDayInput(value))
   @IsIn(WEEKDAY_VALUES)
-  day: string;
+  day!: string;
 
   @IsOptional()
   @IsString()

@@ -31,18 +31,28 @@ exports.AuthModule = AuthModule = __decorate([
                 if (!secret) {
                     throw new Error('JWT_SECRET must be defined');
                 }
-                const maskedSecret = secret.length > 8 ? `${secret.slice(0, 4)}...${secret.slice(-4)}` : secret;
+                const maskedSecret = secret.length > 8
+                    ? `${secret.slice(0, 4)}...${secret.slice(-4)}`
+                    : secret;
                 common_1.Logger.debug(`AuthModule -> configuring JwtModule with secret length=${secret.length}, masked=${maskedSecret}`);
                 return jwt_1.JwtModule.register({
                     secret,
                     signOptions: {
-                        expiresIn: process.env.JWT_EXPIRES_IN ?? '1d',
+                        expiresIn: process.env.JWT_EXPIRES_IN ??
+                            '1d',
                     },
                 });
             })(),
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, local_strategy_1.LocalStrategy, jwt_strategy_1.JwtStrategy, auth_guard_1.LocalAuthGuard, auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard],
+        providers: [
+            auth_service_1.AuthService,
+            local_strategy_1.LocalStrategy,
+            jwt_strategy_1.JwtStrategy,
+            auth_guard_1.LocalAuthGuard,
+            auth_guard_1.JwtAuthGuard,
+            roles_guard_1.RolesGuard,
+        ],
         exports: [auth_service_1.AuthService, auth_guard_1.LocalAuthGuard, auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard],
     })
 ], AuthModule);

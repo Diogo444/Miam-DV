@@ -7,13 +7,13 @@ describe('AuthService', () => {
   let service: AuthService;
 
   const adminServiceMock = {
-    findByUsername: jest.fn(),
-    findById: jest.fn(),
-    create: jest.fn(),
+    findByUsername: vi.fn(),
+    findById: vi.fn(),
+    create: vi.fn(),
   };
 
   const jwtServiceMock = {
-    sign: jest.fn(),
+    sign: vi.fn(),
   };
 
   beforeEach(async () => {

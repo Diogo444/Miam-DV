@@ -1,15 +1,20 @@
-import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('week_proverbes')
 export class WeekProverb {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ type: 'date', unique: true })
-  weekStart: string;
+  weekStart!: string;
 
   @Column({ type: 'text' })
-  text: string;
+  text!: string;
 
   @Column({ type: 'varchar', length: 200, nullable: true })
   author?: string | null;
@@ -18,5 +23,5 @@ export class WeekProverb {
   source?: string | null;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }

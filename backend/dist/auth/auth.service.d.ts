@@ -25,7 +25,7 @@ export declare class AuthService {
             tokenVersion: number;
         };
     }>;
-    login(user: AuthUser): Promise<{
+    login(user: AuthUser): {
         access_token: string;
         user: {
             id: number;
@@ -33,7 +33,7 @@ export declare class AuthService {
             role: string;
             tokenVersion: number;
         };
-    }>;
+    };
     me(user: {
         id: number;
     }): Promise<{

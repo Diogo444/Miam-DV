@@ -3,18 +3,20 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AdminService } from '../admin/admin.service';
 import { JwtService } from '@nestjs/jwt';
+import { JwtAuthGuard, LocalAuthGuard } from '../common/guards/auth/auth.guard';
+import { RolesGuard } from '../common/guards/auth/roles.guard';
 
 describe('AuthController', () => {
   let controller: AuthController;
 
   const adminServiceMock = {
-    findByUsername: jest.fn(),
-    findById: jest.fn(),
-    create: jest.fn(),
+    findByUsername: vi.fn(),
+    findById: vi.fn(),
+    create: vi.fn(),
   };
 
   const jwtServiceMock = {
-    sign: jest.fn(),
+    sign: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -25,7 +27,14 @@ describe('AuthController', () => {
         { provide: AdminService, useValue: adminServiceMock },
         { provide: JwtService, useValue: jwtServiceMock },
       ],
-    }).compile();
+    })
+      .overrideGuard(LocalAuthGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(RolesGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get<AuthController>(AuthController);
   });

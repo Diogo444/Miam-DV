@@ -1,11 +1,10 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavPublic } from '../public/nav-public/nav-public';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { Api } from '../../services/api/api';
 import { LoginResponse } from '../../models/auth.model';
 
-import { jwtDecode } from 'jwt-decode';
 import { Auth } from '../../services/auth/auth';
 import { Router } from '@angular/router';
 
@@ -15,10 +14,9 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [NavPublic, FormsModule, CommonModule],
+  imports: [NavPublic, FormsModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login {
   username: string = '';
@@ -32,8 +30,7 @@ export class Login {
     this.api.login(this.username, this.password).subscribe({
       next: (response) => {
         this.response = response;
-        const decoded: any = jwtDecode(response.access_token);
-        this.authService.saveTokenAndRole(response.access_token, decoded.role);
+        this.authService.saveTokenAndRole(response.access_token, response.user.role);
         this.router.navigate(['/admin']);
 
       },

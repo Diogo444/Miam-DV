@@ -12,5 +12,5 @@ export class ClearWeekDataDto {
   scope?: 'currentWeek';
 
   @Equals('CLEAR_WEEK_DATA')
-  confirm: 'CLEAR_WEEK_DATA';
+  confirm!: 'CLEAR_WEEK_DATA';
 }

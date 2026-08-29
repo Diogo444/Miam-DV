@@ -1,12 +1,14 @@
 <section
-  class="w-full min-h-[calc(100vh-var(--nav-height))] pt-[var(--nav-height)] bg-background-light text-text-main dark:bg-background-dark dark:text-background-light"
+  aria-labelledby="weekly-menu-title"
+  class="w-full bg-background-light text-text-main dark:bg-background-dark dark:text-background-light"
 >
+  <h2 id="weekly-menu-title" class="sr-only">Menu de la semaine</h2>
   
 
     <!-- État de chargement -->
     @if (loading()) {
       <div class="p-4 lg:p-0">
-        <div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-primary/30 bg-primary-light/20 dark:bg-primary/10 py-12 px-6 text-center text-text-muted dark:text-primary/90" role="status" aria-live="polite">
+        <div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-primary/30 bg-primary-light/20 dark:bg-primary/10 py-12 px-6 text-center text-text-muted dark:text-green-200" role="status" aria-live="polite">
           <div class="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent" aria-hidden="true"></div>
           <p class="text-lg font-medium">Chargement du menu...</p>
         </div>
@@ -33,7 +35,7 @@
     <!-- Menu vide -->
     @else if (!groupedMenus().length) {
       <div class="p-4 lg:p-0">
-        <div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-primary/30 bg-primary-light/20 dark:bg-primary/10 py-12 px-6 text-center text-text-muted dark:text-primary/90">
+        <div class="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-primary/30 bg-primary-light/20 dark:bg-primary/10 py-12 px-6 text-center text-text-muted dark:text-green-200">
           <span class="material-symbols-outlined text-5xl" aria-hidden="true">restaurant_menu</span>
           <p class="text-lg font-medium">Menu non disponible</p>
           <p class="text-sm">Le menu de cette semaine n'a pas encore été publié. Veuillez revenir plus tard.</p>
@@ -62,7 +64,7 @@
             <div
               class="rounded-xl border border-primary-light/60 bg-primary-light/70 p-3 dark:border-primary/30 dark:bg-primary/20"
             >
-              <p class="text-sm font-semibold text-text-muted dark:text-primary/90">
+              <p class="text-sm font-semibold text-text-muted dark:text-green-200">
                 {{ meal.periode }}
               </p>
               <ul
@@ -117,7 +119,7 @@
           <div
             class="rounded-xl border border-primary-light/60 bg-primary-light/70 p-3 dark:border-primary/30 dark:bg-primary/20"
           >
-            <p class="text-sm font-semibold text-text-muted dark:text-primary/90">
+            <p class="text-sm font-semibold text-text-muted dark:text-green-200">
               {{ meal.periode }}
             </p>
             <ul

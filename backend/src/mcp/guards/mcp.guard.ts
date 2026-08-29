@@ -26,7 +26,9 @@ export type McpAuthenticatedRequest = Request & {
 @Injectable()
 export class McpGuard implements CanActivate {
   private readonly apiKey = process.env.MCP_API_KEY;
-  private readonly apiKeyScopes = this.parseScopes(process.env.MCP_API_KEY_SCOPES);
+  private readonly apiKeyScopes = this.parseScopes(
+    process.env.MCP_API_KEY_SCOPES,
+  );
   private readonly jwtSecret = process.env.MCP_JWT_SECRET;
   private readonly jwtService = this.jwtSecret
     ? new JwtService({ secret: this.jwtSecret })
@@ -40,7 +42,9 @@ export class McpGuard implements CanActivate {
         context.getHandler(),
         context.getClass(),
       ]) ?? [];
-    const request = context.switchToHttp().getRequest<McpAuthenticatedRequest>();
+    const request = context
+      .switchToHttp()
+      .getRequest<McpAuthenticatedRequest>();
 
     this.validateOrigin(request);
 
@@ -83,7 +87,7 @@ export class McpGuard implements CanActivate {
     let payload: unknown;
     try {
       payload = this.jwtService.verify(token, { secret: this.jwtSecret });
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('Invalid MCP JWT');
     }
 
@@ -133,7 +137,9 @@ export class McpGuard implements CanActivate {
     const scopeValue = raw.scope;
     const scopesValue = raw.scopes ?? raw.permissions;
     if (Array.isArray(scopesValue)) {
-      return scopesValue.filter((entry): entry is string => typeof entry === 'string');
+      return scopesValue.filter(
+        (entry): entry is string => typeof entry === 'string',
+      );
     }
     if (typeof scopeValue === 'string') {
       return this.parseScopes(scopeValue);
@@ -187,7 +193,7 @@ function isLocalOrigin(origin: string) {
   try {
     const url = new URL(origin);
     return ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
-  } catch (error) {
+  } catch {
     return false;
   }
 }

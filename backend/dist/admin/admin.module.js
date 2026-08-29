@@ -13,6 +13,7 @@ const admin_controller_1 = require("./admin.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../users/entities/user.entity");
 const admin_seed_service_1 = require("./admin.seed.service");
+const roles_guard_1 = require("../common/guards/auth/roles.guard");
 let AdminModule = class AdminModule {
 };
 exports.AdminModule = AdminModule;
@@ -20,7 +21,7 @@ exports.AdminModule = AdminModule = __decorate([
     (0, common_1.Module)({
         imports: [typeorm_1.TypeOrmModule.forFeature([user_entity_1.User])],
         controllers: [admin_controller_1.AdminController],
-        providers: [admin_service_1.AdminService, admin_seed_service_1.AdminSeedService],
+        providers: [admin_service_1.AdminService, admin_seed_service_1.AdminSeedService, roles_guard_1.RolesGuard],
         exports: [admin_service_1.AdminService],
     })
 ], AdminModule);

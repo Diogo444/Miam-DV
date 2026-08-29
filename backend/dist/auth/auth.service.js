@@ -71,7 +71,7 @@ let AuthService = AuthService_1 = class AuthService {
         const user = await this.admins.create(payload);
         return this.buildAuthResponse(user);
     }
-    async login(user) {
+    login(user) {
         return this.buildAuthResponse(user);
     }
     async me(user) {
@@ -89,7 +89,7 @@ let AuthService = AuthService_1 = class AuthService {
         const secret = process.env.JWT_SECRET;
         const maskedSecret = secret && secret.length > 8
             ? `${secret.slice(0, 4)}...${secret.slice(-4)}`
-            : secret ?? 'undefined';
+            : (secret ?? 'undefined');
         this.logger.debug(`AuthService.buildAuthResponse -> token length=${token.length}, masked=${maskedToken}, payload sub=${payload.sub}, role=${payload.role}, tokenVersion=${tokenVersion}, secret length=${secret?.length ?? 0}, masked=${maskedSecret}`);
         return {
             access_token: token,
@@ -97,13 +97,18 @@ let AuthService = AuthService_1 = class AuthService {
         };
     }
     toSafeUser(user) {
-        const { password, ...safeUser } = user;
-        return safeUser;
+        return {
+            id: user.id,
+            username: user.username,
+            role: user.role,
+            tokenVersion: user.tokenVersion,
+        };
     }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = AuthService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [admin_service_1.AdminService, jwt_1.JwtService])
+    __metadata("design:paramtypes", [admin_service_1.AdminService,
+        jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

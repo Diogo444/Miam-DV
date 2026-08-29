@@ -1,0 +1,9 @@
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: true
+  lmdb: false
+  msgpackr-extract: false
+
+overrides:
+  express-rate-limit: 8.6.2
+  ip-address: 10.5.0

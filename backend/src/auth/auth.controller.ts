@@ -1,4 +1,14 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Request,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService, AuthUser } from './auth.service';
 import { JwtAuthGuard, LocalAuthGuard } from '../common/guards/auth/auth.guard';
 import { RolesGuard } from '../common/guards/auth/roles.guard';
@@ -12,6 +22,8 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   async register(@Body() payload: CreateAdminDto) {
     return this.authService.register(payload);
   }
@@ -19,7 +31,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() _payload: LoginDto, @Request() req: ExpressRequest) {
+  login(@Body() _payload: LoginDto, @Request() req: ExpressRequest) {
     const user = req.user as AuthUser;
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -31,6 +43,6 @@ export class AuthController {
   @Roles('admin')
   @Get('me')
   async me(@Request() req: ExpressRequest) {
-    return this.authService.me(req.user as any);
+    return this.authService.me(req.user as AuthUser);
   }
 }

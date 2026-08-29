@@ -18,6 +18,7 @@ const suggestions_service_1 = require("./suggestions.service");
 const create_suggestion_dto_1 = require("./dto/create-suggestion.dto");
 const passport_1 = require("@nestjs/passport");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
+const roles_guard_1 = require("../common/guards/auth/roles.guard");
 let SuggestionsController = class SuggestionsController {
     suggestionsService;
     constructor(suggestionsService) {
@@ -45,7 +46,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SuggestionsController.prototype, "create", null);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)('admin'),
     (0, common_1.Get)(),
     __metadata("design:type", Function),
@@ -54,6 +55,8 @@ __decorate([
 ], SuggestionsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Post)('accept/:id'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -61,6 +64,8 @@ __decorate([
 ], SuggestionsController.prototype, "accept", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

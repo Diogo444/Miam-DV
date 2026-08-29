@@ -12,10 +12,10 @@ describe('SuggestionsController', () => {
         {
           provide: SuggestionsService,
           useValue: {
-            create: jest.fn(),
-            findAll: jest.fn(),
-            accept: jest.fn(),
-            remove: jest.fn(),
+            create: vi.fn(),
+            findAll: vi.fn(),
+            accept: vi.fn(),
+            remove: vi.fn(),
           },
         },
       ],

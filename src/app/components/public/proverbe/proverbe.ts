@@ -1,6 +1,5 @@
-import { CommonModule } from '@angular/common';
+
 import {
-  ChangeDetectionStrategy,
   Component,
   OnInit,
   computed,
@@ -13,10 +12,9 @@ import { Api } from '../../../services/api/api';
 
 @Component({
   selector: 'app-proverbe',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './proverbe.html',
   styleUrl: './proverbe.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Proverbe implements OnInit {
   private readonly api = inject(Api);

@@ -21,7 +21,10 @@ export class McpRateLimitGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const identifier = this.getIdentifier(request);
     const now = Date.now();
-    const windowMs = parseInt(process.env.MCP_RATE_LIMIT_WINDOW_MS ?? '60000', 10);
+    const windowMs = parseInt(
+      process.env.MCP_RATE_LIMIT_WINDOW_MS ?? '60000',
+      10,
+    );
     const max = parseInt(process.env.MCP_RATE_LIMIT_MAX ?? '60', 10);
     const key = `${identifier}:${request.method}:${request.path}`;
 
@@ -32,7 +35,10 @@ export class McpRateLimitGuard implements CanActivate {
     }
 
     if (entry.count >= max) {
-      throw new HttpException('Rate limit exceeded', HttpStatus.TOO_MANY_REQUESTS);
+      throw new HttpException(
+        'Rate limit exceeded',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
     }
 
     entry.count += 1;

@@ -1,6 +1,6 @@
-ignoredBuiltDependencies:
-  - bcrypt
-
-onlyBuiltDependencies:
-  - '@nestjs/core'
-  - unrs-resolver
+allowBuilds:
+  '@nestjs/core': true
+  '@parcel/watcher': false
+  '@swc/core': true
+  bcrypt: true
+  unrs-resolver: true

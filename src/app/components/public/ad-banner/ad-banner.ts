@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ChangeDetectionStrategy, PLATFORM_ID, inject } from '@angular/core';
+import { Component, AfterViewInit, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 declare global {
@@ -22,7 +22,6 @@ declare global {
       </div>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdBanner implements AfterViewInit {
   private readonly platformId = inject(PLATFORM_ID);

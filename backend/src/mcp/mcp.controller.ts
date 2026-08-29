@@ -46,7 +46,10 @@ export class McpController {
   ) {}
 
   @Post()
-  async handleMcpPost(@Req() request: McpAuthenticatedRequest, @Res() response: Response) {
+  async handleMcpPost(
+    @Req() request: McpAuthenticatedRequest,
+    @Res() response: Response,
+  ) {
     const server = this.mcpServerFactory.create(request.mcpAuth);
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
@@ -55,7 +58,7 @@ export class McpController {
     try {
       await server.connect(transport);
       await transport.handleRequest(request, response, request.body);
-    } catch (error) {
+    } catch {
       if (!response.headersSent) {
         response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
           jsonrpc: '2.0',
@@ -135,7 +138,8 @@ export class McpController {
       jsonrpc: '2.0',
       error: {
         code: -32000,
-        message: 'Method not allowed. This MCP endpoint runs in stateless Streamable HTTP mode.',
+        message:
+          'Method not allowed. This MCP endpoint runs in stateless Streamable HTTP mode.',
       },
       id: null,
     });

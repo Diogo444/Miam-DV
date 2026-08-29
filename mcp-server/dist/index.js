@@ -1,4 +1,4 @@
-import { randomUUID, timingSafeEqual } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js';
@@ -9,7 +9,6 @@ const apiKey = process.env.MCP_API_KEY;
 const serviceJwt = process.env.MCP_SERVICE_JWT;
 const httpHost = process.env.MCP_HTTP_HOST ?? '127.0.0.1';
 const httpPort = Number.parseInt(process.env.MCP_HTTP_PORT ?? '4310', 10);
-const serverAuthToken = process.env.MCP_SERVER_AUTH_TOKEN;
 const allowedHosts = parseCsv(process.env.MCP_ALLOWED_HOSTS);
 const allowedOrigins = parseCsv(process.env.MCP_ALLOWED_ORIGINS);
 if (!apiBaseUrl) {
@@ -320,19 +319,6 @@ function mcpSecurityMiddleware(req, res, next) {
         res.status(403).send('Origin not allowed');
         return;
     }
-    if (serverAuthToken) {
-        const authHeader = req.headers.authorization;
-        const apiKeyHeader = req.headers['x-mcp-key'];
-        const token = authHeader?.startsWith('Bearer ')
-            ? authHeader.slice(7).trim()
-            : typeof apiKeyHeader === 'string'
-                ? apiKeyHeader
-                : undefined;
-        if (!token || !safeEqual(token, serverAuthToken)) {
-            res.status(401).send('Unauthorized');
-            return;
-        }
-    }
     next();
 }
 function requestLogger(req, res, next) {
@@ -342,14 +328,6 @@ function requestLogger(req, res, next) {
         console.log(`${req.method} ${req.originalUrl} ${res.statusCode} ${duration}ms`);
     });
     next();
-}
-function safeEqual(value, expected) {
-    const valueBuf = Buffer.from(value);
-    const expectedBuf = Buffer.from(expected);
-    if (valueBuf.length !== expectedBuf.length) {
-        return false;
-    }
-    return timingSafeEqual(valueBuf, expectedBuf);
 }
 function getSessionId(req) {
     const sessionHeader = req.headers['mcp-session-id'];

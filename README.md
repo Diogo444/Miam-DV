@@ -3,6 +3,12 @@
 Application web avec un front Angular et un back NestJS pour gerer menus, proverbes,
 suggestions et administrateurs.
 
+## Prerequis
+
+- Node.js 24 LTS
+- pnpm 11.24 (`packageManager` est fixe dans chaque package)
+- Docker Engine avec Docker Compose
+
 ## Architecture
 
 - Frontend: `src/` (Angular standalone components, services, interceptors)
@@ -66,9 +72,9 @@ Authentification:
 ```bash
 cd mcp-server
 copy .env.example .env
-npm install
-npm run build
-npm run start
+pnpm install
+pnpm build
+pnpm start
 ```
 
 Le serveur ecoute sur `http://<MCP_HTTP_HOST>:<MCP_HTTP_PORT>/mcp`.
@@ -77,19 +83,12 @@ Le serveur ecoute sur `http://<MCP_HTTP_HOST>:<MCP_HTTP_PORT>/mcp`.
 
 ```bash
 cd mcp-server
-npm run verify
+pnpm verify
 ```
 
 Variables utiles:
 - `MCP_SERVER_URL` (defaut `http://localhost:4310/mcp`)
   (le serveur n'exige pas d'authentification)
-
-## Prerequis
-
-- Node.js
-- Un gestionnaire de paquets (pnpm, npm, yarn)
-- MySQL (ou Docker pour lancer la base)
-- Docker (recommande pour la prod)
 
 ## Lancer le projet (developpement local)
 
@@ -99,12 +98,12 @@ Variables utiles:
 docker compose up -d db
 ```
 
-Identifiants par defaut (voir `docker-compose.yml`) :
+Parametres de connexion (les valeurs sont definies dans `.env`) :
 - host: `127.0.0.1`
 - port: `3306`
 - database: `miamdv`
 - user: `miammi`
-- password: `BDDmiammi`
+- password: valeur de `MYSQL_PASSWORD`
 
 ### Backend (NestJS)
 
@@ -135,28 +134,38 @@ pnpm install
 pnpm start
 ```
 
-Le front tourne sur `http://localhost:4200` et utilise le proxy `/api` vers le backend.
+Le front tourne sur `http://localhost:4200`. Le proxy Angular defini dans
+`proxy.conf.json` transmet `/api` au backend local sur le port 3000.
 
 ## Deploiement (Docker + Caddy)
 
-1) Copier `.env.example` en `.env` et definir les variables.
-2) Lancer l'infra:
+1) Creer le reseau externe attendu si necessaire: `docker network create caddy_net`.
+2) Copier `.env.example` en `.env`, puis remplacer au minimum `JWT_SECRET`,
+   `MCP_API_KEY`, `DEFAULT_ADMIN_PASSWORD` et les mots de passe d'exemple.
+3) Lancer l'infrastructure:
 
 ```bash
 docker compose up -d --build
 ```
 
-- Front + reverse-proxy: `http://localhost`
-- API: `http://localhost/api`
+- Front Nginx: `http://localhost:4000` (modifiable avec `FRONTEND_PORT`)
+- API via le proxy Nginx: `http://localhost:4000/api`
+- Tous les services utilisent `restart: unless-stopped`; les healthchecks
+  ordonnent le demarrage MySQL -> backend -> frontend/serveur MCP.
 
 Pour activer HTTPS avec Caddy, remplacez `:80` par votre domaine dans `Caddyfile`.
 
 ## Notes production
 
 - Definir un `JWT_SECRET` fort dans `.env`.
+- Definir explicitement l'identifiant et un mot de passe initial fort avec
+  `DEFAULT_ADMIN_USERNAME` et `DEFAULT_ADMIN_PASSWORD`. Aucun compte
+  `admin/admin` n'est cree automatiquement.
 - Passer `DB_SYNC=false` et gerer les migrations TypeORM pour la base.
 - Fixer `CORS_ORIGIN` a votre domaine (ex: `https://votre-domaine.tld`).
-- Verifier quelles routes doivent etre protegees (certains endpoints sont publics par defaut).
+- Les lectures publiques et la creation d'une suggestion restent publiques;
+  les mutations de menus, proverbes, suggestions et administrateurs exigent
+  un JWT portant le role `admin`.
 
 ## Authentification et securite
 

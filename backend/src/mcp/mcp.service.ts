@@ -103,8 +103,12 @@ export class McpService {
       : getCurrentWeekStart();
 
     const [menu, proverb] = await Promise.all([
-      this.weekMenuRepository.findOne({ where: { weekStart: resolvedWeekStart } }),
-      this.weekProverbRepository.findOne({ where: { weekStart: resolvedWeekStart } }),
+      this.weekMenuRepository.findOne({
+        where: { weekStart: resolvedWeekStart },
+      }),
+      this.weekProverbRepository.findOne({
+        where: { weekStart: resolvedWeekStart },
+      }),
     ]);
 
     return {
@@ -128,7 +132,9 @@ export class McpService {
   }
 
   logAudit(tool: string, weekStart: string, success: boolean) {
-    this.logger.log(`tool=${tool} weekStart=${weekStart} status=${success ? 'success' : 'failure'}`);
+    this.logger.log(
+      `tool=${tool} weekStart=${weekStart} status=${success ? 'success' : 'failure'}`,
+    );
   }
 
   private normalizeWeekMenuItems(items: MenuItemInput[]) {
@@ -212,7 +218,10 @@ export class McpService {
     }
   }
 
-  private async replaceLegacyProverbe(type: 'blague' | 'proverbe', content: string) {
+  private async replaceLegacyProverbe(
+    type: 'blague' | 'proverbe',
+    content: string,
+  ) {
     await this.proverbeRepository.clear();
     const proverbe = this.proverbeRepository.create({ id: 1, type, content });
     await this.proverbeRepository.save(proverbe);
@@ -244,7 +253,9 @@ export class McpService {
   private assertValidWeekStart(weekStart: string) {
     const date = parseLocalDate(weekStart);
     if (!date) {
-      throw new BadRequestException('weekStart must be a valid YYYY-MM-DD date');
+      throw new BadRequestException(
+        'weekStart must be a valid YYYY-MM-DD date',
+      );
     }
     if (date.getDay() !== 1) {
       throw new BadRequestException('weekStart must be a Monday');
@@ -291,7 +302,12 @@ function mapMealToLegacyFields(dishes: string[], dessertOverride?: string) {
   }
 
   if (cleaned.length === 1) {
-    return { entree: '', plat: cleaned[0], fromage: '', dessert: override ?? '' };
+    return {
+      entree: '',
+      plat: cleaned[0],
+      fromage: '',
+      dessert: override ?? '',
+    };
   }
 
   if (cleaned.length === 2) {
@@ -313,7 +329,8 @@ function mapMealToLegacyFields(dishes: string[], dessertOverride?: string) {
   }
 
   const entree = cleaned[0];
-  const platParts = cleaned.length >= 5 ? [cleaned[1], cleaned[2]] : [cleaned[1]];
+  const platParts =
+    cleaned.length >= 5 ? [cleaned[1], cleaned[2]] : [cleaned[1]];
   const fromage = cleaned[cleaned.length - 2] ?? '';
   const dessert = override ?? cleaned[cleaned.length - 1] ?? '';
 
@@ -376,7 +393,11 @@ function getCurrentWeekStart() {
   const now = new Date();
   const day = now.getDay();
   const diff = (day + 6) % 7;
-  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diff);
+  const monday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() - diff,
+  );
   return formatLocalDate(monday);
 }
 

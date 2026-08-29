@@ -21,8 +21,14 @@ export class AdminSeedService implements OnApplicationBootstrap {
       return;
     }
 
-    const username = process.env.DEFAULT_ADMIN_USERNAME ?? 'admin';
-    const password = process.env.DEFAULT_ADMIN_PASSWORD ?? 'admin';
+    const username = process.env.DEFAULT_ADMIN_USERNAME;
+    const password = process.env.DEFAULT_ADMIN_PASSWORD;
+
+    if (!username || !password) {
+      throw new Error(
+        'DEFAULT_ADMIN_USERNAME and DEFAULT_ADMIN_PASSWORD are required when the users table is empty',
+      );
+    }
 
     await this.adminService.create({ username, password, role: 'admin' });
     this.logger.warn(`Default admin created: ${username}`);

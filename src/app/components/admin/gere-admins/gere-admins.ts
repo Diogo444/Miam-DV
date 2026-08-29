@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Admin, AdminDraft, ModalMode } from '../../../models/admin.models';
 import { Api } from '../../../services/api/api';
@@ -9,7 +9,6 @@ import { Api } from '../../../services/api/api';
   imports: [FormsModule],
   templateUrl: './gere-admins.html',
   styleUrl: './gere-admins.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GereAdmins implements OnInit {
   readonly admins = signal<Admin[]>([]);

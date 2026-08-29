@@ -36,13 +36,29 @@ const mealTextSchema = z.union([
 ]);
 
 const menuItemSchema = z.object({
-  day: z.enum(WEEKDAY_INPUTS).describe('Jour ouvré, en français ou en anglais.'),
-  lunch: mealTextSchema.optional().describe('Plats du midi, sous forme de texte ou de liste.'),
-  dinner: mealTextSchema.optional().describe('Plats du soir, sous forme de texte ou de liste.'),
+  day: z
+    .enum(WEEKDAY_INPUTS)
+    .describe('Jour ouvré, en français ou en anglais.'),
+  lunch: mealTextSchema
+    .optional()
+    .describe('Plats du midi, sous forme de texte ou de liste.'),
+  dinner: mealTextSchema
+    .optional()
+    .describe('Plats du soir, sous forme de texte ou de liste.'),
   midi: mealTextSchema.optional().describe('Alias français de lunch.'),
   soir: mealTextSchema.optional().describe('Alias français de dinner.'),
-  main: z.string().min(1).max(800).optional().describe('Compatibilité ancienne API: plat principal.'),
-  starter: z.string().min(1).max(800).optional().describe('Compatibilité ancienne API: entrée.'),
+  main: z
+    .string()
+    .min(1)
+    .max(800)
+    .optional()
+    .describe('Compatibilité ancienne API: plat principal.'),
+  starter: z
+    .string()
+    .min(1)
+    .max(800)
+    .optional()
+    .describe('Compatibilité ancienne API: entrée.'),
   dessert: z.string().min(1).max(800).optional(),
   allergens: z.array(z.string().max(80)).max(30).optional(),
 });
@@ -68,7 +84,8 @@ export class McpServerFactory {
       'get_week_data',
       {
         title: 'Lire les données hebdomadaires',
-        description: 'Retourne le menu et le proverbe enregistrés pour une semaine.',
+        description:
+          'Retourne le menu et le proverbe enregistrés pour une semaine.',
         inputSchema: {
           weekStart: weekStartSchema.optional(),
         },
@@ -86,7 +103,10 @@ export class McpServerFactory {
         }
 
         const data = await this.mcpService.getWeekData(weekStart);
-        return jsonToolResult(data, `Données chargées pour la semaine ${data.weekStart}.`);
+        return jsonToolResult(
+          data,
+          `Données chargées pour la semaine ${data.weekStart}.`,
+        );
       },
     );
 
@@ -94,7 +114,8 @@ export class McpServerFactory {
       'publish_week_menu',
       {
         title: 'Publier le menu hebdomadaire',
-        description: 'Crée ou remplace le menu de la semaine et synchronise les tables historiques.',
+        description:
+          'Crée ou remplace le menu de la semaine et synchronise les tables historiques.',
         inputSchema: {
           weekStart: weekStartSchema,
           items: z.array(menuItemSchema).min(1).max(10),
@@ -114,7 +135,10 @@ export class McpServerFactory {
         }
 
         const result = await this.mcpService.publishWeekMenu(input);
-        return jsonToolResult(result, `Menu publié pour la semaine ${result.weekStart}.`);
+        return jsonToolResult(
+          result,
+          `Menu publié pour la semaine ${result.weekStart}.`,
+        );
       },
     );
 
@@ -122,7 +146,8 @@ export class McpServerFactory {
       'publish_week_proverb',
       {
         title: 'Publier le proverbe hebdomadaire',
-        description: 'Crée ou remplace le proverbe de la semaine et synchronise la table historique.',
+        description:
+          'Crée ou remplace le proverbe de la semaine et synchronise la table historique.',
         inputSchema: {
           weekStart: weekStartSchema,
           text: z.string().min(1).max(800),
@@ -144,7 +169,10 @@ export class McpServerFactory {
         }
 
         const result = await this.mcpService.publishWeekProverb(input);
-        return jsonToolResult(result, `Proverbe publié pour la semaine ${result.weekStart}.`);
+        return jsonToolResult(
+          result,
+          `Proverbe publié pour la semaine ${result.weekStart}.`,
+        );
       },
     );
 
@@ -152,7 +180,8 @@ export class McpServerFactory {
       'clear_week_data',
       {
         title: 'Effacer une semaine',
-        description: 'Supprime les données hebdomadaires et vide les tables historiques de menu/proverbe.',
+        description:
+          'Supprime les données hebdomadaires et vide les tables historiques de menu/proverbe.',
         inputSchema: {
           weekStart: weekStartSchema.optional(),
           scope: z.enum(['currentWeek']).optional(),
@@ -172,7 +201,10 @@ export class McpServerFactory {
         }
 
         const result = await this.mcpService.clearWeekData(input);
-        return jsonToolResult(result, `Données effacées pour la semaine ${result.weekStart}.`);
+        return jsonToolResult(
+          result,
+          `Données effacées pour la semaine ${result.weekStart}.`,
+        );
       },
     );
 
@@ -203,7 +235,8 @@ export class McpServerFactory {
       'prepare_week_menu',
       {
         title: 'Préparer un menu hebdomadaire',
-        description: 'Génère une consigne structurée pour préparer un menu publiable via MCP.',
+        description:
+          'Génère une consigne structurée pour préparer un menu publiable via MCP.',
         argsSchema: {
           weekStart: weekStartSchema.optional(),
         },
@@ -228,7 +261,10 @@ export class McpServerFactory {
     return server;
   }
 
-  private denyIfMissingScope(auth: McpAuthInfo | undefined, scope: McpScope): CallToolResult | null {
+  private denyIfMissingScope(
+    auth: McpAuthInfo | undefined,
+    scope: McpScope,
+  ): CallToolResult | null {
     if (auth?.scopes.includes(scope)) {
       return null;
     }
