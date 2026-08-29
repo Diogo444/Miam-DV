@@ -1,4 +1,10 @@
 <div class="relative text-text-main dark:text-background-light">
+  <a
+    href="#main-content"
+    class="sr-only z-[60] rounded-md bg-white px-4 py-2 text-text-main shadow focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+  >
+    Aller au contenu principal
+  </a>
   @if (sidebarOpen) {
     <div
       class="fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 md:hidden"
@@ -14,7 +20,7 @@
       <div
         class="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary dark:bg-primary/20"
       >
-        <svg class="size-6" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <svg aria-hidden="true" focusable="false" class="size-6" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"
             fill="currentColor"
@@ -30,7 +36,8 @@
       <button
         type="button"
         class="inline-flex items-center justify-center rounded-full border border-primary-light bg-primary-light/70 p-2 text-sm font-medium transition hover:bg-primary-light/90 dark:border-primary/30 dark:bg-primary/20 dark:hover:bg-primary/30"
-        aria-label="Basculer le thème"
+        [attr.aria-label]="theme === 'dark' ? 'Activer le mode clair' : 'Activer le mode sombre'"
+        [attr.aria-pressed]="theme === 'dark'"
         (click)="toggleTheme()"
       >
         <span class="material-symbols-outlined text-lg" aria-hidden="true">
@@ -41,6 +48,8 @@
         type="button"
         class="inline-flex items-center justify-center rounded-full border border-primary-light bg-primary-light/70 p-2 text-sm font-medium transition hover:bg-primary-light/90 dark:border-primary/30 dark:bg-primary/20 dark:hover:bg-primary/30"
         aria-label="Ouvrir le menu"
+        aria-controls="admin-navigation"
+        [attr.aria-expanded]="sidebarOpen"
         (click)="toggleSidebar(true)"
       >
         <span class="material-symbols-outlined" aria-hidden="true">menu</span>
@@ -49,6 +58,7 @@
   </div>
 
   <aside
+    id="admin-navigation"
     aria-label="Navigation administrateur"
     class="fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-primary-light bg-background-light shadow-lg transition-transform duration-300 ease-in-out -translate-x-full md:static md:h-full md:translate-x-0 md:shadow-none dark:border-primary/20 dark:bg-background-dark"
     [class.translate-x-0]="sidebarOpen"
@@ -56,7 +66,7 @@
     <div class="flex h-16 items-center justify-between gap-4 border-b border-primary-light px-6 dark:border-primary/20">
       <div class="flex items-center gap-3">
         <div class="size-6 text-primary">
-          <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <svg aria-hidden="true" focusable="false" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"
               fill="currentColor"
@@ -64,7 +74,7 @@
           </svg>
         </div>
         <div class="leading-tight">
-          <p class="text-xs uppercase tracking-[0.08em] text-text-muted dark:text-primary/80">Admin</p>
+          <p class="text-xs uppercase tracking-[0.08em] text-text-muted dark:text-green-200">Admin</p>
           <p class="text-lg font-bold">Miam DV</p>
         </div>
       </div>
@@ -109,7 +119,8 @@
       <button
         type="button"
         class="flex w-full items-center justify-center gap-2 rounded-full border border-primary/50 bg-primary-light/70 px-4 py-2 text-sm font-medium text-text-main transition hover:bg-primary-light/90 dark:border-primary/30 dark:bg-primary/20 dark:text-background-light dark:hover:bg-primary/30"
-        aria-label="Basculer le thème"
+        [attr.aria-label]="theme === 'dark' ? 'Activer le mode clair' : 'Activer le mode sombre'"
+        [attr.aria-pressed]="theme === 'dark'"
         (click)="toggleTheme()"
       >
         <span class="material-symbols-outlined text-lg" aria-hidden="true">

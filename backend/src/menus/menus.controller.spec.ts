@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MenusController } from './menus.controller';
 import { MenusService } from './menus.service';
+import { JwtAuthGuard } from '../common/guards/auth/auth.guard';
+import { RolesGuard } from '../common/guards/auth/roles.guard';
 
 describe('MenusController', () => {
   let controller: MenusController;
@@ -12,16 +14,21 @@ describe('MenusController', () => {
         {
           provide: MenusService,
           useValue: {
-            create: jest.fn(),
-            findAll: jest.fn(),
-            findOne: jest.fn(),
-            update: jest.fn(),
-            remove: jest.fn(),
-            removeAll: jest.fn(),
+            create: vi.fn(),
+            findAll: vi.fn(),
+            findOne: vi.fn(),
+            update: vi.fn(),
+            remove: vi.fn(),
+            removeAll: vi.fn(),
           },
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(RolesGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get<MenusController>(MenusController);
   });

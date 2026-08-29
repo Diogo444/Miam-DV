@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AdminService } from '../admin/admin.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -11,7 +16,10 @@ export type AuthUser = Omit<User, 'password'> & { password?: string };
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
-  constructor(private admins: AdminService, private jwt: JwtService) {}
+  constructor(
+    private admins: AdminService,
+    private jwt: JwtService,
+  ) {}
 
   async validateUser(username: string, password: string) {
     const user = await this.admins.findByUsername(username);
@@ -33,7 +41,7 @@ export class AuthService {
     return this.buildAuthResponse(user);
   }
 
-  async login(user: AuthUser) {
+  login(user: AuthUser) {
     return this.buildAuthResponse(user);
   }
 
@@ -59,7 +67,7 @@ export class AuthService {
     const maskedSecret =
       secret && secret.length > 8
         ? `${secret.slice(0, 4)}...${secret.slice(-4)}`
-        : secret ?? 'undefined';
+        : (secret ?? 'undefined');
 
     this.logger.debug(
       `AuthService.buildAuthResponse -> token length=${token.length}, masked=${maskedToken}, payload sub=${payload.sub}, role=${payload.role}, tokenVersion=${tokenVersion}, secret length=${secret?.length ?? 0}, masked=${maskedSecret}`,
@@ -72,7 +80,11 @@ export class AuthService {
   }
 
   private toSafeUser(user: AuthUser) {
-    const { password, ...safeUser } = user;
-    return safeUser;
+    return {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      tokenVersion: user.tokenVersion,
+    };
   }
 }

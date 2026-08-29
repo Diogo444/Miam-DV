@@ -77,7 +77,9 @@ let MenusService = class MenusService {
         await this.menuRepository.clear();
         await this.proverbeRepository.clear();
         await this.proverbeSuggeredRepository.clear();
-        return { message: 'All menus, proverbes and suggested proverbes have been removed.' };
+        return {
+            message: 'All menus, proverbes and suggested proverbes have been removed.',
+        };
     }
 };
 exports.MenusService = MenusService;

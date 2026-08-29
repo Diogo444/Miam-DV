@@ -14,7 +14,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.McpController = void 0;
 const common_1 = require("@nestjs/common");
+const streamableHttp_js_1 = require("@modelcontextprotocol/sdk/server/streamableHttp.js");
 const mcp_service_1 = require("./mcp.service");
+const mcp_server_factory_1 = require("./mcp-server.factory");
 const publish_week_menu_dto_1 = require("./dto/publish-week-menu.dto");
 const publish_week_proverb_dto_1 = require("./dto/publish-week-proverb.dto");
 const clear_week_data_dto_1 = require("./dto/clear-week-data.dto");
@@ -24,8 +26,50 @@ const mcp_guard_1 = require("./guards/mcp.guard");
 const mcp_rate_limit_guard_1 = require("./guards/mcp-rate-limit.guard");
 let McpController = class McpController {
     mcpService;
-    constructor(mcpService) {
+    mcpServerFactory;
+    constructor(mcpService, mcpServerFactory) {
         this.mcpService = mcpService;
+        this.mcpServerFactory = mcpServerFactory;
+    }
+    async handleMcpPost(request, response) {
+        const server = this.mcpServerFactory.create(request.mcpAuth);
+        const transport = new streamableHttp_js_1.StreamableHTTPServerTransport({
+            sessionIdGenerator: undefined,
+        });
+        try {
+            await server.connect(transport);
+            await transport.handleRequest(request, response, request.body);
+        }
+        catch {
+            if (!response.headersSent) {
+                response.status(common_1.HttpStatus.INTERNAL_SERVER_ERROR).json({
+                    jsonrpc: '2.0',
+                    error: {
+                        code: -32603,
+                        message: 'Internal server error',
+                    },
+                    id: null,
+                });
+            }
+        }
+        finally {
+            const cleanup = () => {
+                void transport.close();
+                void server.close();
+            };
+            if (response.closed || response.writableEnded) {
+                cleanup();
+            }
+            else {
+                response.once('close', cleanup);
+            }
+        }
+    }
+    handleMcpGet(response) {
+        return this.methodNotAllowed(response);
+    }
+    handleMcpDelete(response) {
+        return this.methodNotAllowed(response);
     }
     async publishWeekMenu(dto) {
         try {
@@ -58,8 +102,41 @@ let McpController = class McpController {
     health() {
         return { status: 'ok' };
     }
+    methodNotAllowed(response) {
+        response.setHeader('Allow', 'POST');
+        return response.status(common_1.HttpStatus.METHOD_NOT_ALLOWED).json({
+            jsonrpc: '2.0',
+            error: {
+                code: -32000,
+                message: 'Method not allowed. This MCP endpoint runs in stateless Streamable HTTP mode.',
+            },
+            id: null,
+        });
+    }
 };
 exports.McpController = McpController;
+__decorate([
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], McpController.prototype, "handleMcpPost", null);
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], McpController.prototype, "handleMcpGet", null);
+__decorate([
+    (0, common_1.Delete)(),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], McpController.prototype, "handleMcpDelete", null);
 __decorate([
     (0, common_1.Put)('week-menu'),
     (0, mcp_decorators_1.McpScopes)(mcp_constants_1.MCP_SCOPE_MENU_WRITE),
@@ -86,7 +163,6 @@ __decorate([
 ], McpController.prototype, "clearWeekData", null);
 __decorate([
     (0, common_1.Get)('health'),
-    (0, mcp_decorators_1.McpScopes)(mcp_constants_1.MCP_SCOPE_MENU_WRITE),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
@@ -100,6 +176,7 @@ exports.McpController = McpController = __decorate([
         transform: true,
         forbidUnknownValues: true,
     })),
-    __metadata("design:paramtypes", [mcp_service_1.McpService])
+    __metadata("design:paramtypes", [mcp_service_1.McpService,
+        mcp_server_factory_1.McpServerFactory])
 ], McpController);
 //# sourceMappingURL=mcp.controller.js.map

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { Menu } from '../menu/menu';
 import { NavPublic } from '../nav-public/nav-public';
 import { Proverbe } from '../proverbe/proverbe';
@@ -10,7 +10,6 @@ import { Show } from '../suggestions/show/show';
   imports: [Menu, NavPublic, Proverbe, Add, Show],
   templateUrl: './home.html',
   styleUrl: './home.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home {
 

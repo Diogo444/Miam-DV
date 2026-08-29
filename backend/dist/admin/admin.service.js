@@ -69,26 +69,45 @@ let AdminService = class AdminService {
     }
     async findAll() {
         return this.adminRepository.find({
-            select: ['id', 'username', 'role'],
+            select: {
+                id: true,
+                username: true,
+                role: true,
+            },
             order: { id: 'ASC' },
         });
     }
     async findOne(id) {
         return this.adminRepository.findOne({
             where: { id },
-            select: ['id', 'username', 'role'],
+            select: {
+                id: true,
+                username: true,
+                role: true,
+            },
         });
     }
     async findByUsername(username) {
         return this.adminRepository.findOne({
             where: { username },
-            select: ['id', 'username', 'password', 'role', 'tokenVersion'],
+            select: {
+                id: true,
+                username: true,
+                password: true,
+                role: true,
+                tokenVersion: true,
+            },
         });
     }
     async findById(id) {
         return this.adminRepository.findOne({
             where: { id },
-            select: ['id', 'username', 'role', 'tokenVersion'],
+            select: {
+                id: true,
+                username: true,
+                role: true,
+                tokenVersion: true,
+            },
         });
     }
     async update(id, updateAdminDto) {
@@ -114,8 +133,12 @@ let AdminService = class AdminService {
         return { deleted: true };
     }
     toSafeAdmin(admin) {
-        const { password, ...safeAdmin } = admin;
-        return safeAdmin;
+        return {
+            id: admin.id,
+            username: admin.username,
+            role: admin.role,
+            tokenVersion: admin.tokenVersion,
+        };
     }
 };
 exports.AdminService = AdminService;

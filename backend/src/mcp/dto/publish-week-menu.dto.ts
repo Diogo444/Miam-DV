@@ -15,14 +15,14 @@ import { MenuItemDto } from './menu-item.dto';
 export class PublishWeekMenuDto {
   @IsString()
   @Matches(/^\d{4}-\d{2}-\d{2}$/)
-  weekStart: string;
+  weekStart!: string;
 
   @IsArray()
   @ArrayMinSize(1)
   @ArrayMaxSize(10)
   @ValidateNested({ each: true })
   @Type(() => MenuItemDto)
-  items: MenuItemDto[];
+  items!: MenuItemDto[];
 
   @IsOptional()
   @IsString()

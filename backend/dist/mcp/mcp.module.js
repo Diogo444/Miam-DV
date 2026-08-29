@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const mcp_controller_1 = require("./mcp.controller");
 const mcp_service_1 = require("./mcp.service");
+const mcp_server_factory_1 = require("./mcp-server.factory");
 const week_menu_entity_1 = require("./entities/week-menu.entity");
 const week_proverb_entity_1 = require("./entities/week-proverb.entity");
 const mcp_guard_1 = require("./guards/mcp.guard");
@@ -23,9 +24,17 @@ let McpModule = class McpModule {
 exports.McpModule = McpModule;
 exports.McpModule = McpModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([week_menu_entity_1.WeekMenu, week_proverb_entity_1.WeekProverb, menu_entity_1.Menu, proverbe_entity_1.Proverbe, proverbe_suggered_entity_1.ProverbeSuggered])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([
+                week_menu_entity_1.WeekMenu,
+                week_proverb_entity_1.WeekProverb,
+                menu_entity_1.Menu,
+                proverbe_entity_1.Proverbe,
+                proverbe_suggered_entity_1.ProverbeSuggered,
+            ]),
+        ],
         controllers: [mcp_controller_1.McpController],
-        providers: [mcp_service_1.McpService, mcp_guard_1.McpGuard, mcp_rate_limit_guard_1.McpRateLimitGuard],
+        providers: [mcp_service_1.McpService, mcp_server_factory_1.McpServerFactory, mcp_guard_1.McpGuard, mcp_rate_limit_guard_1.McpRateLimitGuard],
     })
 ], McpModule);
 //# sourceMappingURL=mcp.module.js.map

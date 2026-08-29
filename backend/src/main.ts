@@ -1,15 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
+import type { Server } from 'node:http';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
-  
+
   // CORS configuration
   const corsOrigins = process.env.CORS_ORIGIN;
   const origins = corsOrigins
-    ? corsOrigins.split(',').map((origin) => origin.trim()).filter(Boolean)
+    ? corsOrigins
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean)
     : true;
   app.enableCors({ origin: origins });
 
@@ -26,7 +30,7 @@ async function bootstrap() {
   );
 
   // Timeout global pour les requêtes
-  const server = await app.listen(process.env.PORT ?? 3000);
+  const server = (await app.listen(process.env.PORT ?? 3000)) as Server;
   server.setTimeout(30000); // 30 secondes
 
   logger.log(`Application running on port ${process.env.PORT ?? 3000}`);

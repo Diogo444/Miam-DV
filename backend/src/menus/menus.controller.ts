@@ -8,7 +8,6 @@ import {
   Delete,
   ParseIntPipe,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { MenusService } from './menus.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
@@ -16,7 +15,6 @@ import { UpdateMenuDto } from './dto/update-menu.dto';
 import { JwtAuthGuard } from '../common/guards/auth/auth.guard';
 import { RolesGuard } from '../common/guards/auth/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
-import type { Request } from 'express';
 
 @Controller('api/menus')
 export class MenusController {
@@ -25,8 +23,7 @@ export class MenusController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Post()
-  create(@Body() createMenuDto: CreateMenuDto, @Req() req: Request) {
-
+  create(@Body() createMenuDto: CreateMenuDto) {
     return this.menusService.create(createMenuDto);
   }
 
@@ -41,6 +38,8 @@ export class MenusController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateMenuDto: UpdateMenuDto,
@@ -49,6 +48,8 @@ export class MenusController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.menusService.remove(id);
   }

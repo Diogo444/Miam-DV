@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavAdmin } from '../nav-admin/nav-admin';
 
@@ -7,7 +7,6 @@ import { NavAdmin } from '../nav-admin/nav-admin';
   imports: [NavAdmin, RouterOutlet],
   templateUrl: './home.html',
   styleUrl: './home.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Home {
 

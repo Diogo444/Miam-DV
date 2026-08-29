@@ -27,7 +27,11 @@ export class AdminService {
 
   async findAll() {
     return this.adminRepository.find({
-      select: ['id', 'username', 'role'],
+      select: {
+        id: true,
+        username: true,
+        role: true,
+      },
       order: { id: 'ASC' },
     });
   }
@@ -35,21 +39,36 @@ export class AdminService {
   async findOne(id: number) {
     return this.adminRepository.findOne({
       where: { id },
-      select: ['id', 'username', 'role'],
+      select: {
+        id: true,
+        username: true,
+        role: true,
+      },
     });
   }
 
   async findByUsername(username: string) {
     return this.adminRepository.findOne({
       where: { username },
-      select: ['id', 'username', 'password', 'role', 'tokenVersion'],
+      select: {
+        id: true,
+        username: true,
+        password: true,
+        role: true,
+        tokenVersion: true,
+      },
     });
   }
 
   async findById(id: number) {
     return this.adminRepository.findOne({
       where: { id },
-      select: ['id', 'username', 'role', 'tokenVersion'],
+      select: {
+        id: true,
+        username: true,
+        role: true,
+        tokenVersion: true,
+      },
     });
   }
 
@@ -83,7 +102,11 @@ export class AdminService {
   }
 
   private toSafeAdmin(admin: User) {
-    const { password, ...safeAdmin } = admin;
-    return safeAdmin;
+    return {
+      id: admin.id,
+      username: admin.username,
+      role: admin.role,
+      tokenVersion: admin.tokenVersion,
+    };
   }
 }

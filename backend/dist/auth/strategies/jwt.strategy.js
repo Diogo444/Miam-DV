@@ -23,7 +23,9 @@ let JwtStrategy = JwtStrategy_1 = class JwtStrategy extends (0, passport_1.Passp
         if (!secret) {
             throw new Error('JWT_SECRET must be defined');
         }
-        const maskedSecret = secret.length > 8 ? `${secret.slice(0, 4)}...${secret.slice(-4)}` : secret;
+        const maskedSecret = secret.length > 8
+            ? `${secret.slice(0, 4)}...${secret.slice(-4)}`
+            : secret;
         super({
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
@@ -33,21 +35,21 @@ let JwtStrategy = JwtStrategy_1 = class JwtStrategy extends (0, passport_1.Passp
         this.logger.debug(`JwtStrategy init: using secret length=${secret.length}, masked=${maskedSecret}`);
     }
     async validate(payload) {
-        this.logger.debug(`validate() called with payload sub=${payload?.sub}, role=${payload?.role}, exp=${payload?.exp}`);
+        this.logger.debug(`validate() called with payload sub=${payload.sub}, role=${payload.role}, exp=${payload.exp ?? 'none'}`);
         const user = await this.adminService.findById(payload.sub);
         if (!user) {
-            this.logger.warn(`User not found for sub=${payload?.sub}`);
+            this.logger.warn(`User not found for sub=${payload.sub}`);
             throw new common_1.UnauthorizedException('User not found');
         }
         const currentVersion = user.tokenVersion ?? 0;
-        const payloadVersion = typeof payload?.tokenVersion === 'number'
+        const payloadVersion = typeof payload.tokenVersion === 'number'
             ? payload.tokenVersion
-            : Number(payload?.tokenVersion);
+            : Number(payload.tokenVersion);
         if (!Number.isFinite(payloadVersion) || payloadVersion !== currentVersion) {
-            this.logger.warn(`Token version mismatch for sub=${payload?.sub}: token=${payloadVersion}, db=${currentVersion}`);
+            this.logger.warn(`Token version mismatch for sub=${payload.sub}: token=${payloadVersion}, db=${currentVersion}`);
             throw new common_1.UnauthorizedException('Token revoked');
         }
-        this.logger.debug(`User resolved for sub=${payload?.sub}: username=${user.username}, role=${user.role}`);
+        this.logger.debug(`User resolved for sub=${payload.sub}: username=${user.username}, role=${user.role}`);
         return {
             id: user.id,
             username: user.username,

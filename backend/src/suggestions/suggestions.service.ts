@@ -46,6 +46,8 @@ export class SuggestionsService {
   }
 }
 
-function normalizeSuggestionType(type: Suggestion['type']): 'blague' | 'proverbe' {
+function normalizeSuggestionType(
+  type: Suggestion['type'],
+): 'blague' | 'proverbe' {
   return type === 'Blague' ? 'blague' : 'proverbe';
 }

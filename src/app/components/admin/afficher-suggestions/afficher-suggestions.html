@@ -3,18 +3,15 @@
     <h2 class="text-2xl font-bold leading-tight tracking-[-0.015em]">
       Voir les proverbes ou blagues suggérées
     </h2>
-    <p class="text-text-muted dark:text-primary/90 text-base font-normal leading-normal mt-1">
+    <p class="text-text-muted dark:text-green-200 text-base font-normal leading-normal mt-1">
       Validez ou rejetez les suggestions des utilisateurs.
     </p>
     @if (statusMessage) {
       <p
         class="mt-4 rounded-lg border px-4 py-3 text-sm"
-        [ngClass]="{
-          'border-green-200 bg-green-50 text-green-900 dark:border-green-500/40 dark:bg-green-500/10 dark:text-green-100':
-            statusMessage.type === 'success',
-          'border-red-200 bg-red-50 text-red-700 dark:border-red-500/50 dark:bg-red-500/10 dark:text-red-200':
-            statusMessage.type === 'error'
-        }"
+        [class]="statusMessage.type === 'success'
+          ? 'border-green-200 bg-green-50 text-green-900 dark:border-green-500/40 dark:bg-green-500/10 dark:text-green-100'
+          : 'border-red-200 bg-red-50 text-red-700 dark:border-red-500/50 dark:bg-red-500/10 dark:text-red-200'"
         [attr.role]="statusMessage.type === 'error' ? 'alert' : 'status'"
         [attr.aria-live]="statusMessage.type === 'error' ? 'assertive' : 'polite'"
       >
@@ -24,14 +21,16 @@
   </div>
 
   <div class="md:hidden mb-4">
-    <div class="flex bg-primary-light dark:bg-primary/20 p-1 rounded-full">
+    <div class="flex bg-primary-light dark:bg-primary/20 p-1 rounded-full" role="tablist" aria-label="Type de suggestion">
       <button
         type="button"
         class="w-1/2 py-2 px-4 rounded-full text-sm font-semibold transition-colors duration-300"
-        [ngClass]="{
-          'bg-primary text-white shadow-md': activeTab === 'jokes',
-          'text-text-muted dark:text-primary/90': activeTab !== 'jokes'
-        }"
+        role="tab"
+        aria-controls="jokes-panel"
+        [attr.aria-selected]="activeTab === 'jokes'"
+        [class]="activeTab === 'jokes'
+          ? 'bg-primary text-white shadow-md'
+          : 'text-text-muted dark:text-green-200'"
         (click)="setTab('jokes')"
       >
         Blagues
@@ -39,10 +38,12 @@
       <button
         type="button"
         class="w-1/2 py-2 px-4 rounded-full text-sm font-semibold transition-colors duration-300"
-        [ngClass]="{
-          'bg-primary text-white shadow-md': activeTab === 'proverbs',
-          'text-text-muted dark:text-primary/90': activeTab !== 'proverbs'
-        }"
+        role="tab"
+        aria-controls="proverbs-panel"
+        [attr.aria-selected]="activeTab === 'proverbs'"
+        [class]="activeTab === 'proverbs'
+          ? 'bg-primary text-white shadow-md'
+          : 'text-text-muted dark:text-green-200'"
         (click)="setTab('proverbs')"
       >
         Proverbes
@@ -52,18 +53,17 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <div
-      class="flex flex-col gap-4"
-      [ngClass]="{
-        'block': activeTab === 'jokes',
-        'hidden md:block': activeTab !== 'jokes'
-      }"
+      id="jokes-panel"
+      role="tabpanel"
+      class="flex flex-col gap-4 md:flex"
+      [class.hidden]="activeTab !== 'jokes'"
     >
       <h3 class="text-xl font-semibold leading-tight tracking-[-0.015em] hidden md:block">
         Blagues suggérées
       </h3>
 
-      @if (jokes.length > 0) {
-        @for (suggestion of jokes; track suggestion.id) {
+      @if (jokes().length > 0) {
+        @for (suggestion of jokes(); track suggestion.id) {
           <div
             class="rounded-xl shadow-lg bg-background-light dark:bg-background-dark/50 border border-primary-light dark:border-primary/20 p-4 flex flex-col gap-4"
           >
@@ -91,25 +91,24 @@
           </div>
         }
       } @else {
-        <div class="rounded-xl border border-primary-light dark:border-primary/20 p-4 text-sm text-text-muted dark:text-primary/90">
+        <div class="rounded-xl border border-primary-light dark:border-primary/20 p-4 text-sm text-text-muted dark:text-green-200">
           Aucune blague en attente.
         </div>
       }
     </div>
 
     <div
-      class="flex flex-col gap-4"
-      [ngClass]="{
-        'block': activeTab === 'proverbs',
-        'hidden md:block': activeTab !== 'proverbs'
-      }"
+      id="proverbs-panel"
+      role="tabpanel"
+      class="flex flex-col gap-4 md:flex"
+      [class.hidden]="activeTab !== 'proverbs'"
     >
       <h3 class="text-xl font-semibold leading-tight tracking-[-0.015em] hidden md:block">
         Proverbes suggérés
       </h3>
 
-      @if (proverbs.length > 0) {
-        @for (suggestion of proverbs; track suggestion.id) {
+      @if (proverbs().length > 0) {
+        @for (suggestion of proverbs(); track suggestion.id) {
           <div
             class="rounded-xl shadow-lg bg-background-light dark:bg-background-dark/50 border border-primary-light dark:border-primary/20 p-4 flex flex-col gap-4"
           >
@@ -137,7 +136,7 @@
           </div>
         }
       } @else {
-        <div class="rounded-xl border border-primary-light dark:border-primary/20 p-4 text-sm text-text-muted dark:text-primary/90">
+        <div class="rounded-xl border border-primary-light dark:border-primary/20 p-4 text-sm text-text-muted dark:text-green-200">
           Aucun proverbe en attente.
         </div>
       }

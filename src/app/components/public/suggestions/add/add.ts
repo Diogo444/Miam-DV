@@ -1,10 +1,11 @@
-import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
+  ElementRef,
+  effect,
   inject,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -12,10 +13,9 @@ import { Api } from '../../../../services/api/api';
 
 @Component({
   selector: 'app-add',
-  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule],
+  imports: [ReactiveFormsModule, MatSnackBarModule],
   templateUrl: './add.html',
   styleUrl: './add.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Add {
   private readonly api = inject(Api);
@@ -27,6 +27,8 @@ export class Add {
   readonly open = signal(false);
   readonly submitting = signal(false);
   readonly statusMessage = signal<{ type: 'success' | 'error'; text: string } | null>(null);
+  private readonly toggleButton = viewChild<ElementRef<HTMLButtonElement>>('toggleButton');
+  private readonly contentField = viewChild<ElementRef<HTMLTextAreaElement>>('contentField');
 
   readonly form = this.fb.group({
     type: this.fb.nonNullable.control('Blague', [Validators.required]),
@@ -35,6 +37,14 @@ export class Add {
       Validators.minLength(3),
     ]),
   });
+
+  constructor() {
+    effect(() => {
+      if (this.open()) {
+        this.contentField()?.nativeElement.focus();
+      }
+    });
+  }
 
   submitSuggestion(): void {
     if (this.form.invalid) {
@@ -71,7 +81,11 @@ export class Add {
   }
 
   toggleOpen(): void {
-    this.open.update((value) => !value);
+    const willOpen = !this.open();
+    this.open.set(willOpen);
+    if (!willOpen) {
+      queueMicrotask(() => this.toggleButton()?.nativeElement.focus());
+    }
   }
 
   private showStatusMessage(type: 'success' | 'error', text: string): void {

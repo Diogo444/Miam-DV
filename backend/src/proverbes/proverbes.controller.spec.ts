@@ -12,11 +12,11 @@ describe('ProverbesController', () => {
         {
           provide: ProverbesService,
           useValue: {
-            createOrReplace: jest.fn(),
-            update: jest.fn(),
-            findOne: jest.fn(),
-            findSuggested: jest.fn(),
-            remove: jest.fn(),
+            createOrReplace: vi.fn(),
+            update: vi.fn(),
+            findOne: vi.fn(),
+            findSuggested: vi.fn(),
+            remove: vi.fn(),
           },
         },
       ],

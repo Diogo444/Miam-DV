@@ -3,23 +3,23 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('menus')
 export class Menu {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  jour: string;
+  jour!: string;
 
   @Column()
-  periode: string;
+  periode!: string;
 
   @Column()
-  entree: string;
+  entree!: string;
 
   @Column()
-  plat: string;
+  plat!: string;
 
   @Column()
-  fromage: string;
+  fromage!: string;
 
   @Column()
-  dessert: string;
+  dessert!: string;
 }

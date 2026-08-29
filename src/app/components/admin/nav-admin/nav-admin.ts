@@ -1,13 +1,12 @@
-import { CommonModule, DOCUMENT } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-nav-admin',
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './nav-admin.html',
   styleUrl: './nav-admin.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavAdmin implements OnInit, OnDestroy {
   private readonly document = inject(DOCUMENT);

@@ -33,16 +33,20 @@ let McpGuard = class McpGuard {
             context.getHandler(),
             context.getClass(),
         ]) ?? [];
-        const request = context.switchToHttp().getRequest();
+        const request = context
+            .switchToHttp()
+            .getRequest();
+        this.validateOrigin(request);
         const apiKeyHeader = request.headers['x-mcp-key'];
         if (typeof apiKeyHeader === 'string') {
-            this.validateApiKey(apiKeyHeader, requiredScopes);
+            const scopes = this.validateApiKey(apiKeyHeader, requiredScopes);
+            request.mcpAuth = { strategy: 'api-key', scopes };
             return true;
         }
         const authHeader = request.headers.authorization;
         if (authHeader?.startsWith('Bearer ')) {
             const token = authHeader.slice(7).trim();
-            this.validateJwt(token, requiredScopes);
+            request.mcpAuth = this.validateJwt(token, requiredScopes);
             return true;
         }
         throw new common_1.UnauthorizedException('Missing MCP credentials');
@@ -56,18 +60,41 @@ let McpGuard = class McpGuard {
         }
         const scopes = this.apiKeyScopes.length > 0 ? this.apiKeyScopes : mcp_constants_1.MCP_ALL_SCOPES;
         this.ensureScopes(scopes, requiredScopes);
+        return scopes;
     }
     validateJwt(token, requiredScopes) {
         if (!this.jwtSecret || !this.jwtService) {
             throw new common_1.UnauthorizedException('MCP JWT secret not configured');
         }
+        let payload;
         try {
-            const payload = this.jwtService.verify(token, { secret: this.jwtSecret });
-            const scopes = this.extractScopes(payload);
-            this.ensureScopes(scopes, requiredScopes);
+            payload = this.jwtService.verify(token, { secret: this.jwtSecret });
         }
-        catch (error) {
+        catch {
             throw new common_1.UnauthorizedException('Invalid MCP JWT');
+        }
+        const scopes = this.extractScopes(payload);
+        this.ensureScopes(scopes, requiredScopes);
+        return {
+            strategy: 'jwt',
+            scopes,
+            subject: extractSubject(payload),
+        };
+    }
+    validateOrigin(request) {
+        const origin = request.headers.origin;
+        if (typeof origin !== 'string') {
+            return;
+        }
+        const allowedOrigins = this.parseOrigins(process.env.MCP_ALLOWED_ORIGINS);
+        if (allowedOrigins.length > 0) {
+            if (!allowedOrigins.includes(origin)) {
+                throw new common_1.ForbiddenException('MCP origin is not allowed');
+            }
+            return;
+        }
+        if (!isLocalOrigin(origin)) {
+            throw new common_1.ForbiddenException('MCP origin is not allowed');
         }
     }
     ensureScopes(scopes, requiredScopes) {
@@ -103,6 +130,15 @@ let McpGuard = class McpGuard {
             .map((scope) => scope.trim())
             .filter(Boolean);
     }
+    parseOrigins(raw) {
+        if (!raw) {
+            return [];
+        }
+        return raw
+            .split(',')
+            .map((origin) => origin.trim())
+            .filter(Boolean);
+    }
 };
 exports.McpGuard = McpGuard;
 exports.McpGuard = McpGuard = __decorate([
@@ -119,5 +155,21 @@ function safeEqual(value, expected) {
 }
 function hashIdentifier(value) {
     return (0, crypto_1.createHash)('sha256').update(value).digest('hex');
+}
+function extractSubject(payload) {
+    if (!payload || typeof payload !== 'object') {
+        return undefined;
+    }
+    const subject = payload.sub;
+    return typeof subject === 'string' ? subject : undefined;
+}
+function isLocalOrigin(origin) {
+    try {
+        const url = new URL(origin);
+        return ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+    }
+    catch {
+        return false;
+    }
 }
 //# sourceMappingURL=mcp.guard.js.map

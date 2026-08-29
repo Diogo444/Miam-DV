@@ -1,4 +1,10 @@
-import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsIn,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateProverbeDto {
   @IsNumber()
@@ -7,9 +13,9 @@ export class CreateProverbeDto {
 
   @IsString()
   @IsIn(['blague', 'proverbe'])
-  type: 'blague' | 'proverbe';
+  type!: 'blague' | 'proverbe';
 
   @IsString()
   @IsNotEmpty()
-  content: string;
+  content!: string;
 }

@@ -1,15 +1,14 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { Api } from '../../../services/api/api';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { createMenuPayload } from '../../../models/menu.model';
 
 @Component({
   selector: 'app-add-menu',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './add-menu.html',
   styleUrl: './add-menu.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddMenu {
   type: string[] = ['Blague', 'Proverbe'];

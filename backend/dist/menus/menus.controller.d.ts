@@ -1,11 +1,10 @@
 import { MenusService } from './menus.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
-import type { Request } from 'express';
 export declare class MenusController {
     private readonly menusService;
     constructor(menusService: MenusService);
-    create(createMenuDto: CreateMenuDto, req: Request): Promise<{
+    create(createMenuDto: CreateMenuDto): Promise<{
         created: boolean;
         message: string;
         menu: import("./entities/menu.entity").Menu;

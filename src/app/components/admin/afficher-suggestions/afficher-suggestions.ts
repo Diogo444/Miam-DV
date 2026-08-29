@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Suggestion } from '../../../models/suggestions.model';
 import { Api } from '../../../services/api/api';
 
@@ -7,12 +6,13 @@ type SuggestionType = 'jokes' | 'proverbs';
 
 @Component({
   selector: 'app-afficher-suggestions',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './afficher-suggestions.html',
   styleUrl: './afficher-suggestions.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AfficherSuggestions implements OnInit {
+  protected readonly api = inject(Api);
+
   activeTab: SuggestionType = 'jokes';
 
   readonly suggestionsSignal = signal<Suggestion[]>([]);
@@ -20,15 +20,16 @@ export class AfficherSuggestions implements OnInit {
   readonly loadError = signal<string | null>(null);
   statusMessage: { type: 'success' | 'error'; text: string } | null = null;
   
-  constructor(protected api: Api){}
-
-  get suggestions(): Suggestion[] {
-    return this.suggestionsSignal();
-  }
-  
-  set suggestions(value: Suggestion[]) {
-    this.suggestionsSignal.set(value);
-  }
+  readonly jokes = computed(() =>
+    this.suggestionsSignal().filter(
+      (suggestion) => this.normalizeType(suggestion.type) === 'blague',
+    ),
+  );
+  readonly proverbs = computed(() =>
+    this.suggestionsSignal().filter(
+      (suggestion) => this.normalizeType(suggestion.type) === 'proverbe',
+    ),
+  );
 
   setTab(type: SuggestionType): void {
     this.activeTab = type;
@@ -57,17 +58,6 @@ export class AfficherSuggestions implements OnInit {
   
   retry(): void {
     this.getSuggestion();
-  }
-
-  get jokes(): Suggestion[] {
-    return this.suggestions.filter(
-      (suggestion) => this.normalizeType(suggestion.type) === 'blague',
-    );
-  }
-  get proverbs(): Suggestion[] {
-    return this.suggestions.filter(
-      (suggestion) => this.normalizeType(suggestion.type) === 'proverbe',
-    );
   }
 
   approveSuggestion(type: SuggestionType, suggestion: Suggestion): void {
@@ -112,7 +102,7 @@ export class AfficherSuggestions implements OnInit {
   }
 
   private removeSuggestion(_type: SuggestionType, id: number): void {
-    this.suggestions = this.suggestions.filter((item) => item.id !== id);
+    this.suggestionsSignal.update((items) => items.filter((item) => item.id !== id));
   }
 
   private normalizeType(type: string | null | undefined): 'blague' | 'proverbe' | '' {

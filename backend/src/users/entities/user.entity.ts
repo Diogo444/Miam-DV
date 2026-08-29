@@ -1,20 +1,19 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ unique: true })
-  username: string;
+  username!: string;
 
   @Column()
-  password: string;
+  password!: string;
 
   @Column({ default: 'admin' })
-  role: string;
+  role!: string;
 
   @Column({ default: 0 })
-  tokenVersion: number;
+  tokenVersion!: number;
 }

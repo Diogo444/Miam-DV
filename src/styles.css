@@ -2,10 +2,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #4c9a59;
+  --color-primary: #2f7d3e;
   --color-primary-light: #e7f3e9;
   --color-text-main: #0d1b10;
-  --color-text-muted: #4c9a59;
+  --color-text-muted: #357742;
   --color-background-light: #f8fcf9;
   --color-background-dark: #102213;
   --color-allergen: #d97706;
@@ -37,4 +37,20 @@ body {
 
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

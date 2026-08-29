@@ -25,7 +25,7 @@ let MenusController = class MenusController {
     constructor(menusService) {
         this.menusService = menusService;
     }
-    create(createMenuDto, req) {
+    create(createMenuDto) {
         return this.menusService.create(createMenuDto);
     }
     findAll() {
@@ -50,9 +50,8 @@ __decorate([
     (0, roles_decorator_1.Roles)('admin'),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_menu_dto_1.CreateMenuDto, Object]),
+    __metadata("design:paramtypes", [create_menu_dto_1.CreateMenuDto]),
     __metadata("design:returntype", void 0)
 ], MenusController.prototype, "create", null);
 __decorate([
@@ -70,6 +69,8 @@ __decorate([
 ], MenusController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -78,6 +79,8 @@ __decorate([
 ], MenusController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, common_1.UseGuards)(auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),

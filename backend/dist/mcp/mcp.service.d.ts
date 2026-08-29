@@ -4,6 +4,7 @@ import { PublishWeekProverbDto } from './dto/publish-week-proverb.dto';
 import { ClearWeekDataDto } from './dto/clear-week-data.dto';
 import { WeekMenu } from './entities/week-menu.entity';
 import { WeekProverb } from './entities/week-proverb.entity';
+import { MenuItemDto } from './dto/menu-item.dto';
 import { Menu } from '../menus/entities/menu.entity';
 import { Proverbe } from '../proverbes/entities/proverbe.entity';
 import { ProverbeSuggered } from '../proverbes/entities/proverbe_suggered.entity';
@@ -15,7 +16,7 @@ export declare class McpService {
     private readonly proverbeSuggeredRepository;
     private readonly logger;
     constructor(weekMenuRepository: Repository<WeekMenu>, weekProverbRepository: Repository<WeekProverb>, menuRepository: Repository<Menu>, proverbeRepository: Repository<Proverbe>, proverbeSuggeredRepository: Repository<ProverbeSuggered>);
-    publishWeekMenu(dto: PublishWeekMenuDto): Promise<{
+    publishWeekMenu(dto: PublishWeekMenuInput): Promise<{
         success: boolean;
         weekStart: string;
     }>;
@@ -27,6 +28,20 @@ export declare class McpService {
         success: boolean;
         weekStart: string;
     }>;
+    getWeekData(weekStart?: string): Promise<{
+        weekStart: string;
+        menu: {
+            items: unknown;
+            notes: string | null;
+            updatedAt: Date;
+        } | null;
+        proverb: {
+            text: string;
+            author: string | null;
+            source: string | null;
+            updatedAt: Date;
+        } | null;
+    }>;
     logAudit(tool: string, weekStart: string, success: boolean): void;
     private normalizeWeekMenuItems;
     private replaceLegacyMenus;
@@ -35,3 +50,13 @@ export declare class McpService {
     private resolveWeekStart;
     private assertValidWeekStart;
 }
+type PublishWeekMenuInput = Omit<PublishWeekMenuDto, 'items'> & {
+    items: MenuItemInput[];
+};
+type MenuItemInput = Omit<MenuItemDto, 'lunch' | 'dinner' | 'midi' | 'soir'> & {
+    lunch?: string[] | string;
+    dinner?: string[] | string;
+    midi?: string[] | string;
+    soir?: string[] | string;
+};
+export {};

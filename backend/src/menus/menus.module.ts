@@ -8,7 +8,10 @@ import { Proverbe } from '../proverbes/entities/proverbe.entity';
 import { ProverbeSuggered } from '../proverbes/entities/proverbe_suggered.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Menu, Proverbe, ProverbeSuggered]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([Menu, Proverbe, ProverbeSuggered]),
+    AuthModule,
+  ],
   controllers: [MenusController],
   providers: [MenusService],
 })

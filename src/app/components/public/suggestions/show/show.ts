@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Api } from '../../../../services/api/api';
 import { Proverbe as ProverbeModel } from '../../../../models/proverbes.model';
 
@@ -7,7 +7,6 @@ import { Proverbe as ProverbeModel } from '../../../../models/proverbes.model';
   imports: [],
   templateUrl: './show.html',
   styleUrl: './show.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Show {
   private readonly api = inject(Api);

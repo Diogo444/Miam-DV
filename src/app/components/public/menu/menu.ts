@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+
+import { Component, OnInit, signal } from '@angular/core';
 import { Proverbe } from '../proverbe/proverbe';
 import { AdBanner } from '../ad-banner/ad-banner';
 import { menus } from '../../../models/menu.model';
@@ -9,10 +9,9 @@ import { Api } from '../../../services/api/api';
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, AdBanner],
+  imports: [AdBanner],
   templateUrl: './menu.html',
   styleUrl: './menu.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Menu implements OnInit {
   // État réactif avec signals

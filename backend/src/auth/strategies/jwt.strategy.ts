@@ -3,6 +3,13 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AdminService } from '../../admin/admin.service';
 
+type JwtPayload = {
+  sub: number;
+  role: string;
+  exp?: number;
+  tokenVersion?: number | string;
+};
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   private readonly logger = new Logger(JwtStrategy.name);
@@ -15,7 +22,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     const maskedSecret =
-      secret.length > 8 ? `${secret.slice(0, 4)}...${secret.slice(-4)}` : secret;
+      secret.length > 8
+        ? `${secret.slice(0, 4)}...${secret.slice(-4)}`
+        : secret;
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -27,32 +36,32 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     );
   }
 
-  async validate(payload: any) {
+  async validate(payload: JwtPayload) {
     this.logger.debug(
-      `validate() called with payload sub=${payload?.sub}, role=${payload?.role}, exp=${payload?.exp}`,
+      `validate() called with payload sub=${payload.sub}, role=${payload.role}, exp=${payload.exp ?? 'none'}`,
     );
     const user = await this.adminService.findById(payload.sub);
 
     if (!user) {
-      this.logger.warn(`User not found for sub=${payload?.sub}`);
+      this.logger.warn(`User not found for sub=${payload.sub}`);
       throw new UnauthorizedException('User not found');
     }
 
     const currentVersion = user.tokenVersion ?? 0;
     const payloadVersion =
-      typeof payload?.tokenVersion === 'number'
+      typeof payload.tokenVersion === 'number'
         ? payload.tokenVersion
-        : Number(payload?.tokenVersion);
+        : Number(payload.tokenVersion);
 
     if (!Number.isFinite(payloadVersion) || payloadVersion !== currentVersion) {
       this.logger.warn(
-        `Token version mismatch for sub=${payload?.sub}: token=${payloadVersion}, db=${currentVersion}`,
+        `Token version mismatch for sub=${payload.sub}: token=${payloadVersion}, db=${currentVersion}`,
       );
       throw new UnauthorizedException('Token revoked');
     }
 
     this.logger.debug(
-      `User resolved for sub=${payload?.sub}: username=${user.username}, role=${user.role}`,
+      `User resolved for sub=${payload.sub}: username=${user.username}, role=${user.role}`,
     );
 
     return {

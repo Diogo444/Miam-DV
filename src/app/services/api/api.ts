@@ -43,8 +43,8 @@ export class Api {
 
 
 
-  createOrUpdateProverbe(proverbe: Proverbe){
-    return this.http.put<Proverbe[]>(`${this.baseUrl}/proverbes/${(proverbe as any).id}`, proverbe);
+  createOrUpdateProverbe(proverbe: Proverbe) {
+    return this.http.patch<Proverbe | null>(`${this.baseUrl}/proverbes`, proverbe);
   }
 
   login(username: string, password: string){

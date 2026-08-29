@@ -8,7 +8,10 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const corsOrigins = process.env.CORS_ORIGIN;
     const origins = corsOrigins
-        ? corsOrigins.split(',').map((origin) => origin.trim()).filter(Boolean)
+        ? corsOrigins
+            .split(',')
+            .map((origin) => origin.trim())
+            .filter(Boolean)
         : true;
     app.enableCors({ origin: origins });
     app.useGlobalPipes(new common_1.ValidationPipe({
@@ -19,7 +22,7 @@ async function bootstrap() {
             enableImplicitConversion: true,
         },
     }));
-    const server = await app.listen(process.env.PORT ?? 3000);
+    const server = (await app.listen(process.env.PORT ?? 3000));
     server.setTimeout(30000);
     logger.log(`Application running on port ${process.env.PORT ?? 3000}`);
 }

@@ -5,10 +5,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#4c9a59', // Sage Green
+        primary: '#2f7d3e', // Vert accessible sur fond clair et avec texte blanc
         'primary-light': '#e7f3e9',
         'text-main': '#0d1b10',
-        'text-muted': '#4c9a59',
+        'text-muted': '#357742',
         'background-light': '#f8fcf9',
         'background-dark': '#102213',
         allergen: '#d97706', // Amber-600 for allergens

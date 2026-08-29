@@ -1,22 +1,23 @@
 services:
   db:
     container_name: dv_bdd_miamdv
-    image: mysql:8
+    image: mysql:8.4
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Miamdv-bdd}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD must be set in .env}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-miamdv}
       MYSQL_USER: ${MYSQL_USER:-miammi}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-BDDmiammi}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD must be set in .env}
     volumes:
       - db-data:/var/lib/mysql
     networks:
       - internal
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
   backend:
     container_name: dv_backend_miamdv
@@ -24,26 +25,29 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     restart: unless-stopped
+    init: true
     environment:
       NODE_ENV: production
       DB_HOST: db
       DB_PORT: 3306
       DB_USER: ${MYSQL_USER:-miammi}
-      DB_PASSWORD: ${MYSQL_PASSWORD:-BDDmiammi}
+      DB_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD must be set in .env}
       DB_NAME: ${MYSQL_DATABASE:-miamdv}
       DB_SYNC: ${DB_SYNC:-false}
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set in .env}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
+      DEFAULT_ADMIN_USERNAME: ${DEFAULT_ADMIN_USERNAME:?DEFAULT_ADMIN_USERNAME must be set in .env}
+      DEFAULT_ADMIN_PASSWORD: ${DEFAULT_ADMIN_PASSWORD:?DEFAULT_ADMIN_PASSWORD must be set in .env}
       PORT: 3000
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}
-      MCP_API_KEY: ${MCP_API_KEY}
+      MCP_API_KEY: ${MCP_API_KEY:?MCP_API_KEY must be set in .env}
       MCP_API_KEY_SCOPES: ${MCP_API_KEY_SCOPES:-mcp:menu:write,mcp:proverb:write,mcp:week:clear,mcp:week:read}
       MCP_RATE_LIMIT_WINDOW_MS: ${MCP_RATE_LIMIT_WINDOW_MS:-60000}
       MCP_RATE_LIMIT_MAX: ${MCP_RATE_LIMIT_MAX:-60}
     depends_on:
       db:
         condition: service_healthy
-    
+
     networks:
       - internal
       - caddy_net
@@ -56,6 +60,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 20s
 
   frontend:
     container_name: dv_frontend_miamdv
@@ -63,7 +68,11 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
     restart: unless-stopped
-    
+    ports:
+      - "${FRONTEND_PORT:-4000}:4000"
+    depends_on:
+      backend:
+        condition: service_healthy
     networks:
       - internal
       - caddy_net
@@ -72,6 +81,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
 
   mcp-server:
     container_name: dv_mcp_miamdv
@@ -79,9 +89,10 @@ services:
       context: ./mcp-server
       dockerfile: Dockerfile
     restart: unless-stopped
+    init: true
     environment:
       API_BASE_URL: http://backend:3000
-      MCP_API_KEY: ${MCP_API_KEY}
+      MCP_API_KEY: ${MCP_API_KEY:?MCP_API_KEY must be set in .env}
       MCP_HTTP_HOST: 0.0.0.0
       MCP_HTTP_PORT: ${MCP_HTTP_PORT:-4310}
       MCP_ALLOWED_HOSTS: ${MCP_ALLOWED_HOSTS:-localhost,127.0.0.1}
@@ -89,7 +100,7 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-    
+
     networks:
       - internal
       - caddy_net
@@ -102,6 +113,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
 
 volumes:
   db-data:
@@ -111,3 +123,4 @@ networks:
     internal: true
   caddy_net:
     external: true
+    name: ${PROXY_NETWORK:-caddy_net}

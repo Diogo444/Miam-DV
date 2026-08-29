@@ -40,6 +40,7 @@ yarn-error.log
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/mcp.json
 .history/*
 
 # Miscellaneous
@@ -47,6 +48,7 @@ yarn-error.log
 .sass-cache/
 /connect.lock
 /coverage
+/backend/*.tsbuildinfo
 /libpeerconnection.log
 testem.log
 /typings

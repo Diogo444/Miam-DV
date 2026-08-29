@@ -94,6 +94,37 @@ let McpService = class McpService {
         this.logAudit('clear_week_data', weekStart, true);
         return { success: true, weekStart };
     }
+    async getWeekData(weekStart) {
+        const resolvedWeekStart = weekStart
+            ? this.assertValidWeekStart(weekStart)
+            : getCurrentWeekStart();
+        const [menu, proverb] = await Promise.all([
+            this.weekMenuRepository.findOne({
+                where: { weekStart: resolvedWeekStart },
+            }),
+            this.weekProverbRepository.findOne({
+                where: { weekStart: resolvedWeekStart },
+            }),
+        ]);
+        return {
+            weekStart: resolvedWeekStart,
+            menu: menu
+                ? {
+                    items: menu.items,
+                    notes: menu.notes ?? null,
+                    updatedAt: menu.updatedAt,
+                }
+                : null,
+            proverb: proverb
+                ? {
+                    text: proverb.text,
+                    author: proverb.author ?? null,
+                    source: proverb.source ?? null,
+                    updatedAt: proverb.updatedAt,
+                }
+                : null,
+        };
+    }
     logAudit(tool, weekStart, success) {
         this.logger.log(`tool=${tool} weekStart=${weekStart} status=${success ? 'success' : 'failure'}`);
     }
@@ -224,7 +255,12 @@ function mapMealToLegacyFields(dishes, dessertOverride) {
         return { entree: '', plat: '', fromage: '', dessert: override ?? '' };
     }
     if (cleaned.length === 1) {
-        return { entree: '', plat: cleaned[0], fromage: '', dessert: override ?? '' };
+        return {
+            entree: '',
+            plat: cleaned[0],
+            fromage: '',
+            dessert: override ?? '',
+        };
     }
     if (cleaned.length === 2) {
         return {

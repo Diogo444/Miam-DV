@@ -6,21 +6,21 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { Transform, type TransformFnParams } from 'class-transformer';
 
 export class PublishWeekProverbDto {
   @IsString()
   @Matches(/^\d{4}-\d{2}-\d{2}$/)
-  weekStart: string;
+  weekStart!: string;
 
   @IsString()
   @MinLength(1)
   @MaxLength(800)
-  text: string;
+  text!: string;
 
   @IsOptional()
   @IsString()
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
+  @Transform(({ value }: TransformFnParams) => normalizeType(value as unknown))
   @IsIn(['blague', 'proverbe'])
   type?: 'blague' | 'proverbe';
 
@@ -35,4 +35,8 @@ export class PublishWeekProverbDto {
   @MinLength(1)
   @MaxLength(300)
   source?: string;
+}
+
+function normalizeType(value: unknown): unknown {
+  return typeof value === 'string' ? value.trim().toLowerCase() : value;
 }

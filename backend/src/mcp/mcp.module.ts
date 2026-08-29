@@ -12,7 +12,15 @@ import { Proverbe } from '../proverbes/entities/proverbe.entity';
 import { ProverbeSuggered } from '../proverbes/entities/proverbe_suggered.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([WeekMenu, WeekProverb, Menu, Proverbe, ProverbeSuggered])],
+  imports: [
+    TypeOrmModule.forFeature([
+      WeekMenu,
+      WeekProverb,
+      Menu,
+      Proverbe,
+      ProverbeSuggered,
+    ]),
+  ],
   controllers: [McpController],
   providers: [McpService, McpServerFactory, McpGuard, McpRateLimitGuard],
 })
