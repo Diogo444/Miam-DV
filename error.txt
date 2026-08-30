@@ -1,0 +1,209 @@
+vps@vmi2749362:~/Miam-DV$ git pull
+remote: Enumerating objects: 4, done.
+remote: Counting objects: 100% (4/4), done.
+remote: Total 4 (delta 3), reused 4 (delta 3), pack-reused 0 (from 0)
+Unpacking objects: 100% (4/4), 424 bytes | 424.00 KiB/s, done.
+From https://github.com/Diogo444/Miam-DV
+   0b55e54..20e0154  main       -> origin/main
+Updating 0b55e54..20e0154
+Fast-forward
+ README.md          | 2 +-
+ docker-compose.yml | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+vps@vmi2749362:~/Miam-DV$ docker compose up --build
+[+] up 11/11
+ ✔ Image mysql:8.4.10 Pulled                                                                                                                           33.9s
+[+] Building 1.2s (47/47) FINISHED
+ => [internal] load local bake definitions                                                                                                             0.0s
+ => => reading from stdin 1.36kB                                                                                                                       0.0s
+ => [frontend internal] load build definition from Dockerfile.frontend                                                                                 0.0s
+ => => transferring dockerfile: 609B                                                                                                                   0.0s
+ => [backend internal] load build definition from Dockerfile                                                                                           0.0s
+ => => transferring dockerfile: 663B                                                                                                                   0.0s
+ => [mcp-server internal] load build definition from Dockerfile                                                                                        0.0s
+ => => transferring dockerfile: 566B                                                                                                                   0.0s
+ => [frontend internal] load metadata for docker.io/library/nginx:1.30-alpine                                                                          0.5s
+ => [backend internal] load metadata for docker.io/library/node:24-alpine                                                                              0.6s
+ => [mcp-server internal] load .dockerignore                                                                                                           0.0s
+ => => transferring context: 74B                                                                                                                       0.0s
+ => [backend internal] load .dockerignore                                                                                                              0.0s
+ => => transferring context: 90B                                                                                                                       0.0s
+ => [frontend internal] load .dockerignore                                                                                                             0.0s
+ => => transferring context: 162B                                                                                                                      0.0s
+ => [backend internal] load build context                                                                                                              0.0s
+ => => transferring context: 5.04kB                                                                                                                    0.0s
+ => [mcp-server builder 1/8] FROM docker.io/library/node:24-alpine@sha256:e67514e5d0f6c46656005e1b693b2ec9d52e80b641307de684d4a015ba7a4eaf             0.0s
+ => [frontend runner 1/3] FROM docker.io/library/nginx:1.30-alpine@sha256:97d490c12ba55b4946b01546d1c3ed324e8d41ab1c9fcb2a616aa470620e5b46             0.0s
+ => [frontend internal] load build context                                                                                                             0.0s
+ => => transferring context: 6.41kB                                                                                                                    0.0s
+ => [mcp-server internal] load build context                                                                                                           0.0s
+ => => transferring context: 191B                                                                                                                      0.0s
+ => CACHED [frontend runner 2/3] COPY nginx.conf /etc/nginx/conf.d/default.conf                                                                        0.0s
+ => CACHED [backend builder 2/8] WORKDIR /app                                                                                                          0.0s
+ => CACHED [mcp-server builder 3/9] RUN npm install --global pnpm@11.24.0                                                                              0.0s
+ => CACHED [frontend builder 4/9] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml angular.json tsconfig.json tsconfig.app.json tsconfig.spec.jso  0.0s
+ => CACHED [frontend builder 5/9] COPY .postcssrc.json tailwind.config.js ./                                                                           0.0s
+ => CACHED [frontend builder 6/9] COPY public ./public                                                                                                 0.0s
+ => CACHED [frontend builder 7/9] COPY src ./src                                                                                                       0.0s
+ => CACHED [frontend builder 8/9] RUN pnpm install --frozen-lockfile                                                                                   0.0s
+ => CACHED [frontend builder 9/9] RUN pnpm build --configuration production                                                                            0.0s
+ => CACHED [frontend runner 3/3] COPY --from=builder /app/dist/Miam-DV/browser /usr/share/nginx/html                                                   0.0s
+ => CACHED [mcp-server builder 4/8] COPY package.json pnpm-lock.yaml ./                                                                                0.0s
+ => CACHED [mcp-server builder 5/8] RUN pnpm install --frozen-lockfile                                                                                 0.0s
+ => CACHED [mcp-server builder 6/8] COPY tsconfig.json ./                                                                                              0.0s
+ => CACHED [mcp-server builder 7/8] COPY src ./src                                                                                                     0.0s
+ => CACHED [mcp-server builder 8/8] RUN pnpm build     && pnpm prune --prod                                                                            0.0s
+ => CACHED [mcp-server runner 3/5] COPY --from=builder --chown=node:node /app/dist ./dist                                                              0.0s
+ => CACHED [mcp-server runner 4/5] COPY --from=builder --chown=node:node /app/node_modules ./node_modules                                              0.0s
+ => CACHED [mcp-server runner 5/5] COPY --chown=node:node package.json ./                                                                              0.0s
+ => [mcp-server] exporting to image                                                                                                                    0.1s
+ => => exporting layers                                                                                                                                0.0s
+ => => writing image sha256:62ce2933a50ceef16f1ab8d45cfbd03f1ba8f07bee24c863098997ca2307c670                                                           0.0s
+ => => naming to docker.io/library/miam-dv-mcp-server                                                                                                  0.0s
+ => CACHED [backend builder 3/8] RUN apk add --no-cache python3 make g++     && npm install --global pnpm@11.24.0                                      0.0s
+ => CACHED [backend builder 4/8] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./                                                               0.0s
+ => CACHED [backend builder 5/8] RUN pnpm install --frozen-lockfile                                                                                    0.0s
+ => CACHED [backend builder 6/8] COPY src ./src                                                                                                        0.0s
+ => CACHED [backend builder 7/8] COPY nest-cli.json tsconfig.json tsconfig.build.json ./                                                               0.0s
+ => CACHED [backend builder 8/8] RUN pnpm build     && pnpm prune --prod                                                                               0.0s
+ => CACHED [backend runner 3/5] COPY --from=builder --chown=node:node /app/dist ./dist                                                                 0.0s
+ => CACHED [backend runner 4/5] COPY --from=builder --chown=node:node /app/node_modules ./node_modules                                                 0.0s
+ => CACHED [backend runner 5/5] COPY --chown=node:node package.json ./                                                                                 0.0s
+ => [backend] exporting to image                                                                                                                       0.0s
+ => => exporting layers                                                                                                                                0.0s
+ => => writing image sha256:5cd60be0c28b4dce28d949053c76c43a3ea1e7cd84d8b31f46384e682766c902                                                           0.0s
+ => => naming to docker.io/library/miam-dv-backend                                                                                                     0.0s
+ => [frontend] exporting to image                                                                                                                      0.1s
+ => => exporting layers                                                                                                                                0.0s
+ => => writing image sha256:d7829074292af1d2d7045dd97a0422e5b9c19501a06d8a76e2a10b0a83fd06c5                                                           0.0s
+ => => naming to docker.io/library/miam-dv-frontend                                                                                                    0.0s
+ => [backend] resolving provenance for metadata file                                                                                                   0.0s
+[+] up 20/20ver] resolving provenance for metadata file                                                                                                0.0s
+ ✔ Image mysql:8.4.10           Pulled                                                                                                                 33.9s
+ ✔ Image miam-dv-frontend       Built                                                                                                                   1.3s
+ ✔ Image miam-dv-mcp-server     Built                                                                                                                   1.3s
+ ✔ Image miam-dv-backend        Built                                                                                                                   1.3s
+ ✔ Network miam-dv_internal     Created                                                                                                                 0.1s
+ ✔ Volume miam-dv_db-data       Created                                                                                                                 0.0s
+ ✔ Container dv_bdd_miamdv      Created                                                                                                                 1.1s
+ ✔ Container dv_backend_miamdv  Created                                                                                                                 0.0s
+ ✔ Container dv_mcp_miamdv      Created                                                                                                                 0.0s
+ ✔ Container dv_frontend_miamdv Created                                                                                                                 0.0s
+Attaching to dv_backend_miamdv, dv_bdd_miamdv, dv_frontend_miamdv, dv_mcp_miamdv
+Container dv_bdd_miamdv Waiting
+dv_bdd_miamdv  | 2026-08-30 10:01:51+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.4.10-1.el9 started.
+dv_bdd_miamdv  | 2026-08-30 10:01:51+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+dv_bdd_miamdv  | 2026-08-30 10:01:51+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.4.10-1.el9 started.
+dv_bdd_miamdv  | 2026-08-30 10:01:52+00:00 [Note] [Entrypoint]: Initializing database files
+dv_bdd_miamdv  | 2026-08-30T10:01:52.185096Z 0 [System] [MY-015017] [Server] MySQL Server Initialization - start.
+dv_bdd_miamdv  | 2026-08-30T10:01:52.188720Z 0 [System] [MY-013169] [Server] /usr/sbin/mysqld (mysqld 8.4.10) initializing of server in progress as process 78
+dv_bdd_miamdv  | 2026-08-30T10:01:52.198836Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+dv_bdd_miamdv  | 2026-08-30T10:01:52.848851Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+dv_bdd_miamdv  | 2026-08-30T10:01:54.629120Z 6 [Warning] [MY-010453] [Server] root@localhost is created with an empty password ! Please consider switching off the --initialize-insecure option.
+dv_bdd_miamdv  | 2026-08-30T10:01:56.790497Z 0 [System] [MY-015018] [Server] MySQL Server Initialization - end.
+dv_bdd_miamdv  | 2026-08-30 10:01:56+00:00 [Note] [Entrypoint]: Database files initialized
+dv_bdd_miamdv  | 2026-08-30 10:01:56+00:00 [Note] [Entrypoint]: Starting temporary server
+dv_bdd_miamdv  | 2026-08-30T10:01:56.853876Z 0 [System] [MY-015015] [Server] MySQL Server - start.
+dv_bdd_miamdv  | 2026-08-30T10:01:57.239080Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.4.10) starting as process 124
+dv_bdd_miamdv  | 2026-08-30T10:01:57.290119Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+dv_bdd_miamdv  | 2026-08-30T10:01:58.095845Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+dv_bdd_miamdv  | 2026-08-30T10:01:58.547593Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+dv_bdd_miamdv  | 2026-08-30T10:01:58.547658Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+dv_bdd_miamdv  | 2026-08-30T10:01:58.552226Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+dv_bdd_miamdv  | 2026-08-30T10:01:58.587880Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Socket: /var/run/mysqld/mysqlx.sock
+dv_bdd_miamdv  | 2026-08-30T10:01:58.588267Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.4.10'  socket: '/var/run/mysqld/mysqld.sock'  port: 0  MySQL Community Server - GPL.
+dv_bdd_miamdv  | 2026-08-30 10:01:58+00:00 [Note] [Entrypoint]: Temporary server started.
+dv_bdd_miamdv  | '/var/lib/mysql/mysql.sock' -> '/var/run/mysqld/mysqld.sock'
+dv_bdd_miamdv  | Warning: Unable to load '/usr/share/zoneinfo/iso3166.tab' as time zone. Skipping it.
+dv_bdd_miamdv  | Warning: Unable to load '/usr/share/zoneinfo/leap-seconds.list' as time zone. Skipping it.
+dv_bdd_miamdv  | Warning: Unable to load '/usr/share/zoneinfo/leapseconds' as time zone. Skipping it.
+dv_bdd_miamdv  | Warning: Unable to load '/usr/share/zoneinfo/tzdata.zi' as time zone. Skipping it.
+dv_bdd_miamdv  | Warning: Unable to load '/usr/share/zoneinfo/zone.tab' as time zone. Skipping it.
+dv_bdd_miamdv  | Warning: Unable to load '/usr/share/zoneinfo/zone1970.tab' as time zone. Skipping it.
+dv_bdd_miamdv  | 2026-08-30 10:02:01+00:00 [Note] [Entrypoint]: Creating database miamdv
+dv_bdd_miamdv  | 2026-08-30 10:02:01+00:00 [Note] [Entrypoint]: Creating user miammi
+dv_bdd_miamdv  | 2026-08-30 10:02:01+00:00 [Note] [Entrypoint]: Giving user miammi access to schema miamdv
+dv_bdd_miamdv  |
+dv_bdd_miamdv  | 2026-08-30 10:02:01+00:00 [Note] [Entrypoint]: Stopping temporary server
+dv_bdd_miamdv  | 2026-08-30T10:02:01.724654Z 13 [System] [MY-013172] [Server] Received SHUTDOWN from user root. Shutting down mysqld (Version: 8.4.10).
+dv_bdd_miamdv  | 2026-08-30T10:02:02.899029Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.4.10)  MySQL Community Server - GPL.
+dv_bdd_miamdv  | 2026-08-30T10:02:02.899445Z 0 [System] [MY-015016] [Server] MySQL Server - end.
+dv_bdd_miamdv  | 2026-08-30 10:02:03+00:00 [Note] [Entrypoint]: Temporary server stopped
+dv_bdd_miamdv  |
+dv_bdd_miamdv  | 2026-08-30 10:02:03+00:00 [Note] [Entrypoint]: MySQL init process done. Ready for start up.
+dv_bdd_miamdv  |
+dv_bdd_miamdv  | 2026-08-30T10:02:03.759493Z 0 [System] [MY-015015] [Server] MySQL Server - start.
+dv_bdd_miamdv  | 2026-08-30T10:02:04.067034Z 0 [System] [MY-010116] [Server] /usr/sbin/mysqld (mysqld 8.4.10) starting as process 1
+dv_bdd_miamdv  | 2026-08-30T10:02:04.075873Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+dv_bdd_miamdv  | 2026-08-30T10:02:04.389700Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+dv_bdd_miamdv  | 2026-08-30T10:02:04.690646Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+dv_bdd_miamdv  | 2026-08-30T10:02:04.690696Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+dv_bdd_miamdv  | 2026-08-30T10:02:04.695014Z 0 [Warning] [MY-011810] [Server] Insecure configuration for --pid-file: Location '/var/run/mysqld' in the path is accessible to all OS users. Consider choosing a different directory.
+dv_bdd_miamdv  | 2026-08-30T10:02:04.727711Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.4.10'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.
+dv_bdd_miamdv  | 2026-08-30T10:02:04.727741Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060, socket: /var/run/mysqld/mysqlx.sock
+Container dv_bdd_miamdv Healthy
+
+Container dv_backend_miamdv Waiting
+Container dv_backend_miamdv Waiting
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:38 AM   DEBUG AuthModule -> configuring JwtModule with secret length=32, masked=92c0...94ed
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:38 AM     LOG [NestFactory] Starting Nest application... +496ms
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:38 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +124ms
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:38 AM     LOG [InstanceLoader] PassportModule dependencies initialized +1ms
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:38 AM     LOG [InstanceLoader] ConfigHostModule dependencies initialized +0ms
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:38 AM     LOG [InstanceLoader] JwtModule dependencies initialized +0ms
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:38 AM     LOG [InstanceLoader] DiscoveryModule dependencies initialized +0ms
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:38 AM     LOG [InstanceLoader] AppModule dependencies initialized +0ms
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:38 AM     LOG [InstanceLoader] ConfigModule dependencies initialized +0ms
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:38 AM     LOG [InstanceLoader] ScheduleModule dependencies initialized +0ms
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:38 AM   ERROR [TypeOrmModule] Unable to connect to the database. Retrying (1)...
+dv_backend_miamdv  | Error: Access denied for user 'miammi'@'172.19.0.6' (using password: YES)
+dv_backend_miamdv  |     at Packet.asError (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/packets/packet.js:921:17)
+dv_backend_miamdv  |     at ClientHandshake.execute (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/commands/command.js:29:26)
+dv_backend_miamdv  |     at PoolConnection.handlePacket (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/base/connection.js:557:34)
+dv_backend_miamdv  |     at PacketParser.onPacket (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/base/connection.js:104:12)
+dv_backend_miamdv  |     at PacketParser.executeStart (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/packet_parser.js:86:16)
+dv_backend_miamdv  |     at Socket.<anonymous> (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/base/connection.js:112:25)
+dv_backend_miamdv  |     at Socket.emit (node:events:514:28)
+dv_backend_miamdv  |     at addChunk (node:internal/streams/readable:567:12)
+dv_backend_miamdv  |     at readableAddChunkPushByteMode (node:internal/streams/readable:518:3)
+dv_backend_miamdv  |     at Readable.push (node:internal/streams/readable:398:5)
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:41 AM   ERROR [TypeOrmModule] Unable to connect to the database. Retrying (2)...
+dv_backend_miamdv  | Error: Access denied for user 'miammi'@'172.19.0.6' (using password: YES)
+dv_backend_miamdv  |     at Packet.asError (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/packets/packet.js:921:17)
+dv_backend_miamdv  |     at ClientHandshake.execute (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/commands/command.js:29:26)
+dv_backend_miamdv  |     at PoolConnection.handlePacket (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/base/connection.js:557:34)
+dv_backend_miamdv  |     at PacketParser.onPacket (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/base/connection.js:104:12)
+dv_backend_miamdv  |     at PacketParser.executeStart (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/packet_parser.js:86:16)
+dv_backend_miamdv  |     at Socket.<anonymous> (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/base/connection.js:112:25)
+dv_backend_miamdv  |     at Socket.emit (node:events:514:28)
+dv_backend_miamdv  |     at addChunk (node:internal/streams/readable:567:12)
+dv_backend_miamdv  |     at readableAddChunkPushByteMode (node:internal/streams/readable:518:3)
+dv_backend_miamdv  |     at Readable.push (node:internal/streams/readable:398:5)
+dv_backend_miamdv  | [Nest] 7  - 08/30/2026, 10:02:44 AM   ERROR [TypeOrmModule] Unable to connect to the database. Retrying (3)...
+dv_backend_miamdv  | Error: Access denied for user 'miammi'@'172.19.0.6' (using password: YES)
+dv_backend_miamdv  |     at Packet.asError (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/packets/packet.js:921:17)
+dv_backend_miamdv  |     at ClientHandshake.execute (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/commands/command.js:29:26)
+dv_backend_miamdv  |     at PoolConnection.handlePacket (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/base/connection.js:557:34)
+dv_backend_miamdv  |     at PacketParser.onPacket (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/base/connection.js:104:12)
+dv_backend_miamdv  |     at PacketParser.executeStart (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/packet_parser.js:86:16)
+dv_backend_miamdv  |     at Socket.<anonymous> (/app/node_modules/.pnpm/mysql2@3.24.2_@types+node@24.13.3/node_modules/mysql2/lib/base/connection.js:112:25)
+dv_backend_miamdv  |     at Socket.emit (node:events:514:28)
+dv_backend_miamdv  |     at addChunk (node:internal/streams/readable:567:12)
+dv_backend_miamdv  |     at readableAddChunkPushByteMode (node:internal/streams/readable:518:3)
+dv_backend_miamdv  |     at Readable.push (node:internal/streams/readable:398:5)
+Gracefully Stopping... press Ctrl+C again to force
+Container dv_mcp_miamdv Stopping
+Container dv_frontend_miamdv Stopping
+Container dv_frontend_miamdv Stopped
+Container dv_mcp_miamdv Stopped
+Container dv_backend_miamdv Stopping
+Container dv_backend_miamdv Stopped
+Container dv_bdd_miamdv Stopping
+dv_backend_miamdv exited with code 143
+dv_bdd_miamdv      | 2026-08-30T10:02:45.170816Z 0 [System] [MY-013172] [Server] Received SHUTDOWN from user <via user signal>. Shutting down mysqld (Version: 8.4.10).
+Container dv_backend_miamdv Error dependency backend failed to start
+Container dv_backend_miamdv Error dependency backend failed to start
+dv_bdd_miamdv      | 2026-08-30T10:02:46.079407Z 0 [System] [MY-010910] [Server] /usr/sbin/mysqld: Shutdown complete (mysqld 8.4.10)  MySQL Community Server - GPL.
+dv_bdd_miamdv      | 2026-08-30T10:02:46.079443Z 0 [System] [MY-015016] [Server] MySQL Server - end.
+Container dv_bdd_miamdv Stopped
+dv_bdd_miamdv exited with code 0
