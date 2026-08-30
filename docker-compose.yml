@@ -12,7 +12,9 @@ services:
     volumes:
       - db-data:/var/lib/mysql
     networks:
-      - internalw
+      internal:
+        aliases:
+          - db-miamdv
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
       interval: 10s
@@ -29,7 +31,7 @@ services:
     init: true
     environment:
       NODE_ENV: production
-      DB_HOST: db
+      DB_HOST: db-miamdv
       DB_PORT: 3306
       DB_USER: ${MYSQL_USER:-miammi}
       DB_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD must be set in .env}
