@@ -1,7 +1,8 @@
 services:
   db:
     container_name: dv_bdd_miamdv
-    image: mysql:8.4
+    # MySQL 8.4 LTS, pinned for reproducible deployments.
+    image: mysql:8.4.10
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD must be set in .env}

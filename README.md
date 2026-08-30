@@ -92,7 +92,7 @@ Variables utiles:
 
 ## Lancer le projet (developpement local)
 
-### Base de donnees (MySQL via Docker)
+### Base de donnees (MySQL 8.4.10 LTS via Docker)
 
 ```bash
 docker compose up -d db
