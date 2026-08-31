@@ -104,5 +104,10 @@ pnpm verify
 ```
 
 `pnpm verify` utilise un vrai client Streamable HTTP : il contrôle les
-capacités, la liste des outils, les ressources, les prompts, `ping` et le
-cycle lecture/écriture/suppression sur une semaine de test.
+capacités, la liste des outils, les ressources, les prompts, `ping` et les
+outils de lecture. Pour tester aussi les écritures et suppressions sur un lundi
+inutilisé, définir explicitement :
+
+```bash
+MCP_VERIFY_WRITE=true MCP_VERIFY_WEEK_START=2026-12-28 pnpm verify
+```
