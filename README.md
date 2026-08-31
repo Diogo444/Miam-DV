@@ -14,9 +14,12 @@ suggestions et administrateurs.
 - Frontend: `src/` (Angular standalone components, services, interceptors)
 - Backend: `backend/` (NestJS + TypeORM + MySQL)
 - Base API: `/api` (proxy dev + reverse-proxy Caddy en prod)
-- Serveur MCP: `mcp-server/` (MCP HTTP -> appels vers l'API backend)
+- Serveur MCP: `mcp-server/` (façade MCP HTTP 2.0 -> contrat de données backend)
 
 ## Serveur MCP (mcp-server)
+
+La documentation complète et le contrat destiné aux clients IA se trouvent
+dans [mcp-server/README.md](mcp-server/README.md).
 
 Le serveur MCP expose des tools MCP via HTTP (Streamable HTTP) et relaie les
 commandes vers l'API backend (`/mcp/week-menu`, `/mcp/week-proverb`,
