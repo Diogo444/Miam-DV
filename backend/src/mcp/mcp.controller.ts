@@ -7,16 +7,13 @@ import {
   Post,
   Put,
   Query,
-  Req,
   Res,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import type { Response } from 'express';
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { McpService } from './mcp.service';
-import { McpServerFactory } from './mcp-server.factory';
 import { PublishWeekMenuDto } from './dto/publish-week-menu.dto';
 import { PublishWeekProverbDto } from './dto/publish-week-proverb.dto';
 import { ClearWeekDataDto } from './dto/clear-week-data.dto';
@@ -34,7 +31,6 @@ import {
 } from './mcp.constants';
 import { McpScopes } from './mcp.decorators';
 import { McpGuard } from './guards/mcp.guard';
-import type { McpAuthenticatedRequest } from './guards/mcp.guard';
 import { McpRateLimitGuard } from './guards/mcp-rate-limit.guard';
 
 @Controller('mcp')
@@ -50,45 +46,11 @@ import { McpRateLimitGuard } from './guards/mcp-rate-limit.guard';
 export class McpController {
   constructor(
     private readonly mcpService: McpService,
-    private readonly mcpServerFactory: McpServerFactory,
   ) {}
 
   @Post()
-  async handleMcpPost(
-    @Req() request: McpAuthenticatedRequest,
-    @Res() response: Response,
-  ) {
-    const server = this.mcpServerFactory.create(request.mcpAuth);
-    const transport = new StreamableHTTPServerTransport({
-      sessionIdGenerator: undefined,
-    });
-
-    try {
-      await server.connect(transport);
-      await transport.handleRequest(request, response, request.body);
-    } catch {
-      if (!response.headersSent) {
-        response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-          jsonrpc: '2.0',
-          error: {
-            code: -32603,
-            message: 'Internal server error',
-          },
-          id: null,
-        });
-      }
-    } finally {
-      const cleanup = () => {
-        void transport.close();
-        void server.close();
-      };
-
-      if (response.closed || response.writableEnded) {
-        cleanup();
-      } else {
-        response.once('close', cleanup);
-      }
-    }
+  handleMcpPost(@Res() response: Response) {
+    return this.methodNotAllowed(response);
   }
 
   @Get()
@@ -187,7 +149,7 @@ export class McpController {
       error: {
         code: -32000,
         message:
-          'Method not allowed. This MCP endpoint runs in stateless Streamable HTTP mode.',
+          'Method not allowed. The backend exposes an internal data contract only; connect MCP clients to the mcp-server facade.',
       },
       id: null,
     });

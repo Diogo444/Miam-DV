@@ -69,7 +69,8 @@ déployé devant lui.
 Le contrat interne du backend est protégé par cette identité de service :
 `GET /mcp/weeks`, `GET /mcp/week-data`, `PUT` et `DELETE /mcp/week-menu`,
 `PUT` et `DELETE /mcp/week-message`, puis `POST /mcp/clear-week`. Ce ne sont
-pas des endpoints MCP à connecter depuis un client.
+pas des endpoints MCP à connecter depuis un client. Le backend ne lance plus
+de second serveur MCP : connecter tout client à la façade `mcp-server`.
 
 ## Migration de base de données
 
