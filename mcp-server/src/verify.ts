@@ -1,150 +1,73 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
-import { CallToolResultSchema, ListToolsResultSchema } from '@modelcontextprotocol/sdk/types.js';
+import {
+  CallToolResultSchema,
+  GetPromptResultSchema,
+  ListPromptsResultSchema,
+  ListResourcesResultSchema,
+  ListToolsResultSchema,
+  ReadResourceResultSchema,
+} from '@modelcontextprotocol/sdk/types.js';
 
 const serverUrl = process.env.MCP_SERVER_URL ?? 'http://localhost:4310/mcp';
 const authToken = process.env.MCP_SERVER_AUTH_TOKEN;
+const writeVerification = process.env.MCP_VERIFY_WRITE === 'true';
+const verificationWeekStart = process.env.MCP_VERIFY_WEEK_START;
 
 async function main() {
-  const client = new Client({ name: 'mcp-verify-client', version: '1.0.0' });
-  const requestInit = authToken
-    ? { headers: { Authorization: `Bearer ${authToken}` } }
-    : undefined;
+  const client = new Client({ name: 'miam-dv-mcp-verify', version: '2.0.0' });
   const transport = new StreamableHTTPClientTransport(new URL(serverUrl), {
-    requestInit,
+    requestInit: authToken ? { headers: { Authorization: `Bearer ${authToken}` } } : undefined,
   });
-
   await client.connect(transport);
 
-  const tools = await client.request(
-    { method: 'tools/list', params: {} },
-    ListToolsResultSchema,
-  );
-  const toolNames = tools.tools.map((tool) => tool.name).sort();
-  console.log('Tools available:', toolNames);
+  await client.ping();
+  const tools = await client.request({ method: 'tools/list', params: {} }, ListToolsResultSchema);
+  assertTools(tools.tools.map((tool) => tool.name));
 
-  assertTool(toolNames, 'publish_week_menu');
-  assertTool(toolNames, 'publish_week_proverb');
-  assertTool(toolNames, 'clear_week_data');
+  const resources = await client.request({ method: 'resources/list', params: {} }, ListResourcesResultSchema);
+  assert(resources.resources.some((resource) => resource.uri === 'miam-dv://weeks/current'), 'Missing current-week resource');
+  await client.request({ method: 'resources/read', params: { uri: 'miam-dv://weeks/current' } }, ReadResourceResultSchema);
 
-  const weekStart = getCurrentWeekStart();
-  console.log('Using weekStart:', weekStart);
+  const prompts = await client.request({ method: 'prompts/list', params: {} }, ListPromptsResultSchema);
+  assert(prompts.prompts.some((prompt) => prompt.name === 'prepare_week_menu'), 'Missing prepare_week_menu prompt');
 
-  await client.request(
-    {
-      method: 'tools/call',
-      params: {
-        name: 'publish_week_menu',
-        arguments: {
-          weekStart,
-          items: buildMenuItems(),
-          notes: 'Menu published by MCP verify script',
-        },
-      },
-    },
-    CallToolResultSchema,
-  );
-  console.log('publish_week_menu OK');
+  const weekStart = verificationWeekStart ?? nextMonday();
+  await client.request({ method: 'prompts/get', params: { name: 'prepare_week_menu', arguments: { weekStart } } }, GetPromptResultSchema);
+  await call(client, 'list_weeks', {});
+  await call(client, 'get_week', { weekStart });
 
-  await client.request(
-    {
-      method: 'tools/call',
-      params: {
-        name: 'publish_week_proverb',
-        arguments: {
-          weekStart,
-          text: 'Petit test MCP: patience et longueur de temps font plus que force ni que rage.',
-          author: 'La Fontaine',
-          source: 'Fables (extrait)',
-        },
-      },
-    },
-    CallToolResultSchema,
-  );
-  console.log('publish_week_proverb OK');
-
-  await client.request(
-    {
-      method: 'tools/call',
-      params: {
-        name: 'clear_week_data',
-        arguments: {
-          weekStart,
-          confirm: 'CLEAR_WEEK_DATA',
-        },
-      },
-    },
-    CallToolResultSchema,
-  );
-  console.log('clear_week_data OK');
+  if (writeVerification) await verifyWrites(client, weekStart);
+  else console.log('Read-only verification complete. Set MCP_VERIFY_WRITE=true to verify write and delete tools.');
 
   await transport.terminateSession().catch(() => undefined);
   await transport.close();
-  console.log('Verification complete');
 }
 
-function assertTool(toolNames: string[], tool: string) {
-  if (!toolNames.includes(tool)) {
-    throw new Error(`Missing tool: ${tool}`);
-  }
+async function verifyWrites(client: Client, weekStart: string) {
+  if (!verificationWeekStart) throw new Error('MCP_VERIFY_WEEK_START is required when MCP_VERIFY_WRITE=true. Use an unused Monday: the test writes and deletes it.');
+  await call(client, 'upsert_week_menu', { weekStart, items: [{ day: 'monday', lunch: ['Menu de vérification MCP'] }], notes: 'À supprimer automatiquement par pnpm verify.' });
+  await call(client, 'upsert_week_message', { weekStart, type: 'blague', text: 'Blague de vérification MCP.' });
+  await call(client, 'get_week', { weekStart });
+  await call(client, 'delete_week_menu', { weekStart, confirm: 'DELETE_WEEK_MENU' });
+  await call(client, 'delete_week_message', { weekStart, confirm: 'DELETE_WEEK_MESSAGE' });
+  await call(client, 'clear_week', { weekStart, confirm: 'CLEAR_WEEK' });
+  console.log('Read/write/delete verification complete.');
 }
 
-function buildMenuItems() {
-  return [
-    {
-      day: 'monday',
-      main: 'Poulet roti',
-      starter: 'Salade verte',
-      dessert: 'Compote de pommes',
-      allergens: ['gluten'],
-    },
-    {
-      day: 'tuesday',
-      main: 'Pates a la tomate',
-      starter: 'Carottes rapees',
-      dessert: 'Yaourt nature',
-      allergens: ['gluten', 'lait'],
-    },
-    {
-      day: 'wednesday',
-      main: 'Poisson grille',
-      starter: 'Soupe de legumes',
-      dessert: 'Fruit frais',
-      allergens: ['poisson'],
-    },
-    {
-      day: 'thursday',
-      main: 'Chili vegetarien',
-      starter: 'Taboule',
-      dessert: 'Mousse au chocolat',
-      allergens: ['lait'],
-    },
-    {
-      day: 'friday',
-      main: 'Pizza margherita',
-      starter: 'Tomates cerises',
-      dessert: 'Glace vanille',
-      allergens: ['gluten', 'lait'],
-    },
-  ];
+function call(client: Client, name: string, args: Record<string, unknown>) {
+  return client.request({ method: 'tools/call', params: { name, arguments: args } }, CallToolResultSchema);
 }
-
-function getCurrentWeekStart() {
+function assertTools(toolNames: string[]) {
+  const expected = ['list_weeks', 'get_week', 'upsert_week_menu', 'upsert_week_message', 'delete_week_menu', 'delete_week_message', 'clear_week'];
+  for (const tool of expected) assert(toolNames.includes(tool), `Missing tool: ${tool}`);
+  console.log('Tools available:', toolNames.sort());
+}
+function assert(condition: unknown, message: string): asserts condition { if (!condition) throw new Error(message); }
+function nextMonday() {
   const now = new Date();
-  const day = now.getDay();
-  const diff = (day + 6) % 7;
-  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diff);
-  return formatLocalDate(monday);
+  const offset = (8 - now.getDay()) % 7 || 7;
+  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset);
+  return `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, '0')}-${String(monday.getDate()).padStart(2, '0')}`;
 }
-
-function formatLocalDate(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-main().catch((error) => {
-  console.error('Verification failed:', error);
-  process.exit(1);
-});
+main().catch((error) => { console.error('Verification failed:', error); process.exit(1); });

@@ -16,6 +16,9 @@ export class WeekProverb {
   @Column({ type: 'text' })
   text!: string;
 
+  @Column({ type: 'varchar', length: 10, default: 'proverbe' })
+  type!: 'blague' | 'proverbe';
+
   @Column({ type: 'varchar', length: 200, nullable: true })
   author?: string | null;
 

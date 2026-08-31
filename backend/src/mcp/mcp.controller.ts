@@ -6,27 +6,31 @@ import {
   HttpStatus,
   Post,
   Put,
-  Req,
+  Query,
   Res,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import type { Response } from 'express';
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { McpService } from './mcp.service';
-import { McpServerFactory } from './mcp-server.factory';
 import { PublishWeekMenuDto } from './dto/publish-week-menu.dto';
 import { PublishWeekProverbDto } from './dto/publish-week-proverb.dto';
 import { ClearWeekDataDto } from './dto/clear-week-data.dto';
 import {
+  DeleteWeekMenuDto,
+  DeleteWeekMessageDto,
+} from './dto/delete-week-data.dto';
+import {
+  MCP_SCOPE_MENU_DELETE,
   MCP_SCOPE_MENU_WRITE,
+  MCP_SCOPE_PROVERB_DELETE,
   MCP_SCOPE_PROVERB_WRITE,
   MCP_SCOPE_WEEK_CLEAR,
+  MCP_SCOPE_WEEK_READ,
 } from './mcp.constants';
 import { McpScopes } from './mcp.decorators';
 import { McpGuard } from './guards/mcp.guard';
-import type { McpAuthenticatedRequest } from './guards/mcp.guard';
 import { McpRateLimitGuard } from './guards/mcp-rate-limit.guard';
 
 @Controller('mcp')
@@ -42,45 +46,11 @@ import { McpRateLimitGuard } from './guards/mcp-rate-limit.guard';
 export class McpController {
   constructor(
     private readonly mcpService: McpService,
-    private readonly mcpServerFactory: McpServerFactory,
   ) {}
 
   @Post()
-  async handleMcpPost(
-    @Req() request: McpAuthenticatedRequest,
-    @Res() response: Response,
-  ) {
-    const server = this.mcpServerFactory.create(request.mcpAuth);
-    const transport = new StreamableHTTPServerTransport({
-      sessionIdGenerator: undefined,
-    });
-
-    try {
-      await server.connect(transport);
-      await transport.handleRequest(request, response, request.body);
-    } catch {
-      if (!response.headersSent) {
-        response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-          jsonrpc: '2.0',
-          error: {
-            code: -32603,
-            message: 'Internal server error',
-          },
-          id: null,
-        });
-      }
-    } finally {
-      const cleanup = () => {
-        void transport.close();
-        void server.close();
-      };
-
-      if (response.closed || response.writableEnded) {
-        cleanup();
-      } else {
-        response.once('close', cleanup);
-      }
-    }
+  handleMcpPost(@Res() response: Response) {
+    return this.methodNotAllowed(response);
   }
 
   @Get()
@@ -91,6 +61,18 @@ export class McpController {
   @Delete()
   handleMcpDelete(@Res() response: Response) {
     return this.methodNotAllowed(response);
+  }
+
+  @Get('weeks')
+  @McpScopes(MCP_SCOPE_WEEK_READ)
+  listWeeks() {
+    return this.mcpService.listWeeks();
+  }
+
+  @Get('week-data')
+  @McpScopes(MCP_SCOPE_WEEK_READ)
+  getWeekData(@Query('weekStart') weekStart?: string) {
+    return this.mcpService.getWeekData(weekStart);
   }
 
   @Put('week-menu')
@@ -111,6 +93,34 @@ export class McpController {
       return await this.mcpService.publishWeekProverb(dto);
     } catch (error) {
       this.mcpService.logAudit('publish_week_proverb', dto.weekStart, false);
+      throw error;
+    }
+  }
+
+  @Put('week-message')
+  @McpScopes(MCP_SCOPE_PROVERB_WRITE)
+  publishWeekMessage(@Body() dto: PublishWeekProverbDto) {
+    return this.publishWeekProverb(dto);
+  }
+
+  @Delete('week-menu')
+  @McpScopes(MCP_SCOPE_MENU_DELETE)
+  async deleteWeekMenu(@Body() dto: DeleteWeekMenuDto) {
+    try {
+      return await this.mcpService.deleteWeekMenu(dto.weekStart);
+    } catch (error) {
+      this.mcpService.logAudit('delete_week_menu', dto.weekStart, false);
+      throw error;
+    }
+  }
+
+  @Delete('week-message')
+  @McpScopes(MCP_SCOPE_PROVERB_DELETE)
+  async deleteWeekMessage(@Body() dto: DeleteWeekMessageDto) {
+    try {
+      return await this.mcpService.deleteWeekMessage(dto.weekStart);
+    } catch (error) {
+      this.mcpService.logAudit('delete_week_message', dto.weekStart, false);
       throw error;
     }
   }
@@ -139,7 +149,7 @@ export class McpController {
       error: {
         code: -32000,
         message:
-          'Method not allowed. This MCP endpoint runs in stateless Streamable HTTP mode.',
+          'Method not allowed. The backend exposes an internal data contract only; connect MCP clients to the mcp-server facade.',
       },
       id: null,
     });
