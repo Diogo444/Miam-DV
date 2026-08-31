@@ -66,6 +66,18 @@ Les appels internes vers le backend portent soit `X-MCP-KEY`, soit
 d'authentification applicative : il doit être protégé par le reverse proxy
 déployé devant lui.
 
+Le contrat interne du backend est protégé par cette identité de service :
+`GET /mcp/weeks`, `GET /mcp/week-data`, `PUT` et `DELETE /mcp/week-menu`,
+`PUT` et `DELETE /mcp/week-message`, puis `POST /mcp/clear-week`. Ce ne sont
+pas des endpoints MCP à connecter depuis un client.
+
+## Migration de base de données
+
+MCP 2.0 conserve le type de chaque message hebdomadaire historique. En
+production, lorsque `DB_SYNC=false`, appliquer une fois
+`backend/migrations/20260831_add_week_proverb_type.sql` avant le déploiement
+du backend.
+
 ## Variables d'environnement
 
 | Variable | Obligatoire | Description |

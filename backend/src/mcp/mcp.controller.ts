@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -20,9 +21,16 @@ import { PublishWeekMenuDto } from './dto/publish-week-menu.dto';
 import { PublishWeekProverbDto } from './dto/publish-week-proverb.dto';
 import { ClearWeekDataDto } from './dto/clear-week-data.dto';
 import {
+  DeleteWeekMenuDto,
+  DeleteWeekMessageDto,
+} from './dto/delete-week-data.dto';
+import {
+  MCP_SCOPE_MENU_DELETE,
   MCP_SCOPE_MENU_WRITE,
+  MCP_SCOPE_PROVERB_DELETE,
   MCP_SCOPE_PROVERB_WRITE,
   MCP_SCOPE_WEEK_CLEAR,
+  MCP_SCOPE_WEEK_READ,
 } from './mcp.constants';
 import { McpScopes } from './mcp.decorators';
 import { McpGuard } from './guards/mcp.guard';
@@ -93,6 +101,18 @@ export class McpController {
     return this.methodNotAllowed(response);
   }
 
+  @Get('weeks')
+  @McpScopes(MCP_SCOPE_WEEK_READ)
+  listWeeks() {
+    return this.mcpService.listWeeks();
+  }
+
+  @Get('week-data')
+  @McpScopes(MCP_SCOPE_WEEK_READ)
+  getWeekData(@Query('weekStart') weekStart?: string) {
+    return this.mcpService.getWeekData(weekStart);
+  }
+
   @Put('week-menu')
   @McpScopes(MCP_SCOPE_MENU_WRITE)
   async publishWeekMenu(@Body() dto: PublishWeekMenuDto) {
@@ -111,6 +131,34 @@ export class McpController {
       return await this.mcpService.publishWeekProverb(dto);
     } catch (error) {
       this.mcpService.logAudit('publish_week_proverb', dto.weekStart, false);
+      throw error;
+    }
+  }
+
+  @Put('week-message')
+  @McpScopes(MCP_SCOPE_PROVERB_WRITE)
+  publishWeekMessage(@Body() dto: PublishWeekProverbDto) {
+    return this.publishWeekProverb(dto);
+  }
+
+  @Delete('week-menu')
+  @McpScopes(MCP_SCOPE_MENU_DELETE)
+  async deleteWeekMenu(@Body() dto: DeleteWeekMenuDto) {
+    try {
+      return await this.mcpService.deleteWeekMenu(dto.weekStart);
+    } catch (error) {
+      this.mcpService.logAudit('delete_week_menu', dto.weekStart, false);
+      throw error;
+    }
+  }
+
+  @Delete('week-message')
+  @McpScopes(MCP_SCOPE_PROVERB_DELETE)
+  async deleteWeekMessage(@Body() dto: DeleteWeekMessageDto) {
+    try {
+      return await this.mcpService.deleteWeekMessage(dto.weekStart);
+    } catch (error) {
+      this.mcpService.logAudit('delete_week_message', dto.weekStart, false);
       throw error;
     }
   }

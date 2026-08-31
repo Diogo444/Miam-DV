@@ -1,4 +1,4 @@
-import { Equals, IsIn, IsOptional, IsString, Matches } from 'class-validator';
+import { IsIn, IsOptional, IsString, Matches } from 'class-validator';
 
 export class ClearWeekDataDto {
   @IsOptional()
@@ -11,6 +11,7 @@ export class ClearWeekDataDto {
   @IsIn(['currentWeek'])
   scope?: 'currentWeek';
 
-  @Equals('CLEAR_WEEK_DATA')
-  confirm!: 'CLEAR_WEEK_DATA';
+  @IsString()
+  @IsIn(['CLEAR_WEEK'])
+  confirm!: 'CLEAR_WEEK';
 }

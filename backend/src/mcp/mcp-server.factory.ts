@@ -185,7 +185,7 @@ export class McpServerFactory {
         inputSchema: {
           weekStart: weekStartSchema.optional(),
           scope: z.enum(['currentWeek']).optional(),
-          confirm: z.literal('CLEAR_WEEK_DATA'),
+          confirm: z.literal('CLEAR_WEEK'),
         },
         annotations: {
           readOnlyHint: false,
