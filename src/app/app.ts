@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NotMenuProvisor } from './components/not-menu-provisor/not-menu-provisor';
+// import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [NotMenuProvisor],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
