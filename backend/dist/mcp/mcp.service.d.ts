@@ -37,15 +37,32 @@ export declare class McpService {
         } | null;
         proverb: {
             text: string;
+            type: "blague" | "proverbe";
             author: string | null;
             source: string | null;
             updatedAt: Date;
         } | null;
     }>;
+    listWeeks(): Promise<{
+        weekStart: string;
+        hasMenu: boolean;
+        hasMessage: boolean;
+        updatedAt: Date;
+    }[]>;
+    deleteWeekMenu(weekStartInput: string): Promise<{
+        success: boolean;
+        weekStart: string;
+        deleted: boolean;
+    }>;
+    deleteWeekMessage(weekStartInput: string): Promise<{
+        success: boolean;
+        weekStart: string;
+        deleted: boolean;
+    }>;
     logAudit(tool: string, weekStart: string, success: boolean): void;
     private normalizeWeekMenuItems;
     private replaceLegacyMenus;
-    private replaceLegacyProverbe;
+    private syncLegacyCurrentWeek;
     private ensureUniqueDays;
     private resolveWeekStart;
     private assertValidWeekStart;

@@ -15,6 +15,7 @@ let WeekProverb = class WeekProverb {
     id;
     weekStart;
     text;
+    type;
     author;
     source;
     updatedAt;
@@ -32,6 +33,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'text' }),
     __metadata("design:type", String)
 ], WeekProverb.prototype, "text", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', length: 10, default: 'proverbe' }),
+    __metadata("design:type", String)
+], WeekProverb.prototype, "type", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', length: 200, nullable: true }),
     __metadata("design:type", Object)
