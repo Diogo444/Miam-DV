@@ -14,62 +14,34 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.McpController = void 0;
 const common_1 = require("@nestjs/common");
-const streamableHttp_js_1 = require("@modelcontextprotocol/sdk/server/streamableHttp.js");
 const mcp_service_1 = require("./mcp.service");
-const mcp_server_factory_1 = require("./mcp-server.factory");
 const publish_week_menu_dto_1 = require("./dto/publish-week-menu.dto");
 const publish_week_proverb_dto_1 = require("./dto/publish-week-proverb.dto");
 const clear_week_data_dto_1 = require("./dto/clear-week-data.dto");
+const delete_week_data_dto_1 = require("./dto/delete-week-data.dto");
 const mcp_constants_1 = require("./mcp.constants");
 const mcp_decorators_1 = require("./mcp.decorators");
 const mcp_guard_1 = require("./guards/mcp.guard");
 const mcp_rate_limit_guard_1 = require("./guards/mcp-rate-limit.guard");
 let McpController = class McpController {
     mcpService;
-    mcpServerFactory;
-    constructor(mcpService, mcpServerFactory) {
+    constructor(mcpService) {
         this.mcpService = mcpService;
-        this.mcpServerFactory = mcpServerFactory;
     }
-    async handleMcpPost(request, response) {
-        const server = this.mcpServerFactory.create(request.mcpAuth);
-        const transport = new streamableHttp_js_1.StreamableHTTPServerTransport({
-            sessionIdGenerator: undefined,
-        });
-        try {
-            await server.connect(transport);
-            await transport.handleRequest(request, response, request.body);
-        }
-        catch {
-            if (!response.headersSent) {
-                response.status(common_1.HttpStatus.INTERNAL_SERVER_ERROR).json({
-                    jsonrpc: '2.0',
-                    error: {
-                        code: -32603,
-                        message: 'Internal server error',
-                    },
-                    id: null,
-                });
-            }
-        }
-        finally {
-            const cleanup = () => {
-                void transport.close();
-                void server.close();
-            };
-            if (response.closed || response.writableEnded) {
-                cleanup();
-            }
-            else {
-                response.once('close', cleanup);
-            }
-        }
+    handleMcpPost(response) {
+        return this.methodNotAllowed(response);
     }
     handleMcpGet(response) {
         return this.methodNotAllowed(response);
     }
     handleMcpDelete(response) {
         return this.methodNotAllowed(response);
+    }
+    listWeeks() {
+        return this.mcpService.listWeeks();
+    }
+    getWeekData(weekStart) {
+        return this.mcpService.getWeekData(weekStart);
     }
     async publishWeekMenu(dto) {
         try {
@@ -86,6 +58,27 @@ let McpController = class McpController {
         }
         catch (error) {
             this.mcpService.logAudit('publish_week_proverb', dto.weekStart, false);
+            throw error;
+        }
+    }
+    publishWeekMessage(dto) {
+        return this.publishWeekProverb(dto);
+    }
+    async deleteWeekMenu(dto) {
+        try {
+            return await this.mcpService.deleteWeekMenu(dto.weekStart);
+        }
+        catch (error) {
+            this.mcpService.logAudit('delete_week_menu', dto.weekStart, false);
+            throw error;
+        }
+    }
+    async deleteWeekMessage(dto) {
+        try {
+            return await this.mcpService.deleteWeekMessage(dto.weekStart);
+        }
+        catch (error) {
+            this.mcpService.logAudit('delete_week_message', dto.weekStart, false);
             throw error;
         }
     }
@@ -108,7 +101,7 @@ let McpController = class McpController {
             jsonrpc: '2.0',
             error: {
                 code: -32000,
-                message: 'Method not allowed. This MCP endpoint runs in stateless Streamable HTTP mode.',
+                message: 'Method not allowed. The backend exposes an internal data contract only; connect MCP clients to the mcp-server facade.',
             },
             id: null,
         });
@@ -117,11 +110,10 @@ let McpController = class McpController {
 exports.McpController = McpController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Res)()),
+    __param(0, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
 ], McpController.prototype, "handleMcpPost", null);
 __decorate([
     (0, common_1.Get)(),
@@ -138,6 +130,21 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], McpController.prototype, "handleMcpDelete", null);
 __decorate([
+    (0, common_1.Get)('weeks'),
+    (0, mcp_decorators_1.McpScopes)(mcp_constants_1.MCP_SCOPE_WEEK_READ),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], McpController.prototype, "listWeeks", null);
+__decorate([
+    (0, common_1.Get)('week-data'),
+    (0, mcp_decorators_1.McpScopes)(mcp_constants_1.MCP_SCOPE_WEEK_READ),
+    __param(0, (0, common_1.Query)('weekStart')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], McpController.prototype, "getWeekData", null);
+__decorate([
     (0, common_1.Put)('week-menu'),
     (0, mcp_decorators_1.McpScopes)(mcp_constants_1.MCP_SCOPE_MENU_WRITE),
     __param(0, (0, common_1.Body)()),
@@ -153,6 +160,30 @@ __decorate([
     __metadata("design:paramtypes", [publish_week_proverb_dto_1.PublishWeekProverbDto]),
     __metadata("design:returntype", Promise)
 ], McpController.prototype, "publishWeekProverb", null);
+__decorate([
+    (0, common_1.Put)('week-message'),
+    (0, mcp_decorators_1.McpScopes)(mcp_constants_1.MCP_SCOPE_PROVERB_WRITE),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [publish_week_proverb_dto_1.PublishWeekProverbDto]),
+    __metadata("design:returntype", void 0)
+], McpController.prototype, "publishWeekMessage", null);
+__decorate([
+    (0, common_1.Delete)('week-menu'),
+    (0, mcp_decorators_1.McpScopes)(mcp_constants_1.MCP_SCOPE_MENU_DELETE),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [delete_week_data_dto_1.DeleteWeekMenuDto]),
+    __metadata("design:returntype", Promise)
+], McpController.prototype, "deleteWeekMenu", null);
+__decorate([
+    (0, common_1.Delete)('week-message'),
+    (0, mcp_decorators_1.McpScopes)(mcp_constants_1.MCP_SCOPE_PROVERB_DELETE),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [delete_week_data_dto_1.DeleteWeekMessageDto]),
+    __metadata("design:returntype", Promise)
+], McpController.prototype, "deleteWeekMessage", null);
 __decorate([
     (0, common_1.Post)('clear-week'),
     (0, mcp_decorators_1.McpScopes)(mcp_constants_1.MCP_SCOPE_WEEK_CLEAR),
@@ -176,7 +207,6 @@ exports.McpController = McpController = __decorate([
         transform: true,
         forbidUnknownValues: true,
     })),
-    __metadata("design:paramtypes", [mcp_service_1.McpService,
-        mcp_server_factory_1.McpServerFactory])
+    __metadata("design:paramtypes", [mcp_service_1.McpService])
 ], McpController);
 //# sourceMappingURL=mcp.controller.js.map

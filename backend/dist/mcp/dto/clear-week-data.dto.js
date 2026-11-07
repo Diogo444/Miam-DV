@@ -30,7 +30,8 @@ __decorate([
     __metadata("design:type", String)
 ], ClearWeekDataDto.prototype, "scope", void 0);
 __decorate([
-    (0, class_validator_1.Equals)('CLEAR_WEEK_DATA'),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsIn)(['CLEAR_WEEK']),
     __metadata("design:type", String)
 ], ClearWeekDataDto.prototype, "confirm", void 0);
 //# sourceMappingURL=clear-week-data.dto.js.map

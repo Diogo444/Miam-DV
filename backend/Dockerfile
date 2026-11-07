@@ -1,9 +1,9 @@
-FROM node:24-alpine AS builder
+FROM node:26-alpine3.24 AS builder
 
 WORKDIR /app
 
 RUN apk add --no-cache python3 make g++ \
-    && npm install --global pnpm@11.24.0
+    && npm install --global pnpm@12.18.0
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
@@ -14,7 +14,7 @@ COPY nest-cli.json tsconfig.json tsconfig.build.json ./
 RUN pnpm build \
     && pnpm prune --prod
 
-FROM node:24-alpine AS runner
+FROM node:26-alpine3.24 AS runner
 
 WORKDIR /app
 ENV NODE_ENV=production

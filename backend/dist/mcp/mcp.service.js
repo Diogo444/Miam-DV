@@ -56,7 +56,7 @@ let McpService = class McpService {
             });
             await this.weekMenuRepository.save(created);
         }
-        await this.replaceLegacyMenus(items);
+        await this.syncLegacyCurrentWeek();
         this.logAudit('publish_week_menu', weekStart, true);
         return { success: true, weekStart };
     }
@@ -67,6 +67,7 @@ let McpService = class McpService {
         });
         if (existing) {
             existing.text = dto.text;
+            existing.type = dto.type ?? 'proverbe';
             existing.author = dto.author ?? null;
             existing.source = dto.source ?? null;
             await this.weekProverbRepository.save(existing);
@@ -75,12 +76,13 @@ let McpService = class McpService {
             const created = this.weekProverbRepository.create({
                 weekStart,
                 text: dto.text,
+                type: dto.type ?? 'proverbe',
                 author: dto.author ?? null,
                 source: dto.source ?? null,
             });
             await this.weekProverbRepository.save(created);
         }
-        await this.replaceLegacyProverbe(dto.type ?? 'proverbe', dto.text);
+        await this.syncLegacyCurrentWeek();
         this.logAudit('publish_week_proverb', weekStart, true);
         return { success: true, weekStart };
     }
@@ -88,9 +90,7 @@ let McpService = class McpService {
         const weekStart = this.resolveWeekStart(dto);
         await this.weekMenuRepository.delete({ weekStart });
         await this.weekProverbRepository.delete({ weekStart });
-        await this.menuRepository.clear();
-        await this.proverbeRepository.clear();
-        await this.proverbeSuggeredRepository.clear();
+        await this.syncLegacyCurrentWeek();
         this.logAudit('clear_week_data', weekStart, true);
         return { success: true, weekStart };
     }
@@ -118,12 +118,60 @@ let McpService = class McpService {
             proverb: proverb
                 ? {
                     text: proverb.text,
+                    type: proverb.type,
                     author: proverb.author ?? null,
                     source: proverb.source ?? null,
                     updatedAt: proverb.updatedAt,
                 }
                 : null,
         };
+    }
+    async listWeeks() {
+        const [menus, messages] = await Promise.all([
+            this.weekMenuRepository.find({
+                select: { weekStart: true, updatedAt: true },
+                order: { weekStart: 'DESC' },
+            }),
+            this.weekProverbRepository.find({
+                select: { weekStart: true, updatedAt: true },
+                order: { weekStart: 'DESC' },
+            }),
+        ]);
+        const weeks = new Map();
+        for (const menu of menus) {
+            weeks.set(menu.weekStart, {
+                weekStart: menu.weekStart,
+                hasMenu: true,
+                hasMessage: false,
+                updatedAt: menu.updatedAt,
+            });
+        }
+        for (const message of messages) {
+            const existing = weeks.get(message.weekStart);
+            weeks.set(message.weekStart, {
+                weekStart: message.weekStart,
+                hasMenu: existing?.hasMenu ?? false,
+                hasMessage: true,
+                updatedAt: existing && existing.updatedAt > message.updatedAt
+                    ? existing.updatedAt
+                    : message.updatedAt,
+            });
+        }
+        return [...weeks.values()].sort((left, right) => right.weekStart.localeCompare(left.weekStart));
+    }
+    async deleteWeekMenu(weekStartInput) {
+        const weekStart = this.assertValidWeekStart(weekStartInput);
+        const result = await this.weekMenuRepository.delete({ weekStart });
+        await this.syncLegacyCurrentWeek();
+        this.logAudit('delete_week_menu', weekStart, true);
+        return { success: true, weekStart, deleted: (result.affected ?? 0) > 0 };
+    }
+    async deleteWeekMessage(weekStartInput) {
+        const weekStart = this.assertValidWeekStart(weekStartInput);
+        const result = await this.weekProverbRepository.delete({ weekStart });
+        await this.syncLegacyCurrentWeek();
+        this.logAudit('delete_week_message', weekStart, true);
+        return { success: true, weekStart, deleted: (result.affected ?? 0) > 0 };
     }
     logAudit(tool, weekStart, success) {
         this.logger.log(`tool=${tool} weekStart=${weekStart} status=${success ? 'success' : 'failure'}`);
@@ -190,10 +238,22 @@ let McpService = class McpService {
             await this.menuRepository.save(menus);
         }
     }
-    async replaceLegacyProverbe(type, content) {
+    async syncLegacyCurrentWeek() {
+        const weekStart = getCurrentWeekStart();
+        const [menu, message] = await Promise.all([
+            this.weekMenuRepository.findOne({ where: { weekStart } }),
+            this.weekProverbRepository.findOne({ where: { weekStart } }),
+        ]);
+        await this.replaceLegacyMenus(menu ? menu.items : []);
         await this.proverbeRepository.clear();
-        const proverbe = this.proverbeRepository.create({ id: 1, type, content });
-        await this.proverbeRepository.save(proverbe);
+        if (message) {
+            const proverbe = this.proverbeRepository.create({
+                id: 1,
+                type: message.type,
+                content: message.text,
+            });
+            await this.proverbeRepository.save(proverbe);
+        }
     }
     ensureUniqueDays(items) {
         const seen = new Set();

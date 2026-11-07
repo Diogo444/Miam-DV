@@ -95,7 +95,7 @@ Variables utiles:
 
 ## Lancer le projet (developpement local)
 
-### Base de donnees (MySQL 8.4.10 LTS via Docker)
+### Base de donnees (MySQL 8.4.13 LTS via Docker)
 
 ```bash
 docker compose up -d db
@@ -133,7 +133,7 @@ Le back utilise `DB_SYNC=true` pour creer/mettre a jour les tables en dev.
 ### Frontend (Angular)
 
 ```bash
-pnpm install
+npm ci
 pnpm start
 ```
 
@@ -145,11 +145,17 @@ Le front tourne sur `http://localhost:4200`. Le proxy Angular defini dans
 1) Creer le reseau externe attendu si necessaire: `docker network create caddy_net`.
 2) Copier `.env.example` en `.env`, puis remplacer au minimum `JWT_SECRET`,
    `MCP_API_KEY`, `DEFAULT_ADMIN_PASSWORD` et les mots de passe d'exemple.
-3) Lancer l'infrastructure:
+3) Sauvegarder la base de donnees avant une mise a jour de MySQL, puis mettre a jour
+   les images et lancer l'infrastructure:
 
 ```bash
-docker compose up -d --build
+docker compose pull db
+docker compose build --pull
+docker compose up -d
 ```
+
+Ne pas utiliser `docker compose down -v` lors d'un redeploiement : l'option
+`-v` supprime le volume `db-data` contenant la base de donnees.
 
 - Front Nginx: `http://localhost:4000` (modifiable avec `FRONTEND_PORT`)
 - API via le proxy Nginx: `http://localhost:4000/api`
